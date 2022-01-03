@@ -32,13 +32,16 @@ The used trading platform for student who living in Ireland🍀
 ------
 
 - Java 1.8
-- Spring boot 2.6.1
-- JPA
+- Spring boot 2.6.2
+- Spring Data JPA
 - JWT
 - Lombok
 - Spring-Security
 - O-auth2
 - Postgresql
+- Spring Web
+- H2 Database
+- Web Socket
 - Gradle
 
 ------
