@@ -1,7 +1,7 @@
 package com.ireland.ager.account.service;
 
 import com.ireland.ager.account.dto.response.KakaoUserRes;
-import com.ireland.ager.account.UserRepository;
+import com.ireland.ager.account.repository.UserRepository;
 import com.ireland.ager.account.dto.response.UserRes;
 import com.ireland.ager.account.entity.Account;
 import lombok.RequiredArgsConstructor;
@@ -22,13 +22,13 @@ public class AuthServiceImpl implements AuthService{
     @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakaoRestApiKey;
 
-    @Value("${spring.security.oauth2.client.registration.kakao.client_secret}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String kakaoRestSecretKey;
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUrl;
 
-    @Value("$(spring.security.oauth2.client.provider.kakao.user-info-uri)")
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
     private String kakaoUserInfoUrl;
 
     private final String KAKAO_URL = "https://kauth.kakao.com";
@@ -40,7 +40,6 @@ public class AuthServiceImpl implements AuthService{
     public String getKakaoLoginUrl() {
         /**
          * @Method Name : getKakaoLoginUrl
-         * @작성자 : 김민권
          * @Method 설명 : 카카오 로그인을 위한 요청 URL을 반환하는 Method, 해당 URL로 GET 요청을 전송 시 카카오톡 로그인 페이지로 이동된다.
          */
         return new StringBuilder()
@@ -54,7 +53,6 @@ public class AuthServiceImpl implements AuthService{
     public HashMap<String, String> getKakaoTokens(String code) {
         /**
          * @Method Name : getKakaoTokens
-         * @작성자 : 김민권
          * @Method 설명 : 발급된 code를 통해 Access Token과 Refresh Token을 반환한다.
          */
         HttpHeaders httpHeaders = new HttpHeaders();

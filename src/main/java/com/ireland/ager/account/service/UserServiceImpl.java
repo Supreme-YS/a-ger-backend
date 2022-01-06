@@ -1,6 +1,6 @@
 package com.ireland.ager.account.service;
 
-import com.ireland.ager.account.UserRepository;
+import com.ireland.ager.account.repository.UserRepository;
 import com.ireland.ager.account.dto.response.UserRes;
 import com.ireland.ager.account.dto.request.UserUpdatePatchReq;
 import com.ireland.ager.account.entity.Account;
