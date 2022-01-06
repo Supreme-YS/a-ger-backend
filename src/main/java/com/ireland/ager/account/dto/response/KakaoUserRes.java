@@ -1,6 +1,6 @@
-package com.ireland.ager.api.resoonse.user;
+package com.ireland.ager.account.dto.response;
 
-import com.ireland.ager.db.entity.Account;
+import com.ireland.ager.account.entity.Account;
 import lombok.Data;
 
 @Data

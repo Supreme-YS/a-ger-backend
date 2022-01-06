@@ -1,6 +1,6 @@
-package com.ireland.ager.api.request.user;
+package com.ireland.ager.account.dto.request;
 
-import com.ireland.ager.db.entity.Account;
+import com.ireland.ager.account.entity.Account;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

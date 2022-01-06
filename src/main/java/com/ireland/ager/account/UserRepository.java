@@ -1,6 +1,6 @@
-package com.ireland.ager.db.repository;
+package com.ireland.ager.account;
 
-import com.ireland.ager.db.entity.Account;
+import com.ireland.ager.account.entity.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

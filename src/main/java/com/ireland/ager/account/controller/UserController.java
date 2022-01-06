@@ -1,14 +1,13 @@
-package com.ireland.ager.api.controller;
+package com.ireland.ager.account.controller;
 
 
-import com.ireland.ager.api.request.user.UserUpdatePatchReq;
-import com.ireland.ager.api.resoonse.user.KakaoUserRes;
-import com.ireland.ager.api.resoonse.user.UserRes;
-import com.ireland.ager.api.service.AuthService;
-import com.ireland.ager.api.service.UserService;
+import com.ireland.ager.account.dto.response.KakaoUserRes;
+import com.ireland.ager.account.dto.response.UserRes;
+import com.ireland.ager.account.dto.request.UserUpdatePatchReq;
+import com.ireland.ager.account.service.AuthService;
+import com.ireland.ager.account.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

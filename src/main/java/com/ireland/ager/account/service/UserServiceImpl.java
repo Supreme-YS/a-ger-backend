@@ -1,11 +1,10 @@
-package com.ireland.ager.api.service;
+package com.ireland.ager.account.service;
 
-import com.ireland.ager.api.request.user.UserUpdatePatchReq;
-import com.ireland.ager.api.resoonse.user.UserRes;
-import com.ireland.ager.db.entity.Account;
-import com.ireland.ager.db.repository.UserRepository;
+import com.ireland.ager.account.UserRepository;
+import com.ireland.ager.account.dto.response.UserRes;
+import com.ireland.ager.account.dto.request.UserUpdatePatchReq;
+import com.ireland.ager.account.entity.Account;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,8 +12,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements  UserService{
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public UserRes findUserByAccountEmail(String accountEmail) {

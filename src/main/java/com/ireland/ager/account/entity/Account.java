@@ -1,4 +1,4 @@
-package com.ireland.ager.db.entity;
+package com.ireland.ager.account.entity;
 
 import lombok.Getter;
 import lombok.Setter;

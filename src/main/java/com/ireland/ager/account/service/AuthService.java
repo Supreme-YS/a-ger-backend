@@ -1,7 +1,7 @@
-package com.ireland.ager.api.service;
+package com.ireland.ager.account.service;
 
-import com.ireland.ager.api.resoonse.user.KakaoUserRes;
-import com.ireland.ager.api.resoonse.user.UserRes;
+import com.ireland.ager.account.dto.response.KakaoUserRes;
+import com.ireland.ager.account.dto.response.UserRes;
 
 import java.util.HashMap;
 

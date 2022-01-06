@@ -1,11 +1,10 @@
-package com.ireland.ager.api.service;
+package com.ireland.ager.account.service;
 
-import com.ireland.ager.api.resoonse.user.KakaoUserRes;
-import com.ireland.ager.api.resoonse.user.UserRes;
-import com.ireland.ager.db.entity.Account;
-import com.ireland.ager.db.repository.UserRepository;
+import com.ireland.ager.account.dto.response.KakaoUserRes;
+import com.ireland.ager.account.UserRepository;
+import com.ireland.ager.account.dto.response.UserRes;
+import com.ireland.ager.account.entity.Account;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -29,15 +28,13 @@ public class AuthServiceImpl implements AuthService{
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUrl;
 
-   /* @Value("$(spring.security.oauth2.client.provider.kakao.user-info-uri)")*/
-    private String kakaoUserInfoUrl="https://kapi.kakao.com/v2/user/me";
+    @Value("$(spring.security.oauth2.client.provider.kakao.user-info-uri)")
+    private String kakaoUserInfoUrl;
 
     private final String KAKAO_URL = "https://kauth.kakao.com";
     private final String TOKEN_TYPE = "Bearer";
 
-
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Override
     public String getKakaoLoginUrl() {

@@ -1,8 +1,8 @@
-package com.ireland.ager.api.service;
+package com.ireland.ager.account.service;
 
-import com.ireland.ager.api.request.user.UserUpdatePatchReq;
-import com.ireland.ager.api.resoonse.user.UserRes;
-import com.ireland.ager.db.entity.Account;
+import com.ireland.ager.account.dto.request.UserUpdatePatchReq;
+import com.ireland.ager.account.dto.response.UserRes;
+import com.ireland.ager.account.entity.Account;
 
 public interface UserService {
     UserRes insertUser(Account newAccount);
