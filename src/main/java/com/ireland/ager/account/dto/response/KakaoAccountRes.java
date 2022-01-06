@@ -4,7 +4,7 @@ import com.ireland.ager.account.entity.Account;
 import lombok.Data;
 
 @Data
-public class KakaoUserRes {
+public class KakaoAccountRes {
 
     private Integer id;
     private String connected_at;
@@ -27,6 +27,7 @@ public class KakaoUserRes {
         private Boolean is_email_valid;
         private Boolean is_email_verified;
         private String email;
+        /*
         private String has_age_range;
         private boolean age_range_needs_agreement;
         private String age_range;
@@ -36,6 +37,7 @@ public class KakaoUserRes {
         private boolean gender_needs_agreement;
         private boolean has_gender;
         private String gender;
+         */
 
         @Data
         public class Profile {
@@ -44,19 +46,16 @@ public class KakaoUserRes {
             private String profile_image_url;
         }
     }
-
+    //KakaoUserRes->Account
     public Account toUser(String accessToken, String refreshToken) {
         Account account = new Account();
-        if(this.kakao_account.email == null || this.kakao_account.email == "") account.setAccountEmail(String.valueOf(this.id));
+        if(this.kakao_account.email == null || this.kakao_account.email.equals("")) account.setAccountEmail(String.valueOf(this.id));
         else account.setAccountEmail(this.kakao_account.email);
-
+        account.setProfileNickname(this.properties.nickname);
         account.setUserName(this.kakao_account.profile.nickname);
         account.setProfileImageUrl(this.kakao_account.profile.profile_image_url);
-        account.setGender(this.kakao_account.gender);
-        account.setAgeRange(this.kakao_account.age_range);
         account.setAccessToken(accessToken);
         account.setRefreshToken(refreshToken);
-
         return account;
     }
 }

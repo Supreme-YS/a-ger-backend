@@ -1,28 +1,22 @@
 package com.ireland.ager.account.entity;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import lombok.Getter;
+import lombok.Setter;
 
 
 @Entity
 @Getter
 @Setter
 public class Account {
-    @Id
+    @Id @GeneratedValue
+    Long id;
     String accountEmail;
-
     String profileNickname;
     String userName;
-    String phoneNumber;
     String profileImageUrl;
-    String profileDescription;
-    String gender;
-    String ageRange;
     String accessToken;
     String refreshToken;
 }
