@@ -3,6 +3,7 @@ package com.ireland.ager.product.entity;
 import com.ireland.ager.config.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -24,10 +25,13 @@ public class Product extends BaseEntity {
 
     private String productDetail;
 
+    @ColumnDefault("0")
     private String productViewCnt;
 
     @OneToMany(mappedBy = "product")
     private Set<Category> categories = new HashSet<>();
+
+
 
 //    private Set<Photo> photos = new HashSet<>();
     
