@@ -24,7 +24,7 @@ public class Product extends BaseEntity {
     private String productPrice;
 
     private String productDetail;
-
+    //조회수 설정
     @ColumnDefault("0")
     private String productViewCnt;
 
