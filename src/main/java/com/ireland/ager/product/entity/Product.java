@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 public class Product extends BaseEntity {
     @Id @GeneratedValue
-    private Long id;
+    private Long productId;
 
     private String productName;
 
@@ -29,6 +29,6 @@ public class Product extends BaseEntity {
     @OneToMany(mappedBy = "product")
     private Set<Category> categories = new HashSet<>();
 
-    private Set<Photo> photos = new HashSet<>();
+//    private Set<Photo> photos = new HashSet<>();
     
 }
