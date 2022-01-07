@@ -19,9 +19,9 @@ public class ProductController {
 
     // 헤더 정보에 액세스 토큰이 발급되었다는 가정하에
     @GetMapping(value = "product")
-    public List<Product> listAllProducts(Long productId) {
+    public List<Product> listAllProducts() {
         log.info("Select All Products");
-        List<Product> productList = productService.getAllProducts(productId);
+        List<Product> productList = productService.getAllProducts();
         return productList;
     }
 }

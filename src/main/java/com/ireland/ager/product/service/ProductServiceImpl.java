@@ -13,7 +13,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<Product> getAllProducts(Long productId) {
-        return productRepository.findAllByProductId(productId);
+    public List<Product> getAllProducts() {
+        return productRepository.findAllByProductId();
     }
 }
