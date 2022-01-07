@@ -39,7 +39,9 @@ public class AccountController {
     @GetMapping("/login")
     public ResponseEntity<AccountRes> getTokenAndJoinOrLogin(@RequestParam("code") String code) {
         HashMap<String, String> kakaoTokens = authService.getKakaoTokens(code);
+
         KakaoAccountRes kakaoAccountRes = authService.getKakaoUserInfo(kakaoTokens.get("access_token"));
+
         String accountEmailOrId = kakaoAccountRes.getKakao_account().getEmail();
         if(accountEmailOrId == null || accountEmailOrId == "") {
             accountEmailOrId = String.valueOf(kakaoAccountRes.getId()) + EMAIL_SUFFIX;

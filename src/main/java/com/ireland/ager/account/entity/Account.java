@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class Account {
     @Id @GeneratedValue
-    Long id;
+    Long accountId;
     String accountEmail;
     String profileNickname;
     String userName;
