@@ -30,6 +30,18 @@ dependencies {
 	implementation 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.1.RELEASE'
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-aws-context
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws-context', version: '2.2.1.RELEASE'
+	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-aws-autoconfigure
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws-autoconfigure', version: '2.2.1.RELEASE'
+
+	//썸네일
+	implementation 'net.coobird:thumbnailator:0.4.8'
+
+	implementation 'org.imgscalr:imgscalr-lib:4.2'
 }
 
 test {

@@ -4,6 +4,8 @@ import com.ireland.ager.config.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import com.ireland.ager.config.BaseEntity;
 import lombok.Getter;
 import lombok.Setter;
 

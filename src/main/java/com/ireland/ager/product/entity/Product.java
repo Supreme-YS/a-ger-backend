@@ -12,6 +12,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+=======
+
+>>>>>>> ea41ca10932c6bc71aa23b38120c925248e6f963
 
 @Entity
 @Getter
@@ -25,7 +29,6 @@ public class Product extends BaseEntity {
     private String productPrice;
 
     private String productDetail;
-
     private Long productViewCnt;
 
     @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
@@ -44,4 +47,5 @@ public class Product extends BaseEntity {
         this.category=category;
         category.getProductList().add(this);
     }
+
 }
