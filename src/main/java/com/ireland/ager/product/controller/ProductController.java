@@ -12,13 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -31,8 +25,12 @@ public class ProductController {
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
 
-    @PostMapping
+    @PostMapping(value = "/post")
     public ResponseEntity<ProductResponse> postProduct(
+        /**
+         * @Method : postProduct
+         * @Description : 판매자가 판매할 제품을 등록한다.
+         */
         @RequestHeader("Authorization") String accessToken,
         @RequestPart MultipartFile productImage,
         @RequestPart ProductRequest productRequest) {
@@ -41,8 +39,8 @@ public class ProductController {
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
             AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
-
-            ProductResponse productResponse = null;
+//            ProductResponse productResponse = null;
+            ProductResponse productResponse = productService.postProduct(productRequest, productImage);
             return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -50,10 +48,36 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/{productId}")
+
+    @GetMapping("/")
     public List<Product> listAllProducts() {
+        /**
+         * @Method : listAllProducts
+         * @Description : 등록된 모든 제품의 정보를 불러온다
+         */
         log.info("Select All Products");
         List<Product> productList = productService.getAllProducts();
         return productList;
+    }
+
+    @GetMapping("{productId}")
+    public ResponseEntity<ProductResponse> findProductById(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable long productId) {
+        int vaildTokenStatusValue = authService.isValidToken(accessToken);
+
+        if(vaildTokenStatusValue == 200) {
+            String[] spitToken = accessToken.split(" ");
+            AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
+            ProductResponse productResponse = productService.findProductById(productId);
+            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
+        } else if(vaildTokenStatusValue == 401) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+
+
     }
 }

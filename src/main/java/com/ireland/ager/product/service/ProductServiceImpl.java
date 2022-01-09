@@ -22,4 +22,8 @@ public class ProductServiceImpl {
         ProductResponse productResponse=null;
         return productResponse;
     }
+
+    public ProductResponse findProductById(long productId) {
+        return ProductResponse.of(productRepository.findById(productId).get());
+    }
 }
