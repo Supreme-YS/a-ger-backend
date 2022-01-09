@@ -22,7 +22,7 @@ public class Product extends BaseEntity {
 
     private String productDetail;
 
-    private String productViewCnt;
+    private Long productViewCnt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;

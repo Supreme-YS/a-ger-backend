@@ -30,6 +30,7 @@ public class ProductController {
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
+
     @PostMapping
     public ResponseEntity<ProductResponse> postProduct(
         @RequestHeader("Authorization") String accessToken,
