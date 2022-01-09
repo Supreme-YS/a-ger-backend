@@ -1,5 +1,6 @@
 package com.ireland.ager.product.entity;
 
+import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -37,4 +38,7 @@ public class Product extends BaseEntity {
         this.category=category;
         category.getProductList().add(this);
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Account account;
 }

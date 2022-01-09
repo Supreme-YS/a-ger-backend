@@ -5,6 +5,8 @@ import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,4 +28,38 @@ public class ProductServiceImpl {
     public ProductResponse findProductById(long productId) {
         return ProductResponse.of(productRepository.findById(productId).get());
     }
+
+    public Boolean updateProductById(long productId, ProductRequest productRequest, String accessToken) {
+        // 원래 정보를 꺼내옴
+        Optional<Product> productById = productRepository.findById(productId);
+        // 정보가 없다면
+        if(!productById.isPresent()) {
+            return Boolean.FALSE;
+        }
+
+        // 제품의 토큰 정보와 수정하고자 하는 유저의 토큰 정보가 다르다면
+        if(!(productById.get().getAccount().getAccessToken().equals(accessToken))) {
+            return Boolean.FALSE;
+        }
+
+        Product product = productById.get();
+
+        if(productRequest != null) {
+            if (productRequest.getProductName() != null) {
+                product.setProductName(productRequest.getProductName());
+            }
+            if (productRequest.getProductPrice() != null) {
+                product.setProductPrice(productRequest.getProductPrice());
+            }
+            if (productRequest.getProductDetail() != null) {
+                product.setProductDetail(productRequest.getProductDetail());
+            }
+//            if (productRequest.getCategoryName() != null) {
+//                product.setCategory(productRequest.;
+//            }
+        }
+        productRepository.save(product);
+        return Boolean.TRUE;
+    }
+
 }

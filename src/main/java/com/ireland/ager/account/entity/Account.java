@@ -4,8 +4,13 @@ import com.ireland.ager.config.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import com.ireland.ager.product.entity.Product;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 
 @Entity
@@ -20,4 +25,7 @@ public class Account extends BaseEntity {
     String profileImageUrl;
     String accessToken;
     String refreshToken;
+
+    @OneToMany(mappedBy = "account")
+    private List<Product> products;
 }
