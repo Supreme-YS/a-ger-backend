@@ -1,7 +1,6 @@
 package com.ireland.ager.product.service;
 
 import com.ireland.ager.product.dto.request.ProductRequest;
-import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import java.util.List;
@@ -13,14 +12,19 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ProductServiceImpl {
     private final ProductRepository productRepository;
+    private final UploadServiceImpl uploadService;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public ProductResponse postProduct(ProductRequest productRequest, List<MultipartFile> multipartFile) {
+    public Product postProduct(ProductRequest productRequest, List<MultipartFile> multipartFile) {
 
-        ProductResponse productResponse=null;
-        return productResponse;
+        List<String> uploadImagesUrl=uploadService.uploadImages(multipartFile);
+        Product product=productRequest.toProduct(uploadImagesUrl);
+        //상품 저장
+        productRepository.save(product);
+        return product;
     }
+
 }

@@ -4,7 +4,6 @@ import com.ireland.ager.account.dto.response.AccountRes;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
-import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import java.util.List;
@@ -31,18 +30,18 @@ public class ProductController {
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
     @PostMapping
-    public ResponseEntity<ProductResponse> postProduct(
+    public ResponseEntity<Product> postProduct(
         @RequestHeader("Authorization") String accessToken,
-        @RequestPart List<MultipartFile> multipartFile,
-        @RequestPart ProductRequest productRequest) {
+        @RequestPart(value = "file") List<MultipartFile> multipartFile,
+        @RequestPart(value="product") ProductRequest productRequest) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
             AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
-            ProductResponse productResponse = productService.postProduct(productRequest,
+            Product product = productService.postProduct(productRequest,
                 multipartFile);
-            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
+            return new ResponseEntity<>(product, HttpStatus.CREATED);
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
