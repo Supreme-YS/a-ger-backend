@@ -16,7 +16,7 @@ public class ProductResponse {
     String productName;
     String productPrice;
     String productDetail;
-    String productViewCnt;
+    Long productViewCnt;
     Category category;
 
     public static ProductResponse of(Product product) {

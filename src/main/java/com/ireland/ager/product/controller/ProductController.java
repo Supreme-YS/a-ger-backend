@@ -40,8 +40,8 @@ public class ProductController {
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
             AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
-
-            ProductResponse productResponse = null;
+            ProductResponse productResponse = productService.postProduct(productRequest,
+                productImage);
             return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -49,7 +49,7 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @GetMapping("/{productId}")
+    @GetMapping
     public List<Product> listAllProducts() {
         log.info("Select All Products");
         List<Product> productList = productService.getAllProducts();

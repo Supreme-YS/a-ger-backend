@@ -1,5 +1,10 @@
 package com.ireland.ager.product.entity;
 
-public class Photo {
+import javax.persistence.Entity;
+import javax.persistence.Id;
 
+@Entity
+public class Photo {
+    @Id
+    String imageUrl;
 }

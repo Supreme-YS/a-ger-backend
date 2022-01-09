@@ -19,6 +19,7 @@ public class ProductServiceImpl {
     }
 
     public ProductResponse postProduct(ProductRequest productRequest, MultipartFile multipartFile) {
+
         ProductResponse productResponse=null;
         return productResponse;
     }
