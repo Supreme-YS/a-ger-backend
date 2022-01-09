@@ -36,7 +36,7 @@ public class UploadController {
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }*/
-        log.info("파일 이름 확인 : {}", multipartFile.getName());
+        log.info("파일 이름 확인 : {}", multipartFile.toString());
         String upload_url=awsservice.upload(multipartFile);
         log.info("파일 저장 성공 URL : {}",upload_url);
         return new ResponseEntity<>(upload_url,HttpStatus.OK);
