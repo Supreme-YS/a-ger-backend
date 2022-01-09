@@ -5,6 +5,4 @@ import java.util.List;
 
 public interface ProductService {
 
-    List<Product> getAllProducts();
-    /*서비스만들기 시작*/
 }
