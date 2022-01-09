@@ -12,10 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-=======
-
->>>>>>> ea41ca10932c6bc71aa23b38120c925248e6f963
 
 @Entity
 @Getter

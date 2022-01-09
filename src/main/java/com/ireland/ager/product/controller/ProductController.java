@@ -33,7 +33,7 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<ProductResponse> postProduct(
         @RequestHeader("Authorization") String accessToken,
-        @RequestPart MultipartFile productImage,
+        @RequestPart List<MultipartFile> multipartFile,
         @RequestPart ProductRequest productRequest) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
@@ -41,7 +41,7 @@ public class ProductController {
             String[] spitToken = accessToken.split(" ");
             AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
             ProductResponse productResponse = productService.postProduct(productRequest,
-                productImage);
+                multipartFile);
             return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
