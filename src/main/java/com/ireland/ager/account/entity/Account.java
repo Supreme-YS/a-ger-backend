@@ -1,5 +1,6 @@
 package com.ireland.ager.account.entity;
 
+import com.ireland.ager.config.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,7 +11,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Account {
+public class Account extends BaseEntity {
     @Id @GeneratedValue
     Long accountId;
     String accountEmail;

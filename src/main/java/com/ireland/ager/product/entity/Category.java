@@ -1,20 +1,25 @@
 package com.ireland.ager.product.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.persistence.*;
 
 @Entity
 @Getter
 @Setter
 public class Category {
     @Id @GeneratedValue
-    private Long id;
+    private Long categoryId;
 
     @Column(nullable = false)
     private String categoryName;
 
-    @ManyToOne
-    private Product product;
+    @OneToMany(mappedBy = "category")
+    private List<Product> productList=new ArrayList<>();
 }
