@@ -1,14 +1,16 @@
 package com.ireland.ager.product.controller;
 
-import com.ireland.ager.account.dto.response.AccountRes;
+import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
+import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
+import com.ireland.ager.product.repository.ProductRepository;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import java.util.List;
 
-import com.ireland.ager.product.service.UploadServiceImpl;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,26 +32,23 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RequiredArgsConstructor
 @CrossOrigin(value = {"*"}, maxAge = 6000)
-@RequestMapping("/product")
+@RequestMapping("product")
 public class ProductController {
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
-    private  final UploadServiceImpl uploadService;
 
-    /*
-     *Product에 값을 집어 넣기
-     */
+    private final ProductRepository productRepository;
     @PostMapping
     public ResponseEntity<Product> postProduct(
-        @RequestHeader("Authorization") String accessToken,
-        @RequestPart(value = "file") List<MultipartFile> multipartFile,
-        @RequestPart(value="product") ProductRequest productRequest) {
+            @RequestHeader("Authorization") String accessToken,
+            @RequestPart(value = "file") List<MultipartFile> multipartFile,
+            @RequestPart(value="product") ProductRequest productRequest) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
             Product product = productService.postProduct(spitToken[1],productRequest,
-                multipartFile);
+                    multipartFile);
             if(!product.getUrlList().isEmpty()) {
                 return new ResponseEntity<>(product, HttpStatus.CREATED);
             }else {
@@ -67,25 +66,20 @@ public class ProductController {
         @content: 상품 수정
         @return: Product
      */
-    @PatchMapping({"productId"})
-    public ResponseEntity<Product> updateProduct(
+    @PatchMapping("/{productId}")
+    public ResponseEntity<Boolean> updateProduct(
         @RequestHeader("Authorization") String accessToken,
         @PathVariable Long productId,
         @RequestPart(value = "file") List<MultipartFile> multipartFile,
-        @RequestPart(value="product") ProductRequest productRequest) {
+        @RequestPart(value="product") ProductUpdateRequest productUpdateRequest) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
-            AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
-            //TODO: 220110 Account와 Product 관계 설정
-            //TODO: 220110 1. accessToken 확인
-            //TODO: 220110 2. accessToken으로 accountId 조회한다.
-            //TODO: 220110
-            Product product = productService.postProduct(accessToken, productRequest,
-                multipartFile);
-            //log.info("list_url사이즈: ",product.getPhotoUrlList().size());
-                return new ResponseEntity<>(product, HttpStatus.CREATED);
+
+            Account account = accountService.findAccountByAccessToken(spitToken[1]);
+            Boolean isUpdated =productService.updateProduct(productId,spitToken[1],multipartFile,productUpdateRequest);
+            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -119,13 +113,13 @@ public class ProductController {
         List<Product> productList = productService.getAllProducts();
         return productList;
     }
-    /*@PostMapping("/upload")
-    public ResponseEntity uploadFile(
-            @RequestPart(value = "file") List<MultipartFile> multipartFile)throws  Exception {
 
-        List<String> upload_url = uploadService.uploadImages(multipartFile);
-        if (!upload_url.isEmpty()) {
-            return new ResponseEntity<>(upload_url, HttpStatus.OK);
-        }else return new ResponseEntity<>("input image Error",HttpStatus.NOT_MODIFIED);
-    }*/
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> viewPost(@PathVariable Long productId){
+        log.info("{}",productId);
+        Optional<Product> product=productRepository.findById(productId);
+        product.get().setProductViewCnt(product.get().getProductViewCnt()+1);
+        productRepository.save(product.get());
+        return new ResponseEntity<>(product.get(),HttpStatus.OK);
+    }
 }
