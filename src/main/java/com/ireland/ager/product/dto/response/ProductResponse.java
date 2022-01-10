@@ -19,7 +19,7 @@ public class ProductResponse {
     Long productViewCnt;
     Category category;
 
-    public static ProductResponse of(Product product) {
+    public ProductResponse of(Product product) {
         return ProductResponse.builder()
             .productId(product.getProductId())
             .productName(product.getProductName())
