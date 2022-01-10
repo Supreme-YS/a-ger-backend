@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.util.UUID;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UploadServiceImpl {
     @Value("${cloud.aws.s3.bucket.url}")
@@ -50,27 +52,33 @@ public class UploadServiceImpl {
             @Param: uploadFiles
             @content: 이미지 파일들을 s3에 업로드하고 url을 return
         */
-
         List<String> uploadUrl=new ArrayList<>();
         for(MultipartFile uploadFile: uploadFiles) {
             String origName = uploadFile.getOriginalFilename();
-            ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
             String url;
             try {
                 // 확장자를 찾기 위한 코드
                 final String ext = origName.substring(origName.lastIndexOf('.'));
-                // 파일이름 암호화
-                final String saveFileName = getUuid() + ext;
-                File file = new File(System.getProperty("user.dir") + saveFileName);
-                uploadFile.transferTo(file);
-                uploadOnS3(saveFileName, file);
-                url = defaultUrl + saveFileName;
-                file.delete();
-                uploadUrl.add(url);
+                log.info("확장자는 {} ",ext);
+
+                if(ext.equals(".jpg") || ext.equals(".png")||ext.equals(".jpeg")) {
+                    log.info("파일 확장자 확인 완료");
+                    // 파일이름 암호화
+                    final String saveFileName = getUuid() + ext;
+                    File file = new File(System.getProperty("user.dir") + saveFileName);
+                    uploadFile.transferTo(file);
+                    uploadOnS3(saveFileName, file);
+                    url = defaultUrl + saveFileName;
+                    file.delete();
+                    uploadUrl.add(url);
+                    return uploadUrl;
+                }
             } catch (StringIndexOutOfBoundsException | IOException e) {
                 url = null;
             }
         }
+        log.info("파일 확장자 확인 실패");
+        log.info("uploadUrl : {}",uploadUrl);
         return uploadUrl;
     }
     private static String getUuid() {
