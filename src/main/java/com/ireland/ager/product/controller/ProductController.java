@@ -1,9 +1,11 @@
 package com.ireland.ager.product.controller;
 
 import com.ireland.ager.account.dto.response.AccountRes;
+import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
+import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
@@ -63,32 +65,36 @@ public class ProductController {
              * @Method : findProductById
              * @Description : 상품 하나의 정보를 불러온다
              */
-            @PathVariable long productId) {
-        log.info("{}",productId);
+            @PathVariable Long productId) {
+        log.info("{}", productId);
         Optional<Product> product = productService.findProductById(productId);
-        return new ResponseEntity<>(product.get(),HttpStatus.OK);
+        return new ResponseEntity<>(product.get(), HttpStatus.OK);
     }
 
     @PatchMapping("/{productId}")
-    public ResponseEntity<ProductResponse> updateProductById(
+    public ResponseEntity<Boolean> updateProduct(
             /**
-             * @Method : updateProductById
-             * @Description : 제품에 대한 정보를 수정한다.
+             * @Method : updateProduct
+             * @Description : 상품에 대한 정보를 수정한다.
              */
             @RequestHeader("Authorization") String accessToken,
-            @PathVariable long productId,
-            @RequestPart(value = "productRequest") ProductRequest productRequest) {
+            @PathVariable Long productId,
+            @RequestPart(value = "file") List<MultipartFile> multipartFile,
+            @RequestPart(value = "product") ProductUpdateRequest productUpdateRequest) {
 
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
         if (vaildTokenStatusValue == 200) {
             String[] splitToken = accessToken.split(" ");
-            AccountRes userRes = accountService.findAccountByAccessToken(splitToken[1]);
-            Boolean isSuccess = productService.updateProductById(productId, productRequest, userRes.getAccessToken());
-            if (isSuccess)
+
+            // account 관련한 처리가 더 필요하지 않나?.. by Jacob
+            Account account = accountService.findAccountByAccessToken(splitToken[1]);
+            Boolean isUpdated = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);
+            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);}
+
+            if (isUpdated)
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
         } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
