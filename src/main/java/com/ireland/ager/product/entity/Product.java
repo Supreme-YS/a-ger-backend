@@ -36,12 +36,13 @@ public class Product extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> urlList =new ArrayList<>();
+
     @JsonIgnore
     @ManyToOne
     Account account;
-
     /*
         @Method: addProductList
         @Author: frank
