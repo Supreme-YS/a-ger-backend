@@ -17,13 +17,13 @@ public class AccountServiceImpl {
 
 
     public AccountRes findAccountByAccountEmail(String accountEmail) {
-        Optional<Account> optionalAccount = accountRepository.findUserByAccountEmail(accountEmail);
+        Optional<Account> optionalAccount = accountRepository.findAccountByAccountEmail(accountEmail);
         return optionalAccount.map(account -> AccountRes.of(account)).orElse(null);
     }
 
     public AccountRes findAccountByAccessToken(String accessToken) {
-        Optional<Account> optionalAccount = accountRepository.findUserByAccessToken(accessToken);
-        return optionalAccount.map(account -> AccountRes.of(account)).orElse(null);
+        Optional<Account> optionalAccount = accountRepository.findAccountByAccessToken(accessToken);
+        return optionalAccount.map(AccountRes::of).orElse(null);
     }
 
 
