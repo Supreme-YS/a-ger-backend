@@ -16,12 +16,12 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             userNameAttribute: id
 
-cloud:
-  aws:
-    s3:
-      bucket:
-        name: ager-s3
-        url: https://ager-s3.s3.ap-northeast-2.amazonaws.com/
-    credentials:
-      accessKey: AKIA33DBN5SFPVGXWNUD
-      secretKey: 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
+#cloud:
+#  aws:
+#    s3:
+#      bucket:
+#        name: ager-s3
+#        url: https://ager-s3.s3.ap-northeast-2.amazonaws.com/
+#    credentials:
+#      accessKey: AKIA33DBN5SFPVGXWNUD
+#      secretKey: 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

@@ -1,18 +1,17 @@
 package com.ireland.ager.product.entity;
 
 import com.ireland.ager.config.BaseEntity;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.ColumnDefault;
-
-
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-
+import javax.persistence.OneToMany;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -26,12 +25,13 @@ public class Product extends BaseEntity {
     private String productPrice;
 
     private String productDetail;
-    //조회수 설정
-    @ColumnDefault("0")
     private Long productViewCnt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
     private Category category;
+
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<Photo> photoUrlList =new ArrayList<>();
 
     /*
         @Method: setCategory

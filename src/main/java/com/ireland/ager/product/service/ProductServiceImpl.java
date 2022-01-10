@@ -18,7 +18,8 @@ public class ProductServiceImpl {
         return productRepository.findAll();
     }
 
-    public ProductResponse postProduct(ProductRequest productRequest, MultipartFile multipartFile) {
+    public ProductResponse postProduct(ProductRequest productRequest, List<MultipartFile> multipartFile) {
+
         ProductResponse productResponse=null;
         return productResponse;
     }
