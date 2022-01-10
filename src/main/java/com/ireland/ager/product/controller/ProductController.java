@@ -85,16 +85,11 @@ public class ProductController {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
         if (vaildTokenStatusValue == 200) {
             String[] splitToken = accessToken.split(" ");
-
             // account 관련한 처리가 더 필요하지 않나?.. by Jacob
+            // 토큰 정보가 담긴 account 정보가 넘어옴
             Account account = accountService.findAccountByAccessToken(splitToken[1]);
             Boolean isUpdated = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);
-            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);}
-
-            if (isUpdated)
-                return new ResponseEntity<>(HttpStatus.OK);
-            else
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
         } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -105,7 +100,7 @@ public class ProductController {
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteProductById(
             /**
-             * @Method : deleteProdcutById
+             * @Method : deleteProductById
              * @Description : 상품 아이디를 기준으로 삭제한다
              */
             @RequestHeader("Authorization") String accessToken,

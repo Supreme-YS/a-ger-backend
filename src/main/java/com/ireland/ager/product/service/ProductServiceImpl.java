@@ -3,7 +3,7 @@ package com.ireland.ager.product.service;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
 import com.ireland.ager.product.dto.request.ProductRequest;
-import com.ireland.ager.product.dto.response.ProductResponse;
+import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 
@@ -23,6 +23,7 @@ public class ProductServiceImpl {
 
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
+    private final UploadServiceImpl uploadService;
 
     public List<Product> getAllProducts() {
         return productRepository.findAll();
@@ -44,40 +45,41 @@ public class ProductServiceImpl {
 
     private Optional<Product> plusViewCnt(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
-        product.get().setProductViewCnt(product.get().getProductViewCnt()+1);
+        product.get().setProductViewCnt(product.get().getProductViewCnt() + 1);
         productRepository.save(product.get());
         return product;
     }
 
-    public Boolean updateProductById(Long productId, ProductRequest productRequest, String accessToken) {
-        // 원래 정보를 꺼내옴
+    public Boolean updateProductById(Long productId,
+                                     String accessToken,
+                                     List<MultipartFile> multipartFile,
+                                     ProductUpdateRequest productUpdateRequest) {
+        // 원래 정보를 꺼내온다.
         Optional<Product> productById = productRepository.findById(productId);
-        // 정보가 없다면
+
         if (!productById.isPresent()) {
+            // 정보가 없다면 False
             return Boolean.FALSE;
         }
-
-        // 제품의 토큰 정보와 수정하고자 하는 유저의 토큰 정보가 다르다면
         if (!(productById.get().getAccount().getAccessToken().equals(accessToken))) {
+            // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             return Boolean.FALSE;
         }
-
-        Product product = productById.get();
-
-        if (productRequest != null) {
-            if (productRequest.getProductName() != null) {
-                product.setProductName(productRequest.getProductName());
+        if (multipartFile != null) {
+            List<String> updateFileImageUrlList = null;
+            List<String> currentFileImageUrlList = productById.get().getUrlList();
+            uploadService.delete(currentFileImageUrlList);
+            try {
+                updateFileImageUrlList = uploadService.uploadImages(multipartFile);
+                productById.get().setUrlList(updateFileImageUrlList);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
             }
-            if (productRequest.getProductPrice() != null) {
-                product.setProductPrice(productRequest.getProductPrice());
-            }
-            if (productRequest.getProductDetail() != null) {
-                product.setProductDetail(productRequest.getProductDetail());
-            }
-//            if (productRequest.getCategoryName() != null) {
-//                product.setCategory(productRequest.;
-//            }
         }
+        // 원래 정보에 바뀐 정보를 업데이트
+        Optional<Account> account = Optional.ofNullable(productById.get().getAccount());
+        productUpdateRequest.toProductUpdate(account, productById.get().getUrlList());
+        Product product = productById.get();
         productRepository.save(product);
         return Boolean.TRUE;
     }
@@ -85,5 +87,4 @@ public class ProductServiceImpl {
     public void deleteProductById(Long productId) {
         productRepository.deleteById(productId);
     }
-
 }
