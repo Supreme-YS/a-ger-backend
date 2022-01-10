@@ -6,8 +6,10 @@ import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
+import com.ireland.ager.product.repository.ProductRepository;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,11 +29,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RequiredArgsConstructor
 @CrossOrigin(value = {"*"}, maxAge = 6000)
-@RequestMapping("/product")
+@RequestMapping("product")
 public class ProductController {
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
+    private final ProductRepository productRepository;
     @PostMapping
     public ResponseEntity<Product> postProduct(
         @RequestHeader("Authorization") String accessToken,
@@ -56,7 +59,7 @@ public class ProductController {
         @content: 상품 수정
         @return: Product
      */
-    @PatchMapping({"productId"})
+    @PatchMapping("/{productId}")
     public ResponseEntity<Boolean> updateProduct(
         @RequestHeader("Authorization") String accessToken,
         @PathVariable Long productId,
@@ -80,5 +83,13 @@ public class ProductController {
         log.info("Select All Products");
         List<Product> productList = productService.getAllProducts();
         return productList;
+    }
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> viewPost(@PathVariable Long productId){
+        log.info("{}",productId);
+        Optional<Product> product=productRepository.findById(productId);
+        product.get().setProductViewCnt(product.get().getProductViewCnt()+1);
+        productRepository.save(product.get());
+        return new ResponseEntity<>(product.get(),HttpStatus.OK);
     }
 }
