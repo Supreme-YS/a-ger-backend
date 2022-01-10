@@ -1,5 +1,6 @@
 package com.ireland.ager.product.dto.request;
 
+import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Photo;
 import com.ireland.ager.product.entity.Product;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class ProductRequest {
         product.setProductPrice(productPrice);
         product.setProductViewCnt(0L);
         product.setProductName(productName);
-
+        product.setCategory(Category.valueOf(this.category));
         return product;
     }
 }
