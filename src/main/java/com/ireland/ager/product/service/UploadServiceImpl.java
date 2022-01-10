@@ -19,11 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
-<<<<<<< HEAD
 @Slf4j
-=======
 @Transactional
->>>>>>> 3894f6a44c4f3bdd644616d78734504f1b83f139
 @RequiredArgsConstructor
 public class UploadServiceImpl {
     @Value("${cloud.aws.s3.bucket.url}")

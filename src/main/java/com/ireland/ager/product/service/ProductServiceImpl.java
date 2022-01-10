@@ -37,7 +37,9 @@ public class ProductServiceImpl {
 
         Product product=productRequest.toProduct(account,uploadImagesUrl);
         //상품 저장
-        productRepository.save(product);
+        if(product.getUrlList().isEmpty()) {
+            productRepository.save(product);
+        }
 
         return product;
     }
@@ -62,5 +64,9 @@ public class ProductServiceImpl {
         Product product = productById.get();
         productRepository.save(product);
         return Boolean.TRUE;
+    }
+
+    public void deleteProductById(Long productId) {
+        productRepository.deleteById(productId);
     }
 }
