@@ -2,13 +2,14 @@ package com.ireland.ager.product.entity;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+
+import javax.persistence.*;
+
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,16 +29,11 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
-    /*
-        @Method: setCategory
-        @Author: frank
-        @param: category
-        @content: 양방향 연관 관계 매핑
-     */
-    public void setCategory(Category category) {
-        this.category=category;
-        category.getProductList().add(this);
-    }
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> urlList =new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Account account;
