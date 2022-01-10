@@ -1,6 +1,6 @@
 package com.ireland.ager.product.controller;
 
-import com.ireland.ager.account.dto.response.AccountRes;
+import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
@@ -66,7 +66,7 @@ public class ProductController {
 
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
-            AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
+            Account account = accountService.findAccountByAccessToken(spitToken[1]);
             Boolean isUpdated =productService.updateProduct(productId,spitToken[1],multipartFile,productUpdateRequest);
             return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
         } else if(vaildTokenStatusValue == 401) {

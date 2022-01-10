@@ -4,6 +4,7 @@ package com.ireland.ager.account.controller;
 import com.ireland.ager.account.dto.request.AccountUpdatePatchReq;
 import com.ireland.ager.account.dto.response.AccountRes;
 import com.ireland.ager.account.dto.response.KakaoAccountRes;
+import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import java.util.HashMap;
@@ -47,11 +48,11 @@ public class AccountController {
         if(accountEmailOrId == null || accountEmailOrId == "") {
             accountEmailOrId = String.valueOf(kakaoAccountRes.getId()) + EMAIL_SUFFIX;
         }
-        AccountRes accountResForCheck = accountService.findAccountByAccountEmail(accountEmailOrId);
+        Account accountForCheck = accountService.findAccountByAccountEmail(accountEmailOrId);
         AccountRes accountRes;
-        if(accountResForCheck != null) {
+        if(accountForCheck != null) {
             // 존재한다면 Token 값을 갱신하고 반환한다.
-            accountRes = authService.refreshTokensForExistAccount(accountResForCheck.getAccountEmail(), kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token"));
+            accountRes = authService.refreshTokensForExistAccount(accountForCheck.getAccountId(), kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token"));
         } else {
             // 존재하지 않는다면 회원 가입 시키고 반환한다.
             accountRes = accountService.insertAccount(
@@ -69,9 +70,9 @@ public class AccountController {
         log.info("vaildTokenStatusValue : {}",vaildTokenStatusValue);
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
-            AccountRes accountRes = accountService.findAccountByAccessToken(spitToken[1]);
-            authService.logout(accountRes);
-            log.info("userRes : {}", accountRes);
+            Account account = accountService.findAccountByAccessToken(spitToken[1]);
+            authService.logout(account);
+            log.info("userRes : {}", account);
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -80,13 +81,14 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/kakao/update/{accountEmail}")
-    public ResponseEntity<String> accessTokenUpdate(@PathVariable("accountEmail") String accountEmail) {
-        String newToken = authService.accessTokenUpdate(accountEmail);
+    @GetMapping("/kakao/update/{accountId}")
+    public ResponseEntity<String> accessTokenUpdate(@PathVariable Long accountId) {
+        String newToken = authService.accessTokenUpdate(accountId);
         if(newToken == null) {
             return new ResponseEntity<>("Fail", HttpStatus.BAD_REQUEST);
         } else return new ResponseEntity<>(newToken, HttpStatus.OK);
     }
+
 
     @PatchMapping("/user")
     public ResponseEntity<AccountRes> updateUser(
@@ -94,7 +96,8 @@ public class AccountController {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
-            AccountRes accountRes = accountService.updateAccount(accountUpdatePatchReq);
+            String[] spitToken = accessToken.split(" ");
+            AccountRes accountRes = accountService.updateAccount(spitToken[1],accountUpdatePatchReq);
             return new ResponseEntity<>(accountRes, HttpStatus.OK);
         }
         else if(vaildTokenStatusValue == 401) {
@@ -105,14 +108,15 @@ public class AccountController {
         }
     }
 
+
     @GetMapping("/user")
-    public ResponseEntity<AccountRes> getMyInfo( @RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<Account> getMyInfo( @RequestHeader("Authorization") String accessToken) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
         if(validTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
-            AccountRes accountRes = accountService.findAccountByAccessToken(spitToken[1]);
-            return new ResponseEntity<>(accountRes, HttpStatus.OK);
+            Account account = accountService.findAccountByAccessToken(spitToken[1]);
+            return new ResponseEntity<>(account, HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -120,14 +124,15 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/user/{accountEmail}")
+    @GetMapping("/user/{accountId}")
     public ResponseEntity<AccountRes> getOtherUserInfo( @RequestHeader("Authorization") String accessToken,
-                                                    @PathVariable("accountEmail") String accountEmail) {
+                                                    @PathVariable Long accountId) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
         if(validTokenStatusValue == 200) {
-            AccountRes accountRes = accountService.findAccountByAccountEmail(accountEmail);
-            return new ResponseEntity<>(accountRes, HttpStatus.OK);
+            String[] spitToken = accessToken.split(" ");
+            Account account = accountService.findAccountById(accountId);
+            return new ResponseEntity<>(AccountRes.of(account), HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -136,7 +141,7 @@ public class AccountController {
     }
     @DeleteMapping("/user/{accountId}")
     public ResponseEntity<Boolean> deleteAccount( @RequestHeader("Authorization") String accessToken,
-        @PathVariable String accountId) {
+        @PathVariable Long accountId) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
         //유효성 체크만 한다.
         if(validTokenStatusValue == 200) {

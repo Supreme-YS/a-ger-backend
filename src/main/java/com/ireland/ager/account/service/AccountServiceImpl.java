@@ -18,14 +18,19 @@ public class AccountServiceImpl {
     private final AccountRepository accountRepository;
 
 
-    public AccountRes findAccountByAccountEmail(String accountEmail) {
+    public Account findAccountByAccountEmail(String accountEmail) {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccountEmail(accountEmail);
-        return optionalAccount.map(account -> AccountRes.of(account)).orElse(null);
+        return optionalAccount.orElse(null);
     }
 
-    public AccountRes findAccountByAccessToken(String accessToken) {
+    public Account findAccountById(Long accountId) {
+        Optional<Account> optionalAccount = accountRepository.findById(accountId);
+        return optionalAccount.orElse(null);
+    }
+
+    public Account findAccountByAccessToken(String accessToken) {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccessToken(accessToken);
-        return optionalAccount.map(AccountRes::of).orElse(null);
+        return optionalAccount.orElse(null);
     }
 
 
@@ -35,14 +40,14 @@ public class AccountServiceImpl {
         return AccountRes.of(newAccount);
     }
 
-    public AccountRes updateAccount(AccountUpdatePatchReq accountUpdatePatchReq) {
-        Optional<Account> optionalUpdateAccount = accountRepository.findById(accountUpdatePatchReq.getAccountEmail());
-        Account updatedAccount = optionalUpdateAccount.map(account -> accountUpdatePatchReq.toAccount(account)).orElse(null);
+    public AccountRes updateAccount(String accessToken, AccountUpdatePatchReq accountUpdatePatchReq) {
+        Optional<Account> optionalUpdateAccount = accountRepository.findAccountByAccessToken(accessToken);
+        Account updatedAccount = optionalUpdateAccount.map(accountUpdatePatchReq::toAccount).orElse(null);
         if(updatedAccount != null) accountRepository.save(updatedAccount);
         return AccountRes.of(updatedAccount);
     }
 
-    public Boolean deleteAccount(String accountId) {
+    public Boolean deleteAccount(Long accountId) {
         accountRepository.deleteById(accountId);
         return Boolean.TRUE;
     }

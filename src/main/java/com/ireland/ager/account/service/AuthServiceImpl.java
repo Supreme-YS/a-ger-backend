@@ -79,8 +79,8 @@ public class AuthServiceImpl {
         return userInfo.getBody();
     }
 
-    public AccountRes refreshTokensForExistAccount(String accountEmail, String accessToken, String refreshToken) {
-        Optional<Account> optionalExistAccount = accountRepository.findById(accountEmail);
+    public AccountRes refreshTokensForExistAccount(Long accountId, String accessToken, String refreshToken) {
+        Optional<Account> optionalExistAccount = accountRepository.findById(accountId);
         Account existAccount = optionalExistAccount.map(account -> {
             account.setAccessToken(accessToken);
             account.setRefreshToken(refreshToken);
@@ -91,8 +91,8 @@ public class AuthServiceImpl {
         return AccountRes.of(existAccount);
     }
 
-    public String accessTokenUpdate(String accountEmail) {
-        Optional<Account> optionalAccountForUpdate = accountRepository.findById(accountEmail);
+    public String accessTokenUpdate(Long accountId) {
+        Optional<Account> optionalAccountForUpdate = accountRepository.findById(accountId);
         String refreshToken = optionalAccountForUpdate.map(Account::getRefreshToken).orElse(null);
         if(refreshToken == null) return null;
 
@@ -136,23 +136,18 @@ public class AuthServiceImpl {
         }
     }
 
-    public void logout(AccountRes accountRes) {
+    public void logout(Account account) {
         String logoutHost = "https://kapi.kakao.com/v1/user/logout";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-        httpHeaders.add("Authorization", TOKEN_TYPE + " " + accountRes.getAccessToken());
+        httpHeaders.add("Authorization", TOKEN_TYPE + " " + account.getAccessToken());
 
         HttpEntity<MultiValueMap<String, String>> logoutKakaoReq = new HttpEntity<>(httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.exchange(logoutHost, HttpMethod.POST, logoutKakaoReq, HashMap.class);
 
-        Optional<Account> optionalLogoutAccount = accountRepository.findById(accountRes.getAccountEmail());
-        Account logoutAccount = optionalLogoutAccount.map(account -> {
-            account.setAccessToken("");
-            account.setRefreshToken("");
-            return account;
-        }).orElse(null);
-        accountRepository.save(logoutAccount);
+        Optional<Account> optionalLogoutAccount = accountRepository.findById(account.getAccountId());
+        optionalLogoutAccount.ifPresent(accountRepository::save);
     }
 }
