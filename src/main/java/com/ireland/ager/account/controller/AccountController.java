@@ -69,8 +69,8 @@ public class AccountController {
         log.info("accessToken : {}",accessToken);
         log.info("vaildTokenStatusValue : {}",vaildTokenStatusValue);
         if(vaildTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            Account account = accountService.findAccountByAccessToken(spitToken[1]);
+            String[] splitToken = accessToken.split(" ");
+            Account account = accountService.findAccountByAccessToken(splitToken[1]);
             authService.logout(account);
             log.info("userRes : {}", account);
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
@@ -96,8 +96,8 @@ public class AccountController {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            AccountRes accountRes = accountService.updateAccount(spitToken[1],accountUpdatePatchReq);
+            String[] splitToken = accessToken.split(" ");
+            AccountRes accountRes = accountService.updateAccount(splitToken[1],accountUpdatePatchReq);
             return new ResponseEntity<>(accountRes, HttpStatus.OK);
         }
         else if(vaildTokenStatusValue == 401) {
@@ -114,8 +114,8 @@ public class AccountController {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
         if(validTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            Account account = accountService.findAccountByAccessToken(spitToken[1]);
+            String[] splitToken = accessToken.split(" ");
+            Account account = accountService.findAccountByAccessToken(splitToken[1]);
             return new ResponseEntity<>(account, HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -130,7 +130,7 @@ public class AccountController {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
         if(validTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
+            String[] splitToken = accessToken.split(" ");
             Account account = accountService.findAccountById(accountId);
             return new ResponseEntity<>(AccountRes.of(account), HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {

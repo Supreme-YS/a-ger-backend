@@ -32,10 +32,10 @@ public class UploadServiceImpl {
     private final AmazonS3Client amazonS3Client;
 
     /**
+     * @param currentFileImageUrlList
      * @Method Name : deleteS3file
      * @작성자 : Potter
      * @Method 설명 : s3의 파일을 삭제 (버킷명, 삭제하고 싶은 폴더나 파일명 ex) test/test.png
-     * @param currentFileImageUrlList
      */
 
     public void delete(List<String> currentFileImageUrlList) {
