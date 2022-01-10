@@ -4,6 +4,7 @@ import com.ireland.ager.account.dto.response.AccountRes;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
+import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import java.util.List;
@@ -56,24 +57,18 @@ public class ProductController {
         @return: Product
      */
     @PatchMapping({"productId"})
-    public ResponseEntity<Product> updateProduct(
+    public ResponseEntity<Boolean> updateProduct(
         @RequestHeader("Authorization") String accessToken,
         @PathVariable Long productId,
         @RequestPart(value = "file") List<MultipartFile> multipartFile,
-        @RequestPart(value="product") ProductRequest productRequest) {
+        @RequestPart(value="product") ProductUpdateRequest productUpdateRequest) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
             String[] spitToken = accessToken.split(" ");
             AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
-            //TODO: 220110 Account와 Product 관계 설정
-            //TODO: 220110 1. accessToken 확인
-            //TODO: 220110 2. accessToken으로 accountId 조회한다.
-            //TODO: 220110 
-
-            Product product = productService.postProduct(accessToken, productRequest,
-                multipartFile);
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
+            Boolean isUpdated =productService.updateProduct(productId,spitToken[1],multipartFile,productUpdateRequest);
+            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {

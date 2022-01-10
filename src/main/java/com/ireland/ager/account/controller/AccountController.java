@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -133,6 +134,18 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
+    @DeleteMapping("/user/{accountId}")
+    public ResponseEntity<Boolean> deleteAccount( @RequestHeader("Authorization") String accessToken,
+        @PathVariable String accountId) {
+        int validTokenStatusValue = authService.isValidToken(accessToken);
+        //유효성 체크만 한다.
+        if(validTokenStatusValue == 200) {
+            Boolean isDeleted = accountService.deleteAccount(accountId);
+            return new ResponseEntity<>(isDeleted,HttpStatus.OK);
+        } else if(validTokenStatusValue == 401) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
