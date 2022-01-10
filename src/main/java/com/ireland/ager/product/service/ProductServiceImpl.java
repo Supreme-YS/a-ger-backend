@@ -37,8 +37,16 @@ public class ProductServiceImpl {
         return product;
     }
 
-    public ProductResponse findProductById(Long productId) {
-        return ProductResponse.of(productRepository.findById(productId).get());
+    public Optional<Product> findProductById(Long productId) {
+        Optional<Product> product = plusViewCnt(productId);
+        return product;
+    }
+
+    private Optional<Product> plusViewCnt(Long productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        product.get().setProductViewCnt(product.get().getProductViewCnt()+1);
+        productRepository.save(product.get());
+        return product;
     }
 
     public Boolean updateProductById(Long productId, ProductRequest productRequest, String accessToken) {

@@ -6,8 +6,12 @@ import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
+import com.ireland.ager.product.repository.ProductRepository;
 import com.ireland.ager.product.service.ProductServiceImpl;
+
 import java.util.List;
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -22,89 +26,70 @@ import org.springframework.web.multipart.MultipartFile;
 @CrossOrigin(value = {"*"}, maxAge = 6000)
 @RequestMapping("/product")
 public class ProductController {
+
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
-
-    @GetMapping("/")
-    public List<Product> listAllProducts() {
-        /**
-         * @Method : listAllProducts
-         * @Description : 등록된 모든 제품의 정보를 불러온다
-         */
-        log.info("Select All Products");
-        List<Product> productList = productService.getAllProducts();
-        return productList;
-    }
-
-    @GetMapping("{productId}")
-    public ResponseEntity<ProductResponse> findProductById(
-        /**
-         * @Method : findProductById
-         * @Description : 상품 하나의 정보를 불러온다
-         */
-            @RequestHeader("Authorization") String accessToken,
-            @PathVariable long productId) {
-        int vaildTokenStatusValue = authService.isValidToken(accessToken);
-
-        if(vaildTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
-            ProductResponse productResponse = productService.findProductById(productId);
-            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
-        } else if(vaildTokenStatusValue == 401) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+    private final ProductRepository productRepository;
 
     @PostMapping(value = "/post")
-    public ResponseEntity<ProductResponse> postProduct(
+    public ResponseEntity<Product> postProduct(
             /**
              * @Method : postProduct
              * @Description : 판매자가 판매할 제품을 등록한다.
              */
             @RequestHeader("Authorization") String accessToken,
-            @RequestPart MultipartFile productImage,
-            @RequestPart ProductRequest productRequest) {
+            @RequestPart(value = "file") List<MultipartFile> multipartFile,
+            @RequestPart(value = "product") ProductRequest productRequest) {
+
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
-        if(vaildTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
-//            ProductResponse productResponse = null;
-            ProductResponse productResponse = productService.postProduct(productRequest, productImage);
-            return new ResponseEntity<>(productResponse, HttpStatus.CREATED);
-        } else if(vaildTokenStatusValue == 401) {
+        if (vaildTokenStatusValue == 200) {
+            String[] splitToken = accessToken.split(" ");
+            Product product = productService.postProduct(splitToken[1], productRequest, multipartFile);
+            return new ResponseEntity<>(product, HttpStatus.CREATED);
+
+        } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> findProductById(
+            /**
+             * @Method : findProductById
+             * @Description : 상품 하나의 정보를 불러온다
+             */
+            @PathVariable long productId) {
+        log.info("{}",productId);
+        Optional<Product> product = productService.findProductById(productId);
+        return new ResponseEntity<>(product.get(),HttpStatus.OK);
+    }
+
     @PatchMapping("/{productId}")
-    public ResponseEntity<ProductResponse> updateProductById (
-        /**
-         * @Method : updateProductById
-         * @Description : 제품에 대한 정보를 수정한다.
-         */
+    public ResponseEntity<ProductResponse> updateProductById(
+            /**
+             * @Method : updateProductById
+             * @Description : 제품에 대한 정보를 수정한다.
+             */
             @RequestHeader("Authorization") String accessToken,
             @PathVariable long productId,
             @RequestPart(value = "productRequest") ProductRequest productRequest) {
 
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
-        if(vaildTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            AccountRes userRes = accountService.findAccountByAccessToken(spitToken[1]);
+        if (vaildTokenStatusValue == 200) {
+            String[] splitToken = accessToken.split(" ");
+            AccountRes userRes = accountService.findAccountByAccessToken(splitToken[1]);
             Boolean isSuccess = productService.updateProductById(productId, productRequest, userRes.getAccessToken());
             if (isSuccess)
                 return new ResponseEntity<>(HttpStatus.OK);
             else
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        }
-        else if (vaildTokenStatusValue == 401) {
+        } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -113,18 +98,18 @@ public class ProductController {
 
     @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteProductById(
-        /**
-         * @Method : deleteProdcutById
-         * @Description : 상품 아이디를 기준으로 삭제한다
-         */
+            /**
+             * @Method : deleteProdcutById
+             * @Description : 상품 아이디를 기준으로 삭제한다
+             */
             @RequestHeader("Authorization") String accessToken,
             @PathVariable long productId) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
-        if(vaildTokenStatusValue == 200) {
+        if (vaildTokenStatusValue == 200) {
             productService.deleteProductById(productId);
             return new ResponseEntity<>(HttpStatus.OK);
-        } else if(vaildTokenStatusValue == 401) {
+        } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
