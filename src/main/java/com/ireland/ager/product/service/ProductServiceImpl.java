@@ -29,24 +29,16 @@ public class ProductServiceImpl {
         Optional<Account> account=accountRepository.findAccountByAccessToken(accessToken);
 
         List<String> uploadImagesUrl=uploadService.uploadImages(multipartFile);
-<<<<<<< HEAD
-        log.info("product Service 에서 : {}",uploadImagesUrl);
-        Product product=productRequest.toProduct(uploadImagesUrl);
-=======
+
         Product product=productRequest.toProduct(account,uploadImagesUrl);
->>>>>>> 8ef6c0112320ce10cf3a37763d18fc944d372d94
         //상품 저장
         productRepository.save(product);
 
         return product;
     }
-<<<<<<< HEAD
-    public void deleteProductById(long product_id){
 
-=======
     public Optional<Product> findProductById(Long productId) {
         return productRepository.findById(productId);
->>>>>>> 8ef6c0112320ce10cf3a37763d18fc944d372d94
     }
 
     public Boolean updateProductById(long productId,List<MultipartFile> multipartFile,ProductRequest productRequest, String accessToken) {

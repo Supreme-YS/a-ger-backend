@@ -13,9 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-<<<<<<< HEAD
-import org.springframework.web.bind.annotation.*;
-=======
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,7 +23,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
->>>>>>> 8ef6c0112320ce10cf3a37763d18fc944d372d94
+
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -48,15 +46,15 @@ public class ProductController {
         @RequestPart(value = "file") List<MultipartFile> multipartFile,
         @RequestPart(value="product") ProductRequest productRequest) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
-       // log.info("vaildTokenStatusValue  : ",vaildTokenStatusValue);
         if(vaildTokenStatusValue == 200) {
-<<<<<<< HEAD
-            Product product = productService.postProduct(productRequest,
-=======
             String[] spitToken = accessToken.split(" ");
             Product product = productService.postProduct(spitToken[1],productRequest,
                 multipartFile);
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
+            if(!product.getUrlList().isEmpty()) {
+                return new ResponseEntity<>(product, HttpStatus.CREATED);
+            }else {
+                return new ResponseEntity<>(HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+            }
         } else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -83,10 +81,8 @@ public class ProductController {
             //TODO: 220110 Account와 Product 관계 설정
             //TODO: 220110 1. accessToken 확인
             //TODO: 220110 2. accessToken으로 accountId 조회한다.
-            //TODO: 220110 
-
+            //TODO: 220110
             Product product = productService.postProduct(accessToken, productRequest,
->>>>>>> 8ef6c0112320ce10cf3a37763d18fc944d372d94
                 multipartFile);
             //log.info("list_url사이즈: ",product.getPhotoUrlList().size());
                 return new ResponseEntity<>(product, HttpStatus.CREATED);
@@ -97,12 +93,12 @@ public class ProductController {
         }
     }
 
-    @DeleteMapping("/{productId}")
+  /*  @DeleteMapping("/{productId}")
     public ResponseEntity<String> deleteProductById(
-            /**
+            *//**
              * @Method : deleteProdcutById
              * @Description : 상품 아이디를 기준으로 삭제한다
-             */
+             *//*
             @RequestHeader("Authorization") String accessToken,
             @PathVariable long productId) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
@@ -115,7 +111,7 @@ public class ProductController {
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    }
+    }*/
 
     @GetMapping
     public List<Product> listAllProducts() {
