@@ -1,23 +1,27 @@
 package com.ireland.ager.account.entity;
 
 import com.ireland.ager.config.BaseEntity;
+import com.ireland.ager.product.entity.Product;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.ireland.ager.product.entity.Product;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 
 @Entity
 @Getter
 @Setter
 public class Account extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long accountId;
     String accountEmail;
     String profileNickname;
@@ -26,6 +30,6 @@ public class Account extends BaseEntity {
     String accessToken;
     String refreshToken;
 
-    @OneToMany(mappedBy = "account")
-    private List<Product> products;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    List<Product> productList = new ArrayList<>();
 }
