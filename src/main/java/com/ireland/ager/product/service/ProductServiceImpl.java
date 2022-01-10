@@ -25,11 +25,11 @@ public class ProductServiceImpl {
         return productResponse;
     }
 
-    public ProductResponse findProductById(long productId) {
+    public ProductResponse findProductById(Long productId) {
         return ProductResponse.of(productRepository.findById(productId).get());
     }
 
-    public Boolean updateProductById(long productId, ProductRequest productRequest, String accessToken) {
+    public Boolean updateProductById(Long productId, ProductRequest productRequest, String accessToken) {
         // 원래 정보를 꺼내옴
         Optional<Product> productById = productRepository.findById(productId);
         // 정보가 없다면
@@ -62,7 +62,7 @@ public class ProductServiceImpl {
         return Boolean.TRUE;
     }
 
-    public void deleteProductById(long productId) {
+    public void deleteProductById(Long productId) {
         productRepository.deleteById(productId);
     }
 
