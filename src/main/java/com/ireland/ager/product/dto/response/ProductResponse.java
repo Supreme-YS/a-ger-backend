@@ -25,6 +25,7 @@ public class ProductResponse {
             .productName(product.getProductName())
             .productPrice(product.getProductPrice())
             .productDetail(product.getProductDetail())
+            .category(product.getCategory())
             .productViewCnt(product.getProductViewCnt())
             .build();
     }
