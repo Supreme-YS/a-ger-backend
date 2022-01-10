@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -83,6 +84,24 @@ public class ProductController {
         log.info("Select All Products");
         List<Product> productList = productService.getAllProducts();
         return productList;
+    }
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<String> deleteProductById(
+        @RequestHeader("Authorization") String accessToken
+        ,@PathVariable Long productId){
+        /**
+         * @Method : deleteProdcutById
+         * @Description : 상품 아이디를 기준으로 삭제한다
+         */
+        int vaildTokenStatusValue = authService.isValidToken(accessToken);
+        if(vaildTokenStatusValue == 200) {
+            productService.deleteProductById(productId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else if(vaildTokenStatusValue == 401) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
     @GetMapping("/{productId}")
     public ResponseEntity<Product> viewPost(@PathVariable Long productId){

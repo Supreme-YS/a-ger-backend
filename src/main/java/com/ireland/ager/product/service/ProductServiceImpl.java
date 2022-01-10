@@ -61,4 +61,8 @@ public class ProductServiceImpl {
         productRepository.save(product);
         return Boolean.TRUE;
     }
+
+    public void deleteProductById(Long productId) {
+        productRepository.deleteById(productId);
+    }
 }
