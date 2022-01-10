@@ -50,8 +50,8 @@ public class AuthServiceImpl {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        MultiValueMap<String, String> httpBody = new LinkedMultiValueMap<>(); //TODO: 삭제기능 필요
-        httpBody.add("grant_type", "authorization_code"); //FIXME: test
+        MultiValueMap<String, String> httpBody = new LinkedMultiValueMap<>();
+        httpBody.add("grant_type", "authorization_code");
         httpBody.add("client_id", kakaoRestApiKey);
         httpBody.add("redirect_uri", kakaoRedirectUrl);
         httpBody.add("code", code);
