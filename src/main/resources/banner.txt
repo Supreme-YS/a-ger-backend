@@ -11,4 +11,5 @@ ${AnsiColor.BLUE}
                  |  $$$$$$/
                   \______/
 
+
 ${AnsiColor.BRIGHT_GREEN} spring-boot.version:  ${AnsiColor.RED} ${spring-boot.version}
