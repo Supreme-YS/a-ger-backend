@@ -89,6 +89,7 @@ public class AccountController {
     }
 
 
+    //TODO 에러 뜸
     @PatchMapping("/user")
     public ResponseEntity<AccountRes> updateUser(
             @RequestHeader("Authorization") String accessToken, @RequestBody AccountUpdatePatchReq accountUpdatePatchReq) {

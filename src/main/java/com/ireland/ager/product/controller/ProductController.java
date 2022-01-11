@@ -1,12 +1,10 @@
 package com.ireland.ager.product.controller;
 
-import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.repository.ProductRepository;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import java.util.List;
 import java.util.Optional;
@@ -35,9 +33,19 @@ public class ProductController {
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
-    private final ProductRepository productRepository;
 
-    @PostMapping(value = "/post")
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> findProductById(
+        /**
+         * @Method : findProductById
+         * @Description : 상품 하나의 정보를 불러온다
+         */
+        @PathVariable Long productId) {
+        log.info("{}", productId);
+        Optional<Product> product = productService.findProductById(productId);
+        return new ResponseEntity<>(product.orElse(null), HttpStatus.OK);
+    }
+    @PostMapping
     public ResponseEntity<Product> postProduct(
         /**
          * @Method : postProduct
@@ -62,18 +70,6 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/{productId}")
-    public ResponseEntity<Product> findProductById(
-        /**
-         * @Method : findProductById
-         * @Description : 상품 하나의 정보를 불러온다
-         */
-        @PathVariable Long productId) {
-        log.info("{}", productId);
-        Optional<Product> product = productService.findProductById(productId);
-        return new ResponseEntity<>(product.get(), HttpStatus.OK);
-    }
-
     @PatchMapping("/{productId}")
     public ResponseEntity<Boolean> updateProduct(
         /**
@@ -88,9 +84,6 @@ public class ProductController {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
         if (vaildTokenStatusValue == 200) {
             String[] splitToken = accessToken.split(" ");
-            // account 관련한 처리가 더 필요하지 않나?.. by Jacob
-            // 토큰 정보가 담긴 account 정보가 넘어옴
-            Account account = accountService.findAccountByAccessToken(splitToken[1]);
             Boolean isUpdated = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);
             return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
         } else if (vaildTokenStatusValue == 401) {

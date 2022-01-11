@@ -5,7 +5,6 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -35,7 +34,7 @@ public class Product extends BaseEntity {
     private Category category;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.판매중;
 
     @ElementCollection(fetch = FetchType.LAZY)
     private List<String> urlList =new ArrayList<>();
@@ -44,8 +43,9 @@ public class Product extends BaseEntity {
     @ManyToOne
     private Account account;
 
-    public void addAccount(Optional<Account> updateAccount) {
-        updateAccount.orElse(null).getProductList().add(this);
-        this.setAccount(updateAccount.orElse(null));
+    //FIXME Optional Account 반환 문제 해결해야한다.
+    public void addAccount(Account updateAccount) {
+        updateAccount.getProductList().add(this);
+        this.setAccount(updateAccount);
     }
 }

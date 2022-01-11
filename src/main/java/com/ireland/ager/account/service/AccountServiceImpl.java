@@ -37,7 +37,6 @@ public class AccountServiceImpl {
         accountRepository.save(newAccount);
         return AccountRes.of(newAccount);
     }
-
     public AccountRes updateAccount(String accessToken, AccountUpdatePatchReq accountUpdatePatchReq) {
         Optional<Account> optionalUpdateAccount = accountRepository.findAccountByAccessToken(accessToken);
         Account updatedAccount = optionalUpdateAccount.map(accountUpdatePatchReq::toAccount).orElse(null);
