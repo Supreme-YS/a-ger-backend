@@ -12,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class UploadServiceImpl {
@@ -33,12 +35,14 @@ public class UploadServiceImpl {
      * @Method Name : deleteS3file
      * @작성자 : Potter
      * @Method 설명 : s3의 파일을 삭제 (버킷명, 삭제하고 싶은 폴더나 파일명 ex) test/test.png
+     *  currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
      */
-
+    //FIXME UploadService delete 메소드 고치기 완료
     public void delete(List<String> currentFileImageUrlList) {
-        amazonS3Client.deleteObject(bucket, "3f7739da66d54d5e8de5174d317cc0e7.png");
+        for(String url: currentFileImageUrlList) {
+            amazonS3Client.deleteObject(bucket,url.substring(url.indexOf("com/")+4));
+        }
     }
-
 
     public List<String> uploadImages(List<MultipartFile> uploadFiles) {
         /*

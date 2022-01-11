@@ -67,7 +67,7 @@ public class ProductServiceImpl {
         }
         if (multipartFile != null) {
             List<String> updateFileImageUrlList = null;
-            List<String> currentFileImageUrlList = productById.get().getUrlList();
+            List<String> currentFileImageUrlList = productById.orElse(null).getUrlList();
             uploadService.delete(currentFileImageUrlList);
             try {
                 updateFileImageUrlList = uploadService.uploadImages(multipartFile);
@@ -85,6 +85,9 @@ public class ProductServiceImpl {
     }
 
     public void deleteProductById(Long productId) {
+        uploadService.delete(productRepository
+            .findById(productId).orElse(null)
+            .getUrlList());
         productRepository.deleteById(productId);
     }
 }
