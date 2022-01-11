@@ -11,9 +11,11 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import com.ireland.ager.product.service.ProductServiceImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.sun.istack.Nullable;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -34,7 +36,7 @@ public class ProductController {
     private final AccountServiceImpl accountService;
     private final ProductRepository productRepository;
 
-    @PostMapping(value = "/post")
+    @PostMapping()
     public ResponseEntity<Product> postProduct(
             /**
              * @Method : postProduct
@@ -49,8 +51,7 @@ public class ProductController {
         if (vaildTokenStatusValue == 200) {
             String[] splitToken = accessToken.split(" ");
             Product product = productService.postProduct(splitToken[1], productRequest, multipartFile);
-            return new ResponseEntity<>(product, HttpStatus.CREATED);
-
+           return new ResponseEntity<>(product, HttpStatus.CREATED);
         } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 

@@ -84,7 +84,13 @@ public class ProductServiceImpl {
         return Boolean.TRUE;
     }
 
+    //FIXME 상품 삭제시 S3저장소에 이미지도 삭제하기 해결 완료
     public void deleteProductById(Long productId) {
+        Optional<Product> productById = productRepository.findById(productId);
+        List<String> currentFileImageUrlList = productById.get().getUrlList();
+        //파일이 있다면 s3 저장소에서 이미지도 삭제 시켜준다.
+        uploadService.delete(currentFileImageUrlList);
         productRepository.deleteById(productId);
+        return ;
     }
 }
