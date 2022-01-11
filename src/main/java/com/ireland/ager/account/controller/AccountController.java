@@ -56,7 +56,7 @@ public class AccountController {
         } else {
             // 존재하지 않는다면 회원 가입 시키고 반환한다.
             accountRes = accountService.insertAccount(
-                kakaoAccountRes.toUser(kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token")));
+                    kakaoAccountRes.toUser(kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token")));
         }
 
         return new ResponseEntity<>(accountRes, HttpStatus.OK);
@@ -67,10 +67,9 @@ public class AccountController {
 
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
         log.info("accessToken : {}",accessToken);
-        log.info("vaildTokenStatusValue : {}",vaildTokenStatusValue);
         if(vaildTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            Account account = accountService.findAccountByAccessToken(spitToken[1]);
+            String[] splitToken = accessToken.split(" ");
+            Account account = accountService.findAccountByAccessToken(splitToken[1]);
             authService.logout(account);
             log.info("userRes : {}", account);
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
@@ -114,8 +113,8 @@ public class AccountController {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
         if(validTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            Account account = accountService.findAccountByAccessToken(spitToken[1]);
+            String[] splitToken = accessToken.split(" ");
+            Account account = accountService.findAccountByAccessToken(splitToken[1]);
             return new ResponseEntity<>(account, HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -139,9 +138,10 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @DeleteMapping("/user/{accountId}")
     public ResponseEntity<Boolean> deleteAccount( @RequestHeader("Authorization") String accessToken,
-        @PathVariable Long accountId) {
+                                                  @PathVariable Long accountId) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
         //유효성 체크만 한다.
         if(validTokenStatusValue == 200) {

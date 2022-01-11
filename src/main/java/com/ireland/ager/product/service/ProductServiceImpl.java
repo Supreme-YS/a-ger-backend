@@ -9,54 +9,72 @@ import com.ireland.ager.product.repository.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 @Service
-@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class ProductServiceImpl {
+
     private final ProductRepository productRepository;
+    private final AccountRepository accountRepository;
     private final UploadServiceImpl uploadService;
 
-    private final AccountRepository accountRepository;
     public List<Product> getAllProducts() {
         return productRepository.findAll();
     }
 
-    public Product postProduct(String accessToken,
-                            ProductRequest productRequest,
-                            List<MultipartFile> multipartFile)
-    {
-        Optional<Account> account=accountRepository.findAccountByAccessToken(accessToken);
-
-        List<String> uploadImagesUrl=uploadService.uploadImages(multipartFile);
-        Product product=productRequest.toProduct(account,uploadImagesUrl);
+    public Product postProduct(String accessToken, ProductRequest productRequest, List<MultipartFile> multipartFile) {
+        Optional<Account> account = accountRepository.findAccountByAccessToken(accessToken);
+        List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
+        Product product = productRequest.toProduct(account, uploadImagesUrl);
         //상품 저장
         productRepository.save(product);
-
         return product;
     }
+
     public Optional<Product> findProductById(Long productId) {
-        return productRepository.findById(productId);
+        Optional<Product> product = plusViewCnt(productId);
+        return product;
     }
 
-    public Boolean updateProduct(Long productId,
-                                String accessToken,
-                                List<MultipartFile> multipartFile,
-                                ProductUpdateRequest productUpdateRequest)
-    {
+    private Optional<Product> plusViewCnt(Long productId) {
+        Optional<Product> product = productRepository.findById(productId);
+        product.get().setProductViewCnt(product.get().getProductViewCnt() + 1);
+        productRepository.save(product.get());
+        return product;
+    }
+
+    public Boolean updateProductById(Long productId,
+        String accessToken,
+        List<MultipartFile> multipartFile,
+        ProductUpdateRequest productUpdateRequest) {
+        // 원래 정보를 꺼내온다.
         Optional<Product> productById = productRepository.findById(productId);
-        if(!productById.isPresent()) {
+
+        if (!productById.isPresent()) {
+            // 정보가 없다면 False
             return Boolean.FALSE;
         }
-        // 제품의 토큰 정보와 수정하고자 하는 유저의 토큰 정보가 다르다면
-        if(!(productById.get().getAccount().getAccessToken().equals(accessToken))) {
+        if (!(productById.get().getAccount().getAccessToken().equals(accessToken))) {
+            // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             return Boolean.FALSE;
         }
+        if (multipartFile != null) {
+            List<String> updateFileImageUrlList = null;
+            List<String> currentFileImageUrlList = productById.get().getUrlList();
+            uploadService.delete(currentFileImageUrlList);
+            try {
+                updateFileImageUrlList = uploadService.uploadImages(multipartFile);
+                productById.get().setUrlList(updateFileImageUrlList);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
+        }
+        // 원래 정보에 바뀐 정보를 업데이트
+        Optional<Account> account = Optional.ofNullable(productById.get().getAccount());
+        productUpdateRequest.toProductUpdate(account, productById.get().getUrlList());
         Product product = productById.get();
         productRepository.save(product);
         return Boolean.TRUE;

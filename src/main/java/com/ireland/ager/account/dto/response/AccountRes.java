@@ -17,6 +17,7 @@ public class AccountRes {
     String userName;
     String accountEmail;
     String profileImageUrl;
+
     public static AccountRes of(Account account) {
         return AccountRes.builder()
                 .accessToken(account.getAccessToken())
@@ -26,5 +27,4 @@ public class AccountRes {
                 .profileImageUrl(account.getProfileImageUrl())
                 .build();
     }
-
 }

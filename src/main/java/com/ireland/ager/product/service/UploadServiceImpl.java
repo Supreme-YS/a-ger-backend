@@ -16,7 +16,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -30,13 +29,14 @@ public class UploadServiceImpl {
     private final AmazonS3Client amazonS3Client;
 
     /**
+     * @param currentFileImageUrlList
      * @Method Name : deleteS3file
      * @작성자 : Potter
      * @Method 설명 : s3의 파일을 삭제 (버킷명, 삭제하고 싶은 폴더나 파일명 ex) test/test.png
      */
 
-    public void delete(){
-        amazonS3Client.deleteObject(bucket,"3f7739da66d54d5e8de5174d317cc0e7.png");
+    public void delete(List<String> currentFileImageUrlList) {
+        amazonS3Client.deleteObject(bucket, "3f7739da66d54d5e8de5174d317cc0e7.png");
     }
 
 
@@ -48,8 +48,8 @@ public class UploadServiceImpl {
             @content: 이미지 파일들을 s3에 업로드하고 url을 return
         */
 
-        List<String> uploadUrl=new ArrayList<>();
-        for(MultipartFile uploadFile: uploadFiles) {
+        List<String> uploadUrl = new ArrayList<>();
+        for (MultipartFile uploadFile : uploadFiles) {
             String origName = uploadFile.getOriginalFilename();
             ByteArrayOutputStream jpegOutputStream = new ByteArrayOutputStream();
             String url;
@@ -70,6 +70,7 @@ public class UploadServiceImpl {
         }
         return uploadUrl;
     }
+
     private static String getUuid() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
@@ -77,13 +78,11 @@ public class UploadServiceImpl {
     private void uploadOnS3(final String findName, final File file) {
         final TransferManager transferManager = new TransferManager(this.amazonS3Client);
         final PutObjectRequest request = new PutObjectRequest(bucket, findName, file);
-        final Upload upload =  transferManager.upload(request);
+        final Upload upload = transferManager.upload(request);
         try {
             upload.waitForCompletion();
         } catch (AmazonClientException | InterruptedException amazonClientException) {
             amazonClientException.printStackTrace();
         }
     }
-
-
 }

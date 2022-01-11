@@ -27,12 +27,10 @@ public class AccountServiceImpl {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
         return optionalAccount.orElse(null);
     }
-
     public Account findAccountByAccessToken(String accessToken) {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccessToken(accessToken);
         return optionalAccount.orElse(null);
     }
-
 
     public AccountRes insertAccount(Account newAccount) {
         newAccount.setProfileNickname(newAccount.getUserName());
@@ -43,7 +41,7 @@ public class AccountServiceImpl {
     public AccountRes updateAccount(String accessToken, AccountUpdatePatchReq accountUpdatePatchReq) {
         Optional<Account> optionalUpdateAccount = accountRepository.findAccountByAccessToken(accessToken);
         Account updatedAccount = optionalUpdateAccount.map(accountUpdatePatchReq::toAccount).orElse(null);
-        if(updatedAccount != null) accountRepository.save(updatedAccount);
+        if (updatedAccount != null) accountRepository.save(updatedAccount);
         return AccountRes.of(updatedAccount);
     }
 

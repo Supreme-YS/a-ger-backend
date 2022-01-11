@@ -18,7 +18,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Account extends BaseEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     Long accountId;
     String accountEmail;
     String profileNickname;
@@ -27,7 +28,6 @@ public class Account extends BaseEntity {
     String accessToken;
     String refreshToken;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "account")
-    List<Product> productList=new ArrayList<>();
-
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    List<Product> productList = new ArrayList<>();
 }

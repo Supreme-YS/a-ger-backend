@@ -11,14 +11,14 @@ public class KakaoAccountRes {
     private Properties properties;
     private KakaoAccount kakao_account;
 
-   @Data
+    @Data
     public class Properties {
         private String nickname;
         private String profile_image;
         private String thumbnail_image;
     }
 
-   @Data
+    @Data
     public class KakaoAccount {
         private Boolean profile_needs_agreement;
         private Profile profile;
