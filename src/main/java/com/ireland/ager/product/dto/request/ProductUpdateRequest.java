@@ -32,8 +32,8 @@ public class ProductUpdateRequest {
         product.setProductPrice(productPrice);
         product.setProductViewCnt(0L);
         product.setProductName(productName);
-        product.setStatus(Status.판매중);
         product.setCategory(Category.valueOf(this.category));
+        product.setStatus(Status.valueOf(this.status));
         return product;
     }
 }
