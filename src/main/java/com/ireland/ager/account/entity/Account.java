@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -29,6 +30,7 @@ public class Account extends BaseEntity {
     String profileImageUrl;
     String accessToken;
     String refreshToken;
+
 
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")

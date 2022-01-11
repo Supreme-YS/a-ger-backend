@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 
-import java.io.ByteArrayOutputStream;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 @Service
 @Transactional
 @Slf4j
@@ -40,12 +39,11 @@ public class UploadServiceImpl {
      * @Method 설명 : s3의 파일을 삭제 (버킷명, 삭제하고 싶은 폴더나 파일명 ex) test/test.png
      *  currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
      */
-    //FIXME UploadService dele 메소드 고치기 완료
+
+    //FIXME UploadService delete 메소드 고치기 완료
     public void delete(List<String> currentFileImageUrlList) {
-        for(int i=0;i<currentFileImageUrlList.size();i++) {
-            int index = currentFileImageUrlList.get(i).indexOf("com/")+4;
-            String S3filename=currentFileImageUrlList.get(i).substring(index);
-            amazonS3Client.deleteObject(bucket,S3filename);
+        for(String url: currentFileImageUrlList) {
+            amazonS3Client.deleteObject(bucket,url.substring(url.indexOf("com/")+4));
         }
     }
 

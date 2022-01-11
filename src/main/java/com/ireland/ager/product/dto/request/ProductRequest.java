@@ -7,11 +7,8 @@ import com.ireland.ager.product.entity.Status;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import lombok.Data;
 
 @Data
 public class ProductRequest {
@@ -20,14 +17,15 @@ public class ProductRequest {
     String productDetail;
     String category;
 
-    public Product toProduct(Optional<Account> account,
 
-                             List<String> uploadImageUrl) {
+    public Product toProduct(Account account,
+        List<String> uploadImageUrl) {
         Product product=new Product();
         List<String> images=new ArrayList<>();
         for(String url: uploadImageUrl) {
             images.add(url);
         }
+        //FIXME Optional Account 반환 문제 해결해야한다.
         product.addAccount(account);
         product.setUrlList(images);
         product.setProductDetail(this.productDetail);

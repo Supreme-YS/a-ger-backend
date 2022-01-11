@@ -1,14 +1,14 @@
 package com.ireland.ager.product.service;
 
 import com.ireland.ager.account.entity.Account;
-import com.ireland.ager.account.repository.AccountRepository;
+import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
-
 import java.util.List;
 import java.util.Optional;
+
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +22,7 @@ import javax.transaction.Transactional;
 public class ProductServiceImpl {
 
     private final ProductRepository productRepository;
-    private final AccountRepository accountRepository;
+    private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
 
     public List<Product> getAllProducts() {
@@ -30,8 +30,10 @@ public class ProductServiceImpl {
     }
 
     public Product postProduct(String accessToken, ProductRequest productRequest, List<MultipartFile> multipartFile) {
-        Optional<Account> account = accountRepository.findAccountByAccessToken(accessToken);
+        //FIXME Optional 로직을 바꾸기는 어렵다...
+        Account account = accountService.findAccountByAccessToken(accessToken);
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
+        //FIXME Optional Account 반환 문제 해결해야한다.
         Product product = productRequest.toProduct(account, uploadImagesUrl);
         //상품 저장
         productRepository.save(product);
@@ -51,9 +53,9 @@ public class ProductServiceImpl {
     }
 
     public Boolean updateProductById(Long productId,
-                                     String accessToken,
-                                     List<MultipartFile> multipartFile,
-                                     ProductUpdateRequest productUpdateRequest) {
+        String accessToken,
+        List<MultipartFile> multipartFile,
+        ProductUpdateRequest productUpdateRequest) {
         // 원래 정보를 꺼내온다.
         Optional<Product> productById = productRepository.findById(productId);
 
@@ -61,13 +63,13 @@ public class ProductServiceImpl {
             // 정보가 없다면 False
             return Boolean.FALSE;
         }
-        if (!(productById.get().getAccount().getAccessToken().equals(accessToken))) {
+        if (!(productById.orElse(null).getAccount().equals(accountService.findAccountByAccessToken(accessToken)))) {
             // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             return Boolean.FALSE;
         }
         if (multipartFile != null) {
             List<String> updateFileImageUrlList = null;
-            List<String> currentFileImageUrlList = productById.get().getUrlList();
+            List<String> currentFileImageUrlList = productById.orElse(null).getUrlList();
             uploadService.delete(currentFileImageUrlList);
             try {
                 updateFileImageUrlList = uploadService.uploadImages(multipartFile);
@@ -77,19 +79,18 @@ public class ProductServiceImpl {
             }
         }
         // 원래 정보에 바뀐 정보를 업데이트
-        Optional<Account> account = Optional.ofNullable(productById.get().getAccount());
-        productUpdateRequest.toProductUpdate(account, productById.get().getUrlList());
-        Product product = productById.get();
-        productRepository.save(product);
+        Account accountById = accountService.findAccountById(
+            productById.orElse(null).getAccount().getAccountId());
+        Product toProductUpdate=productUpdateRequest.toProductUpdate(productById.orElse(null),accountById, productById.get().getUrlList());
+        productRepository.save(toProductUpdate);
         return Boolean.TRUE;
     }
 
     //FIXME 상품 삭제시 S3저장소에 이미지도 삭제하기 해결 완료
     public void deleteProductById(Long productId) {
-        Optional<Product> productById = productRepository.findById(productId);
-        List<String> currentFileImageUrlList = productById.get().getUrlList();
-        //파일이 있다면 s3 저장소에서 이미지도 삭제 시켜준다.
-        uploadService.delete(currentFileImageUrlList);
+        uploadService.delete(productRepository
+            .findById(productId).orElse(null)
+            .getUrlList());
         productRepository.deleteById(productId);
         return ;
     }

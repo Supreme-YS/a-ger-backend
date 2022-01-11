@@ -4,9 +4,7 @@ import com.ireland.ager.account.dto.request.AccountUpdatePatchReq;
 import com.ireland.ager.account.dto.response.AccountRes;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
-
 import java.util.Optional;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,7 @@ public class AccountServiceImpl {
         return optionalAccount.orElse(null);
     }
 
+
     public Account findAccountByAccessToken(String accessToken) {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccessToken(accessToken);
         return optionalAccount.orElse(null);
@@ -40,7 +39,6 @@ public class AccountServiceImpl {
         accountRepository.save(newAccount);
         return AccountRes.of(newAccount);
     }
-
     public AccountRes updateAccount(String accessToken, AccountUpdatePatchReq accountUpdatePatchReq) {
         Optional<Account> optionalUpdateAccount = accountRepository.findAccountByAccessToken(accessToken);
         Account updatedAccount = optionalUpdateAccount.map(accountUpdatePatchReq::toAccount).orElse(null);
@@ -52,4 +50,6 @@ public class AccountServiceImpl {
         accountRepository.deleteById(accountId);
         return Boolean.TRUE;
     }
+
 }
+
