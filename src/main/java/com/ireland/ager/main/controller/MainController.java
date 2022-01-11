@@ -17,7 +17,7 @@ public class MainController {
     public List<Product> listAllProducts() {
         /**
          * @Method : listAllProducts
-         * @Description : 등록된 모든 제품의 정보를 불러온다
+         * @Description : 등록된 모든 제품의 정보를 불러온다.
          */
         log.info("Select All Products");
         List<Product> productList = productService.getAllProducts();
