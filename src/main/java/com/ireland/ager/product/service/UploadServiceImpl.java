@@ -43,7 +43,7 @@ public class UploadServiceImpl {
     //FIXME UploadService delete 메소드 고치기 완료
     public void delete(List<String> currentFileImageUrlList) {
         for(String url: currentFileImageUrlList) {
-            amazonS3Client.deleteObject(bucket,url.substring(url.indexOf("com/")+4));
+            amazonS3Client.deleteObject(bucket,url.split("/")[3]);
         }
     }
 
