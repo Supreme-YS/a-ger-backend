@@ -17,13 +17,13 @@ public class ProductUpdateRequest {
     String status;
 
     public Product toProductUpdate(Optional<Account> account,
-                             List<String> uploadImageUrl) {
+                                   List<String> uploadImageUrl) {
 
-        Product product=new Product();
+        Product product = new Product();
 
-        List<String> images=new ArrayList<>();
+        List<String> images = new ArrayList<>();
 
-        for(String url: uploadImageUrl) {
+        for (String url : uploadImageUrl) {
             images.add(url);
         }
         product.addAccount(account);

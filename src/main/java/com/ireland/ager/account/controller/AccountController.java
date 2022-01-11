@@ -89,7 +89,6 @@ public class AccountController {
         } else return new ResponseEntity<>(newToken, HttpStatus.OK);
     }
 
-
     @PatchMapping("/user")
     public ResponseEntity<AccountRes> updateUser(
             @RequestHeader("Authorization") String accessToken, @RequestBody AccountUpdatePatchReq accountUpdatePatchReq) {
@@ -107,7 +106,6 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
     @GetMapping("/user")
     public ResponseEntity<Account> getMyInfo( @RequestHeader("Authorization") String accessToken) {
@@ -139,6 +137,7 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @DeleteMapping("/user/{accountId}")
     public ResponseEntity<Boolean> deleteAccount( @RequestHeader("Authorization") String accessToken,
                                                   @PathVariable Long accountId) {

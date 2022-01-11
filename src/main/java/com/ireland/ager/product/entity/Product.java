@@ -42,7 +42,7 @@ public class Product extends BaseEntity {
 
     @JsonIgnore
     @ManyToOne
-    Account account;
+    private Account account;
 
     public void addAccount(Optional<Account> updateAccount) {
         updateAccount.orElse(null).getProductList().add(this);
