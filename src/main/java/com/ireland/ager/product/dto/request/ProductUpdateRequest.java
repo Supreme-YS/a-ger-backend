@@ -1,7 +1,5 @@
 package com.ireland.ager.product.dto.request;
 
-<<<<<<< HEAD
-=======
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
@@ -11,16 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40
 public class ProductUpdateRequest {
     String productName;
     String productPrice;
     String productDetail;
     String category;
     String status;
-<<<<<<< HEAD
-}
-=======
 
     public Product toProductUpdate(Optional<Account> account,
                                    List<String> uploadImageUrl) {
@@ -43,4 +37,3 @@ public class ProductUpdateRequest {
         return product;
     }
 }
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40

@@ -69,13 +69,8 @@ public class AccountController {
         log.info("accessToken : {}",accessToken);
         log.info("vaildTokenStatusValue : {}",vaildTokenStatusValue);
         if(vaildTokenStatusValue == 200) {
-<<<<<<< HEAD
-            String[] spitToken = accessToken.split(" ");
-            Account account = accountService.findAccountByAccessToken(spitToken[1]);
-=======
             String[] splitToken = accessToken.split(" ");
             Account account = accountService.findAccountByAccessToken(splitToken[1]);
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40
             authService.logout(account);
             log.info("userRes : {}", account);
             return new ResponseEntity<>("SUCCESS", HttpStatus.OK);
@@ -94,20 +89,14 @@ public class AccountController {
         } else return new ResponseEntity<>(newToken, HttpStatus.OK);
     }
 
-
     @PatchMapping("/user")
     public ResponseEntity<AccountRes> updateUser(
             @RequestHeader("Authorization") String accessToken, @RequestBody AccountUpdatePatchReq accountUpdatePatchReq) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
-<<<<<<< HEAD
-            String[] spitToken = accessToken.split(" ");
-            AccountRes accountRes = accountService.updateAccount(spitToken[1],accountUpdatePatchReq);
-=======
             String[] splitToken = accessToken.split(" ");
             AccountRes accountRes = accountService.updateAccount(splitToken[1],accountUpdatePatchReq);
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40
             return new ResponseEntity<>(accountRes, HttpStatus.OK);
         }
         else if(vaildTokenStatusValue == 401) {
@@ -118,19 +107,13 @@ public class AccountController {
         }
     }
 
-
     @GetMapping("/user")
     public ResponseEntity<Account> getMyInfo( @RequestHeader("Authorization") String accessToken) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
         if(validTokenStatusValue == 200) {
-<<<<<<< HEAD
-            String[] spitToken = accessToken.split(" ");
-            Account account = accountService.findAccountByAccessToken(spitToken[1]);
-=======
             String[] splitToken = accessToken.split(" ");
             Account account = accountService.findAccountByAccessToken(splitToken[1]);
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40
             return new ResponseEntity<>(account, HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -141,29 +124,6 @@ public class AccountController {
 
     @GetMapping("/user/{accountId}")
     public ResponseEntity<AccountRes> getOtherUserInfo( @RequestHeader("Authorization") String accessToken,
-<<<<<<< HEAD
-                                                    @PathVariable Long accountId) {
-        int validTokenStatusValue = authService.isValidToken(accessToken);
-
-        if(validTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-            Account account = accountService.findAccountById(accountId);
-            return new ResponseEntity<>(AccountRes.of(account), HttpStatus.OK);
-        } else if(validTokenStatusValue == 401) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-    @DeleteMapping("/user/{accountId}")
-    public ResponseEntity<Boolean> deleteAccount( @RequestHeader("Authorization") String accessToken,
-        @PathVariable Long accountId) {
-        int validTokenStatusValue = authService.isValidToken(accessToken);
-        //유효성 체크만 한다.
-        if(validTokenStatusValue == 200) {
-            Boolean isDeleted = accountService.deleteAccount(accountId);
-            return new ResponseEntity<>(isDeleted,HttpStatus.OK);
-=======
                                                         @PathVariable Long accountId) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
@@ -171,16 +131,12 @@ public class AccountController {
             String[] splitToken = accessToken.split(" ");
             Account account = accountService.findAccountById(accountId);
             return new ResponseEntity<>(AccountRes.of(account), HttpStatus.OK);
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40
         } else if(validTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-<<<<<<< HEAD
-}
-=======
 
     @DeleteMapping("/user/{accountId}")
     public ResponseEntity<Boolean> deleteAccount( @RequestHeader("Authorization") String accessToken,
@@ -197,4 +153,3 @@ public class AccountController {
         }
     }
 }
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40

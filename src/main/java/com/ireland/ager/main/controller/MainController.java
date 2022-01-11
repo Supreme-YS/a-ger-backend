@@ -1,6 +1,7 @@
 package com.ireland.ager.main.controller;
 
 import com.ireland.ager.product.entity.Product;
+import com.ireland.ager.product.service.ProductServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;

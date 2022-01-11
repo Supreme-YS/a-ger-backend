@@ -42,14 +42,7 @@ public class Product extends BaseEntity {
 
     @JsonIgnore
     @ManyToOne
-
-    /*
-        @Method: addProductList
-        @Author: frank
-        @content: Account, Product 양방향 연관관계 매핑
-     */
     private Account account;
-
 
     public void addAccount(Optional<Account> updateAccount) {
         updateAccount.orElse(null).getProductList().add(this);

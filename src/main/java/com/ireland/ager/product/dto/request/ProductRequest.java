@@ -1,18 +1,12 @@
 package com.ireland.ager.product.dto.request;
 
 import com.ireland.ager.account.entity.Account;
-<<<<<<< HEAD
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-=======
-import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.Status;
-import com.ireland.ager.product.entity.Category;
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -27,11 +21,8 @@ public class ProductRequest {
     String category;
 
     public Product toProduct(Optional<Account> account,
-<<<<<<< HEAD
-        List<String> uploadImageUrl) {
-=======
+
                              List<String> uploadImageUrl) {
->>>>>>> bc7086266a1b5534629f215f7321bdc56ff2af40
         Product product=new Product();
         List<String> images=new ArrayList<>();
         for(String url: uploadImageUrl) {

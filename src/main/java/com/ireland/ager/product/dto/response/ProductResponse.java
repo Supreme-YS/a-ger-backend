@@ -19,14 +19,13 @@ public class ProductResponse {
     Long productViewCnt;
     Category category;
 
-    public ProductResponse of(Product product) {
+    public static ProductResponse of(Product product) {
         return ProductResponse.builder()
-            .productId(product.getProductId())
-            .productName(product.getProductName())
-            .productPrice(product.getProductPrice())
-            .productDetail(product.getProductDetail())
-            .category(product.getCategory())
-            .productViewCnt(product.getProductViewCnt())
-            .build();
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .productPrice(product.getProductPrice())
+                .productDetail(product.getProductDetail())
+                .productViewCnt(product.getProductViewCnt())
+                .build();
     }
 }
