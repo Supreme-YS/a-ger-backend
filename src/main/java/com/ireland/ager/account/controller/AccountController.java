@@ -67,7 +67,6 @@ public class AccountController {
 
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
         log.info("accessToken : {}",accessToken);
-        log.info("vaildTokenStatusValue : {}",vaildTokenStatusValue);
         if(vaildTokenStatusValue == 200) {
             String[] splitToken = accessToken.split(" ");
             Account account = accountService.findAccountByAccessToken(splitToken[1]);
@@ -89,14 +88,18 @@ public class AccountController {
         } else return new ResponseEntity<>(newToken, HttpStatus.OK);
     }
 
+
+    //TODO 에러 뜸
     @PatchMapping("/user")
     public ResponseEntity<AccountRes> updateUser(
             @RequestHeader("Authorization") String accessToken, @RequestBody AccountUpdatePatchReq accountUpdatePatchReq) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
-            String[] splitToken = accessToken.split(" ");
-            AccountRes accountRes = accountService.updateAccount(splitToken[1],accountUpdatePatchReq);
+
+            String[] spitToken = accessToken.split(" ");
+            AccountRes accountRes = accountService.updateAccount(spitToken[1],accountUpdatePatchReq);
+
             return new ResponseEntity<>(accountRes, HttpStatus.OK);
         }
         else if(vaildTokenStatusValue == 401) {
@@ -124,11 +127,13 @@ public class AccountController {
 
     @GetMapping("/user/{accountId}")
     public ResponseEntity<AccountRes> getOtherUserInfo( @RequestHeader("Authorization") String accessToken,
-                                                        @PathVariable Long accountId) {
+
+                                                    @PathVariable Long accountId) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
 
         if(validTokenStatusValue == 200) {
-            String[] splitToken = accessToken.split(" ");
+            String[] spitToken = accessToken.split(" ");
+
             Account account = accountService.findAccountById(accountId);
             return new ResponseEntity<>(AccountRes.of(account), HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {

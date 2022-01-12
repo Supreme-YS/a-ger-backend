@@ -4,11 +4,14 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
+@Data
 public class ProductUpdateRequest {
     String productName;
     String productPrice;
@@ -16,23 +19,19 @@ public class ProductUpdateRequest {
     String category;
     String status;
 
-    public Product toProductUpdate(Optional<Account> account,
-                                   List<String> uploadImageUrl) {
 
-        Product product = new Product();
-
+    public Product toProductUpdate(Product product,Account account,
+        List<String> uploadImageUrl) {
         List<String> images = new ArrayList<>();
-
         for (String url : uploadImageUrl) {
             images.add(url);
         }
-        product.addAccount(account);
         product.setUrlList(images);
         product.setProductDetail(this.productDetail);
         product.setProductPrice(productPrice);
-        product.setProductViewCnt(0L);
+        product.setProductViewCnt(product.getProductViewCnt());
         product.setProductName(productName);
-        product.setStatus(Status.판매중);
+        product.setStatus(Status.valueOf(this.status));
         product.setCategory(Category.valueOf(this.category));
         return product;
     }
