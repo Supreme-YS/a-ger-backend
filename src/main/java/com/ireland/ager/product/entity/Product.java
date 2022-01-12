@@ -3,18 +3,13 @@ package com.ireland.ager.product.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.ElementCollection;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import com.ireland.ager.trade.entity.Trade;
 import lombok.Getter;
 import lombok.Setter;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -43,10 +38,12 @@ public class Product extends BaseEntity {
     @ManyToOne
     private Account account;
 
-
     //FIXME Optional Account 반환 문제 해결해야한다.
     public void addAccount(Account updateAccount) {
         updateAccount.getProductList().add(this);
         this.setAccount(updateAccount);
     }
+    //FIXME : 거래 연관 관계 추가
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
+    private List<Trade> tradeList = new ArrayList<>();
 }
