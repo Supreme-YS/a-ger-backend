@@ -5,6 +5,7 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Trade {
 
     @Id @GeneratedValue
@@ -29,32 +31,13 @@ public class Trade {
     @Enumerated
     private Status status = Status.판매중;
 
+    private Boolean tradeStatus;
+
+    //FIXME : 구매자, 판매자 구분 필요
     @Builder
-    public void changeReserve(Account account, Product product, Status status) {
-        this.account = account;
+    public Trade(Boolean tradeStatus, Account account, Product product) {
+        this.tradeStatus = tradeStatus;
+        this.account = product.getAccount();
         this.product = product;
-        this.status = Status.예약중;
-
-        this.account.setStatus(Status.예약중);
-        this.product.setStatus(Status.예약중);
-    }
-
-    @Builder
-    public void changeSelling(Account account, Product product) {
-        this.account = account;
-        this.product = product;
-        this.status = Status.판매중;
-
-        this.account.setStatus(Status.판매중);
-        this.account.setStatus(Status.판매중);
-    }
-
-    public void changeSoldout(Account account, Product product) {
-        this.account = account;
-        this.product = product;
-        this.status = Status.판매완료;
-
-        this.account.setStatus(Status.판매완료);
-        this.account.setStatus(Status.판매완료);
     }
 }
