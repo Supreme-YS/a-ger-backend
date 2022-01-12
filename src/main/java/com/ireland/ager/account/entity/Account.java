@@ -31,8 +31,6 @@ public class Account extends BaseEntity {
     String accessToken;
     String refreshToken;
 
-
-
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     List<Product> productList = new ArrayList<>();
 }

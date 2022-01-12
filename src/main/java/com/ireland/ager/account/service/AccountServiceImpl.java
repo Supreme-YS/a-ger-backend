@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountServiceImpl {
     private final AccountRepository accountRepository;
 
-
     public Account findAccountByAccountEmail(String accountEmail) {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccountEmail(accountEmail);
         return optionalAccount.orElse(null);
@@ -28,32 +27,40 @@ public class AccountServiceImpl {
         return optionalAccount.orElse(null);
     }
 
-
     public Account findAccountByAccessToken(String accessToken) {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccessToken(accessToken);
         return optionalAccount.orElse(null);
     }
 
-    public AccountResponse insertAccount(Account newAccount) {
-        newAccount.setProfileNickname(newAccount.getUserName());
-        accountRepository.save(newAccount);
-        return AccountResponse.of(newAccount);
-    }
-    public AccountResponse updateAccount(String accessToken, AccountUpdateRequest accountUpdateRequest) {
-        Optional<Account> optionalUpdateAccount = accountRepository.findAccountByAccessToken(accessToken);
-        Account updatedAccount = optionalUpdateAccount.map(accountUpdateRequest::toAccount).orElse(null);
-        if (updatedAccount != null) accountRepository.save(updatedAccount);
-        return AccountResponse.of(updatedAccount);
-    }
-
-    public Boolean deleteAccount(Long accountId) {
-        accountRepository.deleteById(accountId);
-        return Boolean.TRUE;
-    }
-
     public Account findAccountWithProductById(Long accountId) {
         Optional<Account> optionalAccount = accountRepository.findWithProductByAccountId(accountId);
         return optionalAccount.orElse(null);
+    }
+
+    public AccountResponse insertAccount(Account newAccount) {
+        accountRepository.save(newAccount);
+        return AccountResponse.toAccountResponse(newAccount);
+    }
+    public AccountResponse updateAccount(String accessToken, Long accountId,
+        AccountUpdateRequest accountUpdateRequest) {
+        Account optionalUpdateAccount = findAccountByAccessToken(accessToken);
+        if (!(optionalUpdateAccount.getAccountId().equals(accountId))) {
+            // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 False
+            return null;
+        }
+        Account updatedAccount = accountUpdateRequest.toAccount(optionalUpdateAccount);
+        if (updatedAccount != null) accountRepository.save(updatedAccount);
+        return AccountResponse.toAccountResponse(updatedAccount);
+    }
+
+    public Boolean deleteAccount(String accessToken, Long accountId) {
+        Account accountByAccessToken = findAccountByAccessToken(accessToken);
+        if (!(accountByAccessToken.getAccountId().equals(accountId))) {
+            // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 False
+            return Boolean.FALSE;
+        }
+        accountRepository.deleteById(accountId);
+        return Boolean.TRUE;
     }
 
 }

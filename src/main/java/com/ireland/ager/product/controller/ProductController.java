@@ -38,7 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RequiredArgsConstructor
 @CrossOrigin(value = {"*"}, maxAge = 6000)
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 public class ProductController {
 
     private final ProductServiceImpl productService;

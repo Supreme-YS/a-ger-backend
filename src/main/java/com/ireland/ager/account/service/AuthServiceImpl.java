@@ -42,10 +42,10 @@ public class AuthServiceImpl {
 
     public String getKakaoLoginUrl() {
         return new StringBuilder()
-                .append(KAKAO_URL).append("/oauth/authorize?client_id=").append(kakaoRestApiKey)
-                .append("&redirect_uri=").append(kakaoRedirectUrl)
-                .append("&response_type=code")
-                .toString();
+            .append(KAKAO_URL).append("/oauth/authorize?client_id=").append(kakaoRestApiKey)
+            .append("&redirect_uri=").append(kakaoRedirectUrl)
+            .append("&response_type=code")
+            .toString();
     }
 
     public HashMap<String, String> getKakaoTokens(String code) {
@@ -79,7 +79,7 @@ public class AuthServiceImpl {
         return userInfo.getBody();
     }
 
-    public AccountResponse refreshTokensForExistAccount(Long accountId, String accessToken, String refreshToken) {
+    public AccountResponse updateTokenWithAccount(Long accountId, String accessToken, String refreshToken) {
         Optional<Account> optionalExistAccount = accountRepository.findById(accountId);
         Account existAccount = optionalExistAccount.map(account -> {
             account.setAccessToken(accessToken);
@@ -88,10 +88,10 @@ public class AuthServiceImpl {
         }).orElse(null);
 
         accountRepository.save(existAccount);
-        return AccountResponse.of(existAccount);
+        return AccountResponse.toAccountResponse(existAccount);
     }
 
-    public String accessTokenUpdate(Long accountId) {
+    public String updateAccessToken(Long accountId) {
         Optional<Account> optionalAccountForUpdate = accountRepository.findById(accountId);
         String refreshToken = optionalAccountForUpdate.map(Account::getRefreshToken).orElse(null);
         if(refreshToken == null) return null;
