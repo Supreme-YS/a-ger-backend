@@ -1,7 +1,7 @@
 package com.ireland.ager.account.service;
 
-import com.ireland.ager.account.dto.request.AccountUpdatePatchReq;
-import com.ireland.ager.account.dto.response.AccountRes;
+import com.ireland.ager.account.dto.request.AccountUpdateRequest;
+import com.ireland.ager.account.dto.response.AccountResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
 import java.util.Optional;
@@ -34,21 +34,26 @@ public class AccountServiceImpl {
         return optionalAccount.orElse(null);
     }
 
-    public AccountRes insertAccount(Account newAccount) {
+    public AccountResponse insertAccount(Account newAccount) {
         newAccount.setProfileNickname(newAccount.getUserName());
         accountRepository.save(newAccount);
-        return AccountRes.of(newAccount);
+        return AccountResponse.of(newAccount);
     }
-    public AccountRes updateAccount(String accessToken, AccountUpdatePatchReq accountUpdatePatchReq) {
+    public AccountResponse updateAccount(String accessToken, AccountUpdateRequest accountUpdateRequest) {
         Optional<Account> optionalUpdateAccount = accountRepository.findAccountByAccessToken(accessToken);
-        Account updatedAccount = optionalUpdateAccount.map(accountUpdatePatchReq::toAccount).orElse(null);
+        Account updatedAccount = optionalUpdateAccount.map(accountUpdateRequest::toAccount).orElse(null);
         if (updatedAccount != null) accountRepository.save(updatedAccount);
-        return AccountRes.of(updatedAccount);
+        return AccountResponse.of(updatedAccount);
     }
 
     public Boolean deleteAccount(Long accountId) {
         accountRepository.deleteById(accountId);
         return Boolean.TRUE;
+    }
+
+    public Account findAccountWithProductById(Long accountId) {
+        Optional<Account> optionalAccount = accountRepository.findWithProductByAccountId(accountId);
+        return optionalAccount.orElse(null);
     }
 
 }

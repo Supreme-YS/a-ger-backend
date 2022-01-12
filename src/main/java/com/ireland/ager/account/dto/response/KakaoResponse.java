@@ -4,7 +4,7 @@ import com.ireland.ager.account.entity.Account;
 import lombok.Data;
 
 @Data
-public class KakaoAccountRes {
+public class KakaoResponse {
 
     private Integer id;
     private String connected_at;

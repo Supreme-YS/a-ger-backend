@@ -1,9 +1,9 @@
 package com.ireland.ager.account.controller;
 
 
-import com.ireland.ager.account.dto.request.AccountUpdatePatchReq;
-import com.ireland.ager.account.dto.response.AccountRes;
-import com.ireland.ager.account.dto.response.KakaoAccountRes;
+import com.ireland.ager.account.dto.request.AccountUpdateRequest;
+import com.ireland.ager.account.dto.response.AccountResponse;
+import com.ireland.ager.account.dto.response.KakaoResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
@@ -39,27 +39,27 @@ public class AccountController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<AccountRes> getTokenAndJoinOrLogin(@RequestParam("code") String code) {
+    public ResponseEntity<AccountResponse> getTokenAndJoinOrLogin(@RequestParam("code") String code) {
         HashMap<String, String> kakaoTokens = authService.getKakaoTokens(code);
 
-        KakaoAccountRes kakaoAccountRes = authService.getKakaoUserInfo(kakaoTokens.get("access_token"));
+        KakaoResponse kakaoResponse = authService.getKakaoUserInfo(kakaoTokens.get("access_token"));
 
-        String accountEmailOrId = kakaoAccountRes.getKakao_account().getEmail();
+        String accountEmailOrId = kakaoResponse.getKakao_account().getEmail();
         if(accountEmailOrId == null || accountEmailOrId == "") {
-            accountEmailOrId = String.valueOf(kakaoAccountRes.getId()) + EMAIL_SUFFIX;
+            accountEmailOrId = String.valueOf(kakaoResponse.getId()) + EMAIL_SUFFIX;
         }
         Account accountForCheck = accountService.findAccountByAccountEmail(accountEmailOrId);
-        AccountRes accountRes;
+        AccountResponse accountResponse;
         if(accountForCheck != null) {
             // 존재한다면 Token 값을 갱신하고 반환한다.
-            accountRes = authService.refreshTokensForExistAccount(accountForCheck.getAccountId(), kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token"));
+            accountResponse = authService.refreshTokensForExistAccount(accountForCheck.getAccountId(), kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token"));
         } else {
             // 존재하지 않는다면 회원 가입 시키고 반환한다.
-            accountRes = accountService.insertAccount(
-                    kakaoAccountRes.toUser(kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token")));
+            accountResponse = accountService.insertAccount(
+                    kakaoResponse.toUser(kakaoTokens.get("access_token"), kakaoTokens.get("refresh_token")));
         }
 
-        return new ResponseEntity<>(accountRes, HttpStatus.OK);
+        return new ResponseEntity<>(accountResponse, HttpStatus.OK);
     }
 
     @GetMapping("/kakao/logout")
@@ -91,16 +91,16 @@ public class AccountController {
 
     //TODO 에러 뜸
     @PatchMapping("/user")
-    public ResponseEntity<AccountRes> updateUser(
-            @RequestHeader("Authorization") String accessToken, @RequestBody AccountUpdatePatchReq accountUpdatePatchReq) {
+    public ResponseEntity<AccountResponse> updateUser(
+            @RequestHeader("Authorization") String accessToken, @RequestBody AccountUpdateRequest accountUpdateRequest) {
         int vaildTokenStatusValue = authService.isValidToken(accessToken);
 
         if(vaildTokenStatusValue == 200) {
 
             String[] spitToken = accessToken.split(" ");
-            AccountRes accountRes = accountService.updateAccount(spitToken[1],accountUpdatePatchReq);
+            AccountResponse accountResponse = accountService.updateAccount(spitToken[1], accountUpdateRequest);
 
-            return new ResponseEntity<>(accountRes, HttpStatus.OK);
+            return new ResponseEntity<>(accountResponse, HttpStatus.OK);
         }
         else if(vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -126,16 +126,14 @@ public class AccountController {
     }
 
     @GetMapping("/user/{accountId}")
-    public ResponseEntity<AccountRes> getOtherUserInfo( @RequestHeader("Authorization") String accessToken,
+    public ResponseEntity<Account> getOtherUserInfo( @RequestHeader("Authorization") String accessToken,
 
                                                     @PathVariable Long accountId) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
-
         if(validTokenStatusValue == 200) {
-            String[] spitToken = accessToken.split(" ");
-
-            Account account = accountService.findAccountById(accountId);
-            return new ResponseEntity<>(AccountRes.of(account), HttpStatus.OK);
+            /*Account account = accountService.findAccountById(accountId);*/
+            Account account = accountService.findAccountWithProductById(accountId);
+            return new ResponseEntity<>(account, HttpStatus.OK);
         } else if(validTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -147,7 +145,7 @@ public class AccountController {
     public ResponseEntity<Boolean> deleteAccount( @RequestHeader("Authorization") String accessToken,
                                                   @PathVariable Long accountId) {
         int validTokenStatusValue = authService.isValidToken(accessToken);
-        //유효성 체크만 한다.
+        //TODO accessToken으로 조회한 유저와 같을때만 삭제할 수 있도록 해야한다.
         if(validTokenStatusValue == 200) {
             Boolean isDeleted = accountService.deleteAccount(accountId);
             return new ResponseEntity<>(isDeleted,HttpStatus.OK);

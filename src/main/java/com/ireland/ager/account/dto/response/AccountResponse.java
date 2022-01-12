@@ -11,15 +11,15 @@ import lombok.ToString;
 @Setter
 @ToString
 @Builder
-public class AccountRes {
+public class AccountResponse {
     String accessToken;
     String profileNickname;
     String userName;
     String accountEmail;
     String profileImageUrl;
 
-    public static AccountRes of(Account account) {
-        return AccountRes.builder()
+    public static AccountResponse of(Account account) {
+        return AccountResponse.builder()
                 .accessToken(account.getAccessToken())
                 .profileNickname(account.getProfileNickname())
                 .userName(account.getUserName())
