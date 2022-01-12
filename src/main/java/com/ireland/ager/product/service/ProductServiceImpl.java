@@ -92,6 +92,5 @@ public class ProductServiceImpl {
             .findById(productId).orElse(null)
             .getUrlList());
         productRepository.deleteById(productId);
-        return ;
     }
 }
