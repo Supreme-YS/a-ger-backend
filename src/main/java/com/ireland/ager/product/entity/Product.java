@@ -22,7 +22,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Proxy;
+import org.springframework.cache.annotation.Cacheable;
 
 @Entity
 @Getter
@@ -30,6 +33,8 @@ import org.hibernate.annotations.Proxy;
 @EqualsAndHashCode(of="productId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Product extends BaseEntity {
     @Id @GeneratedValue
     private Long productId;
