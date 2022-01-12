@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class TradeRequest {
+    private Long tradeId;
     private Boolean tradeStatus;
 }

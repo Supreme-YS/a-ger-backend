@@ -2,7 +2,6 @@ package com.ireland.ager.trade.service;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
-import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
 import com.ireland.ager.product.repository.ProductRepository;
@@ -21,9 +20,10 @@ public class TradeServiceImpl {
 
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
-    private final TradeRepository tradeRepository;
-    private final AccountServiceImpl accountService;
 
+    private final TradeRepository tradeRepository;
+
+    //TODO : accessToken에 따라 buyer, seller 구분하고, 그에 따른 로직을 다르게 구성해야 한다.
     public Boolean trade(TradeRequest tradeRequest, long productId, String accessToken) {
 
         // 제품 정보
