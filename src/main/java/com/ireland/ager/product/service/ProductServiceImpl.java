@@ -43,7 +43,7 @@ public class ProductServiceImpl {
         return product;
     }
     //FIXME 캐시 적용 하는 곳,,
-    @Cacheable(key = "#productId",value = "product")
+    //@Cacheable(key = "#productId",value = "product")
     public Product findProductById(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
         product.get().addViewCnt(product.get());
