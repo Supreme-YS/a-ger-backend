@@ -24,13 +24,14 @@ public class ProductResponse {
     Status status;
     private List<String> urlList =new ArrayList<>();
 
-    public static ProductResponse of(Product product) {
+    public static ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()
                 .productId(product.getProductId())
                 .productName(product.getProductName())
                 .productPrice(product.getProductPrice())
                 .productDetail(product.getProductDetail())
                 .productViewCnt(product.getProductViewCnt())
+                .category(product.getCategory())
                 .status(product.getStatus())
                 .urlList(product.getUrlList())
                 .build();

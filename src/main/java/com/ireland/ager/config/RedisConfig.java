@@ -27,11 +27,7 @@ public class RedisConfig {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setHostName(host);
-
-        LettuceConnectionFactory lettuceConnectionFactory =
-            new LettuceConnectionFactory(redisStandaloneConfiguration);
-
-        return lettuceConnectionFactory;
+        return new LettuceConnectionFactory(redisStandaloneConfiguration);
     }
     @Bean
     public RedisCacheManager redisCacheManager() {
@@ -42,7 +38,6 @@ public class RedisConfig {
             .serializeValuesWith(
                 RedisSerializationContext.SerializationPair.fromSerializer(
                     new GenericJackson2JsonRedisSerializer()));
-
         return RedisCacheManager.RedisCacheManagerBuilder
             .fromConnectionFactory(redisConnectionFactory())
             .cacheDefaults(redisCacheConfiguration)

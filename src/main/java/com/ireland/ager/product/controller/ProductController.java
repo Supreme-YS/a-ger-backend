@@ -8,16 +8,13 @@ import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 
 
+import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import com.sun.istack.Nullable;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -48,18 +45,18 @@ public class ProductController {
 
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> findProductById(
+    public ResponseEntity<ProductResponse> findProductById(
         /**
          * @Method : findProductById
          * @Description : 상품 하나의 정보를 불러온다
          */
         @PathVariable Long productId) {
         log.info("{}", productId);
-        Optional<Product> product = productService.findProductById(productId);
-        return new ResponseEntity<>(product.orElse(null), HttpStatus.OK);
+        Product product = productService.findProductById(productId);
+        return new ResponseEntity<>(ProductResponse.toProductResponse(product), HttpStatus.OK);
     }
     @PostMapping
-    public ResponseEntity<Product> postProduct(
+    public ResponseEntity<ProductResponse> createProduct(
         /**
          * @Method : postProduct
          * @Description : 판매자가 판매할 제품을 등록한다.
@@ -72,8 +69,8 @@ public class ProductController {
 
         if (vaildTokenStatusValue == 200) {
             String[] splitToken = accessToken.split(" ");
-            Product product = productService.postProduct(splitToken[1], productRequest, multipartFile);
-           return new ResponseEntity<>(product, HttpStatus.CREATED);
+            Product product = productService.createProduct(splitToken[1], productRequest, multipartFile);
+           return new ResponseEntity<>(ProductResponse.toProductResponse(product), HttpStatus.CREATED);
         } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 

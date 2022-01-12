@@ -3,6 +3,7 @@ package com.ireland.ager.product.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Proxy;
 
 @Entity
 @Getter
@@ -45,15 +47,19 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.판매중;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     private List<String> urlList =new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "account_id")
     private Account account;
 
     public void addAccount(Account updateAccount) {
         updateAccount.getProducts().add(this);
         this.setAccount(updateAccount);
+    }
+    public void addViewCnt(Product addProduct) {
+        this.setProductViewCnt(addProduct.getProductViewCnt());
     }
 }
