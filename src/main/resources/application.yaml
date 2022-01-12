@@ -5,7 +5,7 @@ spring:
         registration:
           kakao:
             client-id: 3ea182ba51102e6bbde7dfd5fb019880
-            redirect-uri: http://localhost:8080/login
+            redirect-uri: http://localhost:8080/api/account/login
             client-secret: thtX0ki5BCktmJuqGsU0GCd5Ayv5KabB
             client-authentication-method: post
             authorization-grant-type: authorization_code

@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.sun.istack.Nullable;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RequiredArgsConstructor
 @CrossOrigin(value = {"*"}, maxAge = 6000)
-@RequestMapping("/product")
+@RequestMapping("/api/product")
 public class ProductController {
 
     private final ProductServiceImpl productService;

@@ -1,7 +1,7 @@
 package com.ireland.ager.account.service;
 
-import com.ireland.ager.account.dto.response.AccountRes;
-import com.ireland.ager.account.dto.response.KakaoAccountRes;
+import com.ireland.ager.account.dto.response.AccountResponse;
+import com.ireland.ager.account.dto.response.KakaoResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
 import java.util.HashMap;
@@ -42,10 +42,10 @@ public class AuthServiceImpl {
 
     public String getKakaoLoginUrl() {
         return new StringBuilder()
-                .append(KAKAO_URL).append("/oauth/authorize?client_id=").append(kakaoRestApiKey)
-                .append("&redirect_uri=").append(kakaoRedirectUrl)
-                .append("&response_type=code")
-                .toString();
+            .append(KAKAO_URL).append("/oauth/authorize?client_id=").append(kakaoRestApiKey)
+            .append("&redirect_uri=").append(kakaoRedirectUrl)
+            .append("&response_type=code")
+            .toString();
     }
 
     public HashMap<String, String> getKakaoTokens(String code) {
@@ -67,19 +67,19 @@ public class AuthServiceImpl {
         return tokenResEntity.getBody();
     }
 
-    public KakaoAccountRes getKakaoUserInfo(String accessToken) {
+    public KakaoResponse getKakaoUserInfo(String accessToken) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
         httpHeaders.add("Authorization", TOKEN_TYPE + " " + accessToken);
 
         HttpEntity<MultiValueMap<String, String>> kakaoUserInfoReq = new HttpEntity<>(httpHeaders);
-        ResponseEntity<KakaoAccountRes> userInfo = restTemplate.exchange(kakaoUserInfoUrl, HttpMethod.GET, kakaoUserInfoReq, KakaoAccountRes.class);
+        ResponseEntity<KakaoResponse> userInfo = restTemplate.exchange(kakaoUserInfoUrl, HttpMethod.GET, kakaoUserInfoReq, KakaoResponse.class);
 
         return userInfo.getBody();
     }
 
-    public AccountRes refreshTokensForExistAccount(Long accountId, String accessToken, String refreshToken) {
+    public AccountResponse updateTokenWithAccount(Long accountId, String accessToken, String refreshToken) {
         Optional<Account> optionalExistAccount = accountRepository.findById(accountId);
         Account existAccount = optionalExistAccount.map(account -> {
             account.setAccessToken(accessToken);
@@ -88,10 +88,10 @@ public class AuthServiceImpl {
         }).orElse(null);
 
         accountRepository.save(existAccount);
-        return AccountRes.of(existAccount);
+        return AccountResponse.toAccountResponse(existAccount);
     }
 
-    public String accessTokenUpdate(Long accountId) {
+    public String updateAccessToken(Long accountId) {
         Optional<Account> optionalAccountForUpdate = accountRepository.findById(accountId);
         String refreshToken = optionalAccountForUpdate.map(Account::getRefreshToken).orElse(null);
         if(refreshToken == null) return null;

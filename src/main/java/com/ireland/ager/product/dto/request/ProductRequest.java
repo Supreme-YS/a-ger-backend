@@ -5,9 +5,11 @@ import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.Set;
 import lombok.Data;
 
 @Data
