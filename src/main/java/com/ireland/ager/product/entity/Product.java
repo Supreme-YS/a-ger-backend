@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,13 +14,20 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@EqualsAndHashCode(of="productId", callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product extends BaseEntity {
     @Id @GeneratedValue
     private Long productId;
@@ -36,17 +45,15 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.판매중;
 
-    @ElementCollection(fetch = FetchType.LAZY)
+    @ElementCollection
     private List<String> urlList =new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne
     private Account account;
 
-
-    //FIXME Optional Account 반환 문제 해결해야한다.
     public void addAccount(Account updateAccount) {
-        updateAccount.getProductList().add(this);
+        updateAccount.getProducts().add(this);
         this.setAccount(updateAccount);
     }
 }

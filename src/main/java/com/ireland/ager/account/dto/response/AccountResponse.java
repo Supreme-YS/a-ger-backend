@@ -5,7 +5,9 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Product;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
@@ -27,7 +29,7 @@ public class AccountResponse {
     String accessToken;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    List<Product> productList = new ArrayList<>();
+    Set<Product> productList = new HashSet<>();
 
     public static AccountResponse toAccountResponse(Account account) {
         return AccountResponse.builder()
@@ -39,7 +41,7 @@ public class AccountResponse {
                 .accountId(account.getAccountId())
                 .createdAt(account.getCreatedAt())
                 .updatedAt(account.getUpdatedAt())
-                .productList(account.getProductList())
+                .productList(account.getProducts())
                 .build();
     }
 }

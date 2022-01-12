@@ -7,6 +7,7 @@ import com.ireland.ager.account.repository.AccountRepository;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,9 +32,10 @@ public class AccountServiceImpl {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccessToken(accessToken);
         return optionalAccount.orElse(null);
     }
-
+    //TODO redis cache 적용
+    @Transactional(readOnly = true)
     public Account findAccountWithProductById(Long accountId) {
-        Optional<Account> optionalAccount = accountRepository.findWithProductByAccountId(accountId);
+        Optional<Account> optionalAccount = accountRepository.findAccountWithProductByAccountId(accountId);
         return optionalAccount.orElse(null);
     }
 

@@ -10,7 +10,9 @@ import com.amazonaws.services.s3.transfer.Upload;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
@@ -40,7 +42,6 @@ public class UploadServiceImpl {
      *  currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
      */
 
-    //FIXME UploadService delete 메소드 고치기 완료
     public void delete(List<String> currentFileImageUrlList) {
         for(String url: currentFileImageUrlList) {
             amazonS3Client.deleteObject(bucket,url.split("/")[3]);

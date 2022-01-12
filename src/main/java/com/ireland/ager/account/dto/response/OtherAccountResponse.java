@@ -4,7 +4,9 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Product;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +28,7 @@ public class OtherAccountResponse {
     String profileImageUrl;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    List<Product> productList = new ArrayList<>();
+    Set<Product> productList = new HashSet<>();
 
     public static OtherAccountResponse toOtherAccountResponse(Account account) {
         return OtherAccountResponse.builder()
@@ -37,7 +39,7 @@ public class OtherAccountResponse {
             .accountId(account.getAccountId())
             .createdAt(account.getCreatedAt())
             .updatedAt(account.getUpdatedAt())
-            .productList(account.getProductList())
+            .productList(account.getProducts())
             .build();
     }
 }
