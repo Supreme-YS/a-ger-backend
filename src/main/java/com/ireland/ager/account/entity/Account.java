@@ -2,6 +2,7 @@ package com.ireland.ager.account.entity;
 
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
+import com.ireland.ager.product.entity.Status;
 import com.ireland.ager.trade.entity.Trade;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,9 @@ public class Account extends BaseEntity {
     private String profileImageUrl;
     private String accessToken;
     private String refreshToken;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     private List<Product> productList = new ArrayList<>();
