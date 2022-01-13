@@ -12,12 +12,12 @@ import org.springframework.web.client.RestTemplate;
 @EnableCaching
 public class AgerProjectApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(AgerProjectApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(AgerProjectApplication.class, args);
+    }
 
-	@Bean
-	public RestTemplate getRestTemplate() {
-		return new RestTemplate();
-	}
+    @Bean
+    public RestTemplate getRestTemplate() {
+        return new RestTemplate();
+    }
 }

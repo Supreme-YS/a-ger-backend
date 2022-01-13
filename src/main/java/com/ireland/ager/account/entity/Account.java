@@ -2,15 +2,15 @@ package com.ireland.ager.account.entity;
 
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
-import java.io.Serializable;
 import lombok.*;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 @NamedEntityGraph(
-        name="Account.withProductAndUrl",
+        name = "Account.withProductAndUrl",
         attributeNodes = {
                 @NamedAttributeNode(value = "products", subgraph = "urlList")
         },
@@ -19,7 +19,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of="accountId", callSuper = false)
+@EqualsAndHashCode(of = "accountId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account extends BaseEntity implements Serializable {

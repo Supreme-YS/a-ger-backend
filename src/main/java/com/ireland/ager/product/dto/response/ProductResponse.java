@@ -3,14 +3,13 @@ package com.ireland.ager.product.dto.response;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -24,7 +23,7 @@ public class ProductResponse {
     Long productViewCnt;
     Category category;
     Status status;
-    private List<String> urlList =new ArrayList<>();
+    private List<String> urlList = new ArrayList<>();
 
     public static ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()

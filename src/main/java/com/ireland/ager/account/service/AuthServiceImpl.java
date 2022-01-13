@@ -4,21 +4,18 @@ import com.ireland.ager.account.dto.response.AccountResponse;
 import com.ireland.ager.account.dto.response.KakaoResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
-import java.util.HashMap;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -42,10 +39,10 @@ public class AuthServiceImpl {
 
     public String getKakaoLoginUrl() {
         return new StringBuilder()
-            .append(KAKAO_URL).append("/oauth/authorize?client_id=").append(kakaoRestApiKey)
-            .append("&redirect_uri=").append(kakaoRedirectUrl)
-            .append("&response_type=code")
-            .toString();
+                .append(KAKAO_URL).append("/oauth/authorize?client_id=").append(kakaoRestApiKey)
+                .append("&redirect_uri=").append(kakaoRedirectUrl)
+                .append("&response_type=code")
+                .toString();
     }
 
     public HashMap<String, String> getKakaoTokens(String code) {
@@ -94,7 +91,7 @@ public class AuthServiceImpl {
     public String updateAccessToken(Long accountId) {
         Optional<Account> optionalAccountForUpdate = accountRepository.findById(accountId);
         String refreshToken = optionalAccountForUpdate.map(Account::getRefreshToken).orElse(null);
-        if(refreshToken == null) return null;
+        if (refreshToken == null) return null;
 
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -121,14 +118,14 @@ public class AuthServiceImpl {
         String vaildCheckHost = "https://kapi.kakao.com/v1/user/access_token_info";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
-        httpHeaders.add("Authorization",accessToken);
+        httpHeaders.add("Authorization", accessToken);
         HttpEntity<MultiValueMap<String, String>> kakaoValidTokenReq = new HttpEntity<>(httpHeaders);
         RestTemplate restTemplate = new RestTemplate();
         try {
             ResponseEntity<HashMap> isValidEntity = restTemplate.exchange(vaildCheckHost, HttpMethod.GET, kakaoValidTokenReq, HashMap.class);
             return isValidEntity.getStatusCodeValue();
         } catch (HttpClientErrorException e) {
-            if(e.getStatusCode().value() == 401) {
+            if (e.getStatusCode().value() == 401) {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED).getStatusCodeValue();
             } else {
                 return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR).getStatusCodeValue();

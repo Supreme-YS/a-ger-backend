@@ -4,12 +4,12 @@ import com.ireland.ager.account.dto.request.AccountUpdateRequest;
 import com.ireland.ager.account.dto.response.AccountResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -32,6 +32,7 @@ public class AccountServiceImpl {
         Optional<Account> optionalAccount = accountRepository.findAccountByAccessToken(accessToken);
         return optionalAccount.orElse(null);
     }
+
     //TODO redis cache 적용
     @Transactional(readOnly = true)
     public Account findAccountWithProductById(Long accountId) {
@@ -43,8 +44,9 @@ public class AccountServiceImpl {
         accountRepository.save(newAccount);
         return AccountResponse.toAccountResponse(newAccount);
     }
+
     public AccountResponse updateAccount(String accessToken, Long accountId,
-        AccountUpdateRequest accountUpdateRequest) {
+                                         AccountUpdateRequest accountUpdateRequest) {
         Account optionalUpdateAccount = findAccountByAccessToken(accessToken);
         if (!(optionalUpdateAccount.getAccountId().equals(accountId))) {
             // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 False
