@@ -4,7 +4,7 @@ import com.ireland.ager.account.entity.Account;
 import lombok.Data;
 
 @Data
-public class KakaoAccountRes {
+public class KakaoResponse {
 
     private Integer id;
     private String connected_at;
@@ -47,7 +47,7 @@ public class KakaoAccountRes {
         }
     }
     //KakaoUserRes->Account
-    public Account toUser(String accessToken, String refreshToken) {
+    public Account toAccount(String accessToken, String refreshToken) {
         Account account = new Account();
         if(this.kakao_account.email == null || this.kakao_account.email.equals("")) account.setAccountEmail(String.valueOf(this.id));
         else account.setAccountEmail(this.kakao_account.email);

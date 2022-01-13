@@ -2,37 +2,35 @@ package com.ireland.ager.account.entity;
 
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.Status;
-import com.ireland.ager.trade.entity.Trade;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-
+@NamedEntityGraph(
+        name="Account.withProductAndUrl",
+        attributeNodes = {
+                @NamedAttributeNode(value = "products", subgraph = "urlList")
+        },
+        subgraphs = @NamedSubgraph(name = "urlList", attributeNodes = @NamedAttributeNode("urlList"))
+)
 @Entity
 @Getter
 @Setter
-public class Account extends BaseEntity {
+@EqualsAndHashCode(of="accountId", callSuper = false)
+@NoArgsConstructor
+@AllArgsConstructor
+public class Account extends BaseEntity  {
     @Id
     @GeneratedValue
-    private Long accountId;
-    private String accountEmail;
-    private String profileNickname;
-    private String userName;
-    private String profileImageUrl;
-    private String accessToken;
-    private String refreshToken;
-
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
+    Long accountId;
+    String accountEmail;
+    String profileNickname;
+    String userName;
+    String profileImageUrl;
+    String accessToken;
+    String refreshToken;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
-    private List<Product> productList = new ArrayList<>();
-
-    //FIXME : 거래 연관 관계 추가
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
-    private List<Trade> tradeList = new ArrayList<>();
+    Set<Product> products = new HashSet<>();
 }
