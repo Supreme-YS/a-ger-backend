@@ -6,12 +6,14 @@ import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
 
 @Service
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 public class ProductServiceImpl {
@@ -43,7 +46,7 @@ public class ProductServiceImpl {
         return product;
     }
     //FIXME 캐시 적용 하는 곳,,
-    //@Cacheable(key = "#productId",value = "product")
+    @Cacheable(key = "#productId",value = "product", cacheManager = "redisCacheManager")
     public Product findProductById(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
         product.get().addViewCnt(product.get());

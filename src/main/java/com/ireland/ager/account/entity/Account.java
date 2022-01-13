@@ -2,6 +2,7 @@ package com.ireland.ager.account.entity;
 
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
+import java.io.Serializable;
 import lombok.*;
 
 import javax.persistence.*;
@@ -21,7 +22,7 @@ import java.util.Set;
 @EqualsAndHashCode(of="accountId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-public class Account extends BaseEntity  {
+public class Account extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue
     Long accountId;
