@@ -12,6 +12,7 @@ import java.util.Optional;
 
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,29 +31,25 @@ public class ProductServiceImpl {
         return productRepository.findAll();
     }
 
-    public Product postProduct(String accessToken, ProductRequest productRequest, List<MultipartFile> multipartFile) {
-        //FIXME Optional 로직을 바꾸기는 어렵다...
+    public Product createProduct(String accessToken,
+                               ProductRequest productRequest,
+                               List<MultipartFile> multipartFile)
+    {
         Account account = accountService.findAccountByAccessToken(accessToken);
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        //FIXME Optional Account 반환 문제 해결해야한다.
         Product product = productRequest.toProduct(account, uploadImagesUrl);
         //상품 저장
         productRepository.save(product);
         return product;
     }
-
-    public Optional<Product> findProductById(Long productId) {
-        Optional<Product> product = plusViewCnt(productId);
-        return product;
-    }
-
-    private Optional<Product> plusViewCnt(Long productId) {
+    //FIXME 캐시 적용 하는 곳,,
+    //@Cacheable(key = "#productId",value = "product")
+    public Product findProductById(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
-        product.get().setProductViewCnt(product.get().getProductViewCnt() + 1);
+        product.get().addViewCnt(product.get());
         productRepository.save(product.get());
-        return product;
+        return product.orElse(null);
     }
-
     public Boolean updateProductById(Long productId,
         String accessToken,
         List<MultipartFile> multipartFile,
@@ -80,8 +77,7 @@ public class ProductServiceImpl {
             }
         }
         // 원래 정보에 바뀐 정보를 업데이트
-        Account accountById = accountService.findAccountById(
-            productById.orElse(null).getAccount().getAccountId());
+        Account accountById = accountService.findAccountById(productById.orElse(null).getAccount().getAccountId());
         Product toProductUpdate=productUpdateRequest.toProductUpdate(productById.orElse(null),accountById, productById.get().getUrlList());
         productRepository.save(toProductUpdate);
         return Boolean.TRUE;
