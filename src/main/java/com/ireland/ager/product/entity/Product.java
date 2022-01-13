@@ -3,6 +3,9 @@ package com.ireland.ager.product.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -18,9 +21,7 @@ import java.util.List;
 @EqualsAndHashCode(of="productId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Product extends BaseEntity {
+public class Product extends BaseEntity implements Serializable {
     @Id @GeneratedValue
     private Long productId;
 
@@ -37,7 +38,9 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Status status = Status.판매중;
 
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection
+    @CollectionTable(name = "productUrlList", joinColumns = @JoinColumn(name = "productId")) // 2
+    @Column(name = "url") // 3
     private List<String> urlList =new ArrayList<>();
 
     @JsonIgnore

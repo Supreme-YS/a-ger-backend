@@ -21,13 +21,17 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Setter
 @MappedSuperclass
 @EntityListeners(value = {AuditingEntityListener.class})
-public abstract class BaseEntity {
+public abstract class BaseEntity implements Serializable {
 
     @CreatedDate
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using=LocalDateTimeDeserializer.class)
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using=LocalDateTimeDeserializer.class)
     @Column(name = "updated_at", updatable = true)
     private LocalDateTime updatedAt;
 }
