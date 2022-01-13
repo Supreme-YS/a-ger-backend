@@ -3,26 +3,22 @@ package com.ireland.ager.product.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.*;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.cache.annotation.Cacheable;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
-@EqualsAndHashCode(of="productId", callSuper = false)
+@EqualsAndHashCode(of = "productId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product extends BaseEntity implements Serializable {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long productId;
 
     private String productName;
@@ -41,7 +37,7 @@ public class Product extends BaseEntity implements Serializable {
     @ElementCollection
     @CollectionTable(name = "productUrlList", joinColumns = @JoinColumn(name = "productId")) // 2
     @Column(name = "url") // 3
-    private List<String> urlList =new ArrayList<>();
+    private List<String> urlList = new ArrayList<>();
 
     @JsonIgnore
     @ManyToOne
@@ -52,6 +48,7 @@ public class Product extends BaseEntity implements Serializable {
         updateAccount.getProducts().add(this);
         this.setAccount(updateAccount);
     }
+
     public void addViewCnt(Product addProduct) {
         this.setProductViewCnt(addProduct.getProductViewCnt());
     }

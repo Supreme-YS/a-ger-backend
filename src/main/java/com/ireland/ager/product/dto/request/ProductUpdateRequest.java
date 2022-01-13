@@ -4,12 +4,11 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Slf4j
@@ -22,8 +21,8 @@ public class ProductUpdateRequest {
     String status;
 
 
-    public Product toProductUpdate(Product product,Account account,
-        List<String> uploadImageUrl) {
+    public Product toProductUpdate(Product product, Account account,
+                                   List<String> uploadImageUrl) {
         List<String> images = new ArrayList<>();
         for (String url : uploadImageUrl) {
             images.add(url);

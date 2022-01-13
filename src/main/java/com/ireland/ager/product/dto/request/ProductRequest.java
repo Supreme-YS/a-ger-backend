@@ -4,8 +4,6 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.Status;
-import java.util.HashSet;
-import java.util.Set;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -20,10 +18,10 @@ public class ProductRequest {
 
 
     public Product toProduct(Account account,
-        List<String> uploadImageUrl) {
-        Product product=new Product();
-        List<String> images=new ArrayList<>();
-        for(String url: uploadImageUrl) {
+                             List<String> uploadImageUrl) {
+        Product product = new Product();
+        List<String> images = new ArrayList<>();
+        for (String url : uploadImageUrl) {
             images.add(url);
         }
         //FIXME Optional Account 반환 문제 해결해야한다.

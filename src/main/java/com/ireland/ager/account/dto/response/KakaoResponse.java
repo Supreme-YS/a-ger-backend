@@ -46,10 +46,12 @@ public class KakaoResponse {
             private String profile_image_url;
         }
     }
+
     //KakaoUserRes->Account
     public Account toAccount(String accessToken, String refreshToken) {
         Account account = new Account();
-        if(this.kakao_account.email == null || this.kakao_account.email.equals("")) account.setAccountEmail(String.valueOf(this.id));
+        if (this.kakao_account.email == null || this.kakao_account.email.equals(""))
+            account.setAccountEmail(String.valueOf(this.id));
         else account.setAccountEmail(this.kakao_account.email);
         account.setProfileNickname(this.properties.nickname);
         account.setUserName(this.kakao_account.profile.nickname);

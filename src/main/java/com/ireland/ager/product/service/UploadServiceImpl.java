@@ -5,22 +5,19 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
-
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @Service
 @Transactional
 @Slf4j
@@ -39,12 +36,12 @@ public class UploadServiceImpl {
      * @Method Name : deleteS3file
      * @작성자 : Potter
      * @Method 설명 : s3의 파일을 삭제 (버킷명, 삭제하고 싶은 폴더나 파일명 ex) test/test.png
-     *  currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
+     * currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
      */
 
     public void delete(List<String> currentFileImageUrlList) {
-        for(String url: currentFileImageUrlList) {
-            amazonS3Client.deleteObject(bucket,url.split("/")[3]);
+        for (String url : currentFileImageUrlList) {
+            amazonS3Client.deleteObject(bucket, url.split("/")[3]);
         }
     }
 

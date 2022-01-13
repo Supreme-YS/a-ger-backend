@@ -2,11 +2,7 @@ package com.ireland.ager.trade.entity;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.Status;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -14,9 +10,12 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Trade {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue
     private Long tradeId;
 
     @ManyToOne
@@ -25,19 +24,22 @@ public class Trade {
     @ManyToOne
     private Product product;
 
-    @OneToOne
-    private Manner manner;
+    private String comment;
 
-    @Enumerated
-    private Status status = Status.판매중;
+    @ManyToOne
+    @JoinColumn(name = "buyer_account_id")
+    private Account buyer;
 
-    private Boolean tradeStatus;
+    @ManyToOne
+    @JoinColumn(name = "seller_account_id")
+    private Account seller;
 
     //FIXME : 구매자, 판매자 구분 필요
-    @Builder
-    public Trade(Boolean tradeStatus, Account account, Product product) {
-        this.tradeStatus = tradeStatus;
-        this.account = product.getAccount();
-        this.product = product;
+    public static Trade toTrade(Account seller, Account buyer, Product product) {
+        return Trade.builder()
+                .seller(seller)
+                .buyer(buyer)
+                .product(product)
+                .build();
     }
 }

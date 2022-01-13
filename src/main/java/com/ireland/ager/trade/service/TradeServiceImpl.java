@@ -20,7 +20,6 @@ public class TradeServiceImpl {
 
     private final ProductRepository productRepository;
     private final AccountRepository accountRepository;
-
     private final TradeRepository tradeRepository;
 
     //TODO : accessToken에 따라 buyer, seller 구분하고, 그에 따른 로직을 다르게 구성해야 한다.
