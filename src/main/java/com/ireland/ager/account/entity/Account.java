@@ -2,36 +2,18 @@ package com.ireland.ager.account.entity;
 
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
+import lombok.*;
 
-import java.io.Serializable;
-import java.util.ArrayList;
+import javax.persistence.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedSubgraph;
-import javax.persistence.OneToMany;
-
-
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.Proxy;
 
 @NamedEntityGraph(
-    name="Account.withProductAndUrl",
-    attributeNodes = {
-        @NamedAttributeNode(value = "products", subgraph = "urlList")
-    },
-    subgraphs = @NamedSubgraph(name = "urlList", attributeNodes = @NamedAttributeNode("urlList"))
+        name="Account.withProductAndUrl",
+        attributeNodes = {
+                @NamedAttributeNode(value = "products", subgraph = "urlList")
+        },
+        subgraphs = @NamedSubgraph(name = "urlList", attributeNodes = @NamedAttributeNode("urlList"))
 )
 @Entity
 @Getter
