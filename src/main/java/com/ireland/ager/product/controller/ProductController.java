@@ -1,7 +1,6 @@
 package com.ireland.ager.product.controller;
 
 
-import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
@@ -27,7 +26,6 @@ public class ProductController {
 
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
-    private final AccountServiceImpl accountService;
     private final TradeServiceImpl tradeService;
 
 
