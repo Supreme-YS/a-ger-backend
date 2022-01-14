@@ -13,6 +13,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(of = "productId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,7 +33,7 @@ public class Product extends BaseEntity implements Serializable {
     private Category category;
 
     @Enumerated(EnumType.STRING)
-    private Status status = Status.판매중;
+    private ProductStatus status;
 
     @ElementCollection
     @CollectionTable(name = "productUrlList", joinColumns = @JoinColumn(name = "productId")) // 2
@@ -44,6 +45,14 @@ public class Product extends BaseEntity implements Serializable {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @ManyToOne
+    @JoinColumn(name = "buyer_account_id")
+    private Account buyer;
+
+    @ManyToOne
+    @JoinColumn(name = "seller_account_id")
+    private Account seller;
+
     public void addAccount(Account updateAccount) {
         updateAccount.getProducts().add(this);
         this.setAccount(updateAccount);
@@ -51,5 +60,17 @@ public class Product extends BaseEntity implements Serializable {
 
     public void addViewCnt(Product addProduct) {
         this.setProductViewCnt(addProduct.getProductViewCnt());
+    }
+
+    public void setStatusReservation() {
+        this.status = ProductStatus.RESERVATION;
+    }
+
+    public void setStatusCompleted() {
+        this.status = ProductStatus.COMPLETE;
+    }
+
+    public void setStatusSale() {
+        this.status = ProductStatus.SALE;
     }
 }

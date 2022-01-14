@@ -2,7 +2,7 @@ package com.ireland.ager.product.dto.response;
 
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.Status;
+import com.ireland.ager.product.entity.ProductStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,7 +22,7 @@ public class ProductResponse {
     String productDetail;
     Long productViewCnt;
     Category category;
-    Status status;
+    ProductStatus status;
     private List<String> urlList = new ArrayList<>();
 
     public static ProductResponse toProductResponse(Product product) {

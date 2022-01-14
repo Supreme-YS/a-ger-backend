@@ -3,7 +3,7 @@ package com.ireland.ager.product.dto.request;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.Status;
+import com.ireland.ager.product.entity.ProductStatus;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -32,7 +32,7 @@ public class ProductUpdateRequest {
         product.setProductPrice(productPrice);
         product.setProductViewCnt(product.getProductViewCnt());
         product.setProductName(productName);
-        product.setStatus(Status.valueOf(this.status));
+        product.setStatus(ProductStatus.valueOf(this.status));
         product.setCategory(Category.valueOf(this.category));
         return product;
     }
