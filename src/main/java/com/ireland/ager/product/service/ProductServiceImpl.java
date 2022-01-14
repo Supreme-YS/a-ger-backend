@@ -75,7 +75,7 @@ public class ProductServiceImpl {
                 e.printStackTrace();
             }
         }
-        // 원래 정보에 바뀐 정보를 업데이트
+        //REMARK 악취가 난다.....
         Account accountById = accountService.findAccountById(productById.orElse(null).getAccount().getAccountId());
         Product toProductUpdate = productUpdateRequest.toProductUpdate(productById.orElse(null), accountById, productById.get().getUrlList());
         productRepository.save(toProductUpdate);

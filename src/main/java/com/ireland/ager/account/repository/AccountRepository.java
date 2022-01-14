@@ -12,8 +12,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findAccountByAccessToken(String accessToken);
 
-    Boolean existsAccountByAccountEmail(String accountEmail);
-
     Optional<Account> findAccountByAccountEmail(String accountEmail);
 
     @EntityGraph("Account.withProductAndUrl")
