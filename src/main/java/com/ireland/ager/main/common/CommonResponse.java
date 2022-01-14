@@ -16,7 +16,7 @@ public enum CommonResponse {
     INVALIDDATA(-3100,"입력 값이 잘못되었습니다."),
     INVALIDFILEEXTENSION(-3200,"확장자가 잘못되었습니다."),
     INTERNALSERVERERROR(-500,"서버 에러"),
-    UNAUTHORIZEDTOKEN(-400,"액세스 토큰이 유효하지 않습니다");
+    UNAUTHORIZEDTOKEN(-400,"카카오 액세스 토큰이 유효하지 않습니다");
 
     int code;
     String msg;

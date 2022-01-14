@@ -28,7 +28,6 @@ public class AccountController {
 
     private final ResponseService responseService;
 
-    private final String EMAIL_SUFFIX = "@gmail.com";
 
     @GetMapping("/login-url")
     public ResponseEntity<SingleResult<String>> loginUrl() {
@@ -87,7 +86,6 @@ public class AccountController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId) {
         authService.isValidToken(accessToken);
-        //TODO accessToken으로 조회한 유저와 같을때만 삭제할 수 있도록 해야한다.
         String[] splitToken = accessToken.split(" ");
         accountService.deleteAccount(splitToken[1], accountId);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);

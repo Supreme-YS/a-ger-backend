@@ -125,7 +125,7 @@ public class AuthServiceImpl {
             account.setAccessToken(accessToken);
             account.setRefreshToken(refreshToken);
             return account;
-        }).orElse(null);
+        }).orElseThrow(NotFoundException::new);
 
         accountRepository.save(existAccount);
         return AccountResponse.toAccountResponse(existAccount);

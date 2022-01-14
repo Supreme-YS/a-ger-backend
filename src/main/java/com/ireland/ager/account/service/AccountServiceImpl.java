@@ -32,7 +32,6 @@ public class AccountServiceImpl {
     public Account findAccountByAccessToken(String accessToken) {
         return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }
-
     //TODO redis cache 적용
     public Account findAccountWithProductById(Long accountId) {
         return accountRepository.findAccountWithProductByAccountId(accountId).orElseThrow(NotFoundException::new);
@@ -57,7 +56,7 @@ public class AccountServiceImpl {
             throw new UnAuthorizedAccessException();
         }
         Account updatedAccount = accountUpdateRequest.toAccount(optionalUpdateAccount);
-        if (updatedAccount != null) accountRepository.save(updatedAccount);
+        accountRepository.save(updatedAccount);
         return AccountAllResponse.toAccountAllResponse(updatedAccount);
     }
 
