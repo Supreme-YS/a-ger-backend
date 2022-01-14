@@ -23,20 +23,23 @@ public class TradeServiceImpl {
                              String status) {
 
         Product product = productRepository.findById(productId).orElseThrow(null);
-        ProductStatus productStatus = checkStatus(productId);
 
         if (product.getAccount().equals(accountService.findAccountByAccessToken(accessToken))) {
-            if (productStatus.equals("SALE")) {
+            if (status.equals("SALE")) {
                 product.setStatusSale();
-            } else if (productStatus.equals("RESERVATION")) {
+                return true;
+            } else if (status.equals("RESERVATION")) {
                 product.setStatusReservation();
-            } else {
+                return true;
+            } else if (status.equals("COMPLETE")) {
                 product.setStatusCompleted();
+                return true;
+            } else {
+                return false;
             }
         } else {
             return false;
         }
-        return true;
     }
 
     // 현재 상태 체크
