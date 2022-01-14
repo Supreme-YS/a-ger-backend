@@ -36,17 +36,4 @@ public class ProductUpdateRequest {
         product.setCategory(Category.valueOf(this.category));
         return product;
     }
-
-//    public Product toProductStatusUpdateDone(Product productStatus) {
-//        productStatus.setStatus(Status.판매완료);
-//        return productStatus;
-//    }
-//
-//    public Product toProductStatusUpdateIng(Product productStatus) {
-//        productStatus.setStatus(Status.판매중);
-//    }
-//
-//    public Product toProductStatusUpdateDone(Product productStatus) {
-//        productStatus.setStatus(Status.판매완료);
-//    }
 }
