@@ -3,7 +3,7 @@ package com.ireland.ager.product.dto.request;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.Status;
+import com.ireland.ager.product.entity.ProductStatus;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class ProductRequest {
         product.setProductPrice(productPrice);
         product.setProductViewCnt(0L);
         product.setProductName(productName);
-        product.setStatus(Status.판매중);
+        product.setStatus(ProductStatus.SALE);
         product.setCategory(Category.valueOf(this.category));
         return product;
     }

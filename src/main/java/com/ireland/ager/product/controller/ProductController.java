@@ -8,6 +8,7 @@ import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
+import com.ireland.ager.product.service.TradeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ProductController {
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
     private final AccountServiceImpl accountService;
+    private final TradeServiceImpl tradeService;
 
 
     @GetMapping("/{productId}")
@@ -101,6 +103,25 @@ public class ProductController {
         if (vaildTokenStatusValue == 200) {
             productService.deleteProductById(productId);
             return new ResponseEntity<>(HttpStatus.OK);
+        } else if (vaildTokenStatusValue == 401) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        } else {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PatchMapping("/status/{productId}")
+    public ResponseEntity<Boolean> setStatus(
+            @RequestHeader("Authorization") String accessToken,
+            @PathVariable long productId,
+            @RequestPart(value = "status") String status) {
+        // 유효한 토큰인지 확인한다.
+        int vaildTokenStatusValue = authService.isValidToken(accessToken);
+        // 유효한 토큰이라면, 서비스에서 로직을 처리한다.
+        if (vaildTokenStatusValue == 200) {
+            String[] splitToken = accessToken.split(" ");
+            Boolean isUpdated = tradeService.isUpdated(productId, splitToken[1], status);
+            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
         } else if (vaildTokenStatusValue == 401) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
