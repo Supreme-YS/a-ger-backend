@@ -59,18 +59,7 @@ public class Product extends BaseEntity implements Serializable {
     }
 
     public void addViewCnt(Product addProduct) {
-        this.setProductViewCnt(addProduct.getProductViewCnt());
+        this.setProductViewCnt(addProduct.getProductViewCnt()+1);
     }
 
-    public void setStatusReservation() {
-        this.status = ProductStatus.RESERVATION;
-    }
-
-    public void setStatusCompleted() {
-        this.status = ProductStatus.COMPLETE;
-    }
-
-    public void setStatusSale() {
-        this.status = ProductStatus.SALE;
-    }
 }

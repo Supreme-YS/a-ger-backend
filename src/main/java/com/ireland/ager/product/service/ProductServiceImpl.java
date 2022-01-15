@@ -45,8 +45,7 @@ public class ProductServiceImpl {
     //FIXME 캐시 적용 하는 곳,,
 //    @Cacheable(key = "#productId", value = "product", cacheManager = "redisCacheManager")
     public Product findProductById(Long productId) {
-        Product product=productRepository.findById(productId)
-                .orElseThrow(NotFoundException::new);
+        Product product=productRepository.findById(productId).orElseThrow(NotFoundException::new);
         product.addViewCnt(product);
         productRepository.save(product);
         return product;

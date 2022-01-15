@@ -156,7 +156,7 @@ public class AuthServiceImpl {
         return newToken;
     }
 
-    public int isValidToken(String accessToken) {
+    public void isValidToken(String accessToken) {
         validateTokenExists(accessToken);
         String vaildCheckHost = "https://kapi.kakao.com/v1/user/access_token_info";
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -166,7 +166,6 @@ public class AuthServiceImpl {
         RestTemplate restTemplate = new RestTemplate();
         try {
             ResponseEntity<HashMap> isValidEntity = restTemplate.exchange(vaildCheckHost, HttpMethod.GET, kakaoValidTokenReq, HashMap.class);
-            return isValidEntity.getStatusCodeValue();
         } catch (HttpClientErrorException e) {
             if (e.getStatusCode().value() == 401 || e.getStatusCode().value()==400)
                 throw new UnAuthorizedTokenException();
