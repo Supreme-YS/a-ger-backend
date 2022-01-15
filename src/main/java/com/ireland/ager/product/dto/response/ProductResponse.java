@@ -6,14 +6,13 @@ import com.ireland.ager.product.entity.ProductStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @Setter
-@ToString
 @Builder
 public class ProductResponse {
     Long productId;
@@ -23,7 +22,9 @@ public class ProductResponse {
     Long productViewCnt;
     Category category;
     ProductStatus status;
-    private List<String> urlList = new ArrayList<>();
+    LocalDateTime createdAt;
+    LocalDateTime updatedAt;
+    List<String> urlList;
 
     public static ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()
@@ -34,7 +35,17 @@ public class ProductResponse {
                 .productViewCnt(product.getProductViewCnt())
                 .category(product.getCategory())
                 .status(product.getStatus())
+                .createdAt(product.getCreatedAt())
+                .updatedAt(product.getUpdatedAt())
                 .urlList(product.getUrlList())
                 .build();
+    }
+    public static List<ProductResponse> toProductListResponse(List<Product> productList) {
+        List<ProductResponse> productResponseList=new ArrayList<>();
+        for(Product product: productList) {
+            ProductResponse productResponse=ProductResponse.toProductResponse(product);
+            productResponseList.add(productResponse);
+        }
+        return productResponseList;
     }
 }

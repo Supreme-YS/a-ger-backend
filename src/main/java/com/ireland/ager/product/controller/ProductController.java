@@ -58,8 +58,9 @@ public class ProductController {
             //Todo MultipartFile size가 비어있어도 자꾸 1로 뜨는 오류 (1개 선택해서 넣으면 사이즈1, 2개 선택해서 넣으면 2 장난하나?)
             productService.validateFileExists(multipartFile);
             String[] splitToken = accessToken.split(" ");
+            ProductResponse productResponse=productService.createProduct(splitToken[1], productRequest, multipartFile);
             return new ResponseEntity<>(responseService.getSingleResult
-                    (ProductResponse.toProductResponse(productService.createProduct(splitToken[1], productRequest, multipartFile))), HttpStatus.CREATED);
+                    (productResponse), HttpStatus.CREATED);
     }
     @PatchMapping("/{productId}")
     public ResponseEntity<SingleResult<ProductResponse>> updateProduct(
@@ -74,8 +75,8 @@ public class ProductController {
 
             authService.isValidToken(accessToken);
             String[] splitToken = accessToken.split(" ");
-            return new ResponseEntity<>(responseService.getSingleResult(ProductResponse.toProductResponse
-                    (productService.updateProductById(productId,splitToken[1],multipartFile,productUpdateRequest))),HttpStatus.CREATED);
+            ProductResponse productResponse=productService.updateProductById(productId,splitToken[1],multipartFile,productUpdateRequest);
+            return new ResponseEntity<>(responseService.getSingleResult(productResponse),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{productId}")
