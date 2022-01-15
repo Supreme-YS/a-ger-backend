@@ -3,15 +3,13 @@ package com.ireland.ager.main.controller;
 import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.product.dto.response.ProductResponse;
+import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,13 +29,24 @@ public class MainController {
     @GetMapping("/api/product/views")
     public ResponseEntity<ListResult<ProductResponse>> getListAllProductsByProductViewCnt() {
         List<ProductResponse> productResponseList= productService.findProductAllOrderByProductViewCntDesc();
-        return new ResponseEntity<>(responseService.getListResult(productResponseList), HttpStatus.OK);
+        return new ResponseEntity<>(responseService.getListResult(productService.findProductAllOrderByProductViewCntDesc()), HttpStatus.OK);
     }
-    @GetMapping("/api/product")
+    @GetMapping("/api/product/category")
     public ResponseEntity<ListResult<ProductResponse>> getListAllProductsByCategory(
             @RequestPart(value = "category") String category
     ) {
         List<ProductResponse> productResponseList= productService.findProductAllByCategory(category);
         return new ResponseEntity<>(responseService.getListResult(productResponseList), HttpStatus.OK);
+    }
+    @GetMapping("/api/product")
+    public ResponseEntity<ListResult<ProductResponse>> getlistAllProducts(
+            @RequestPart(value = "page") Integer page,
+            @RequestPart(value = "size") Integer size) {
+        /**
+         * @Method : getlistAllProducts
+         * @Description :  페이지{page} 정보와 화면에 보이고 싶은 갯수{size}를 넘겨주면 그에 맞는 페이지를 불러온다.
+         */
+        return new ResponseEntity<>(responseService.getListResult(
+                productService.findProductAll(page,size)), HttpStatus.OK);
     }
 }
