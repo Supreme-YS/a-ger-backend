@@ -30,7 +30,7 @@ public class ProductServiceImpl {
     private final ProductRepository productRepository;
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
-
+    //Todo 전체 조회에서 NotFound에러는 반환을 안해줍니다 상품이 없는건 에러가 아니라고 생각해서 프론트에서 빈 리스트를 보면 추가적인 멘트를 남기는 작업을 하면 될거 같습니다.
     public List<ProductResponse> findProductAll(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
         return ProductResponse.toProductListResponse(productRepository.findAll(pageRequest).getContent());

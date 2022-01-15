@@ -28,16 +28,20 @@ public class MainController {
     }
     @GetMapping("/api/product/views")
     public ResponseEntity<ListResult<ProductResponse>> getListAllProductsByProductViewCnt() {
+        List<ProductResponse> productResponseList= productService.findProductAllOrderByProductViewCntDesc();
         return new ResponseEntity<>(responseService.getListResult(productService.findProductAllOrderByProductViewCntDesc()), HttpStatus.OK);
     }
     @GetMapping("/api/product/category")
     public ResponseEntity<ListResult<ProductResponse>> getListAllProductsByCategory(
             @RequestPart(value = "category") String category
     ) {
-        return new ResponseEntity<>(responseService.getListResult(productService.findProductAllByCategory(category)), HttpStatus.OK);
+        List<ProductResponse> productResponseList= productService.findProductAllByCategory(category);
+        return new ResponseEntity<>(responseService.getListResult(productResponseList), HttpStatus.OK);
     }
     @GetMapping("/api/product")
-    public ResponseEntity<ListResult<ProductResponse>> getlistAllProducts(@RequestPart Integer page, @RequestPart Integer size) {
+    public ResponseEntity<ListResult<ProductResponse>> getlistAllProducts(
+            @RequestPart(value = "page") Integer page,
+            @RequestPart(value = "size") Integer size) {
         /**
          * @Method : getlistAllProducts
          * @Description :  페이지{page} 정보와 화면에 보이고 싶은 갯수{size}를 넘겨주면 그에 맞는 페이지를 불러온다.
