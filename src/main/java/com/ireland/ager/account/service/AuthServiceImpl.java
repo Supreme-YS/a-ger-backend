@@ -157,7 +157,7 @@ public class AuthServiceImpl {
     }
 
     public int isValidToken(String accessToken) {
-        validateTokkenExists(accessToken);
+        validateTokenExists(accessToken);
         String vaildCheckHost = "https://kapi.kakao.com/v1/user/access_token_info";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -174,9 +174,9 @@ public class AuthServiceImpl {
                 throw new IntenalServerErrorException();
         }
     }
-    public void validateTokkenExists(String accessToken){
+    public void validateTokenExists(String accessToken){
         if(accessToken.isEmpty())
-            throw new NotFoundTokkenException();
+            throw new NotFoundTokenException();
 
     }
 }
