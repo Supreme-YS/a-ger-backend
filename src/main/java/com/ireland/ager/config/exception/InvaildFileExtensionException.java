@@ -1,7 +1,7 @@
 package com.ireland.ager.config.exception;
 
 public class InvaildFileExtensionException extends RuntimeException {
-    InvaildFileExtensionException() {
+    public InvaildFileExtensionException() {
         super();
     }
 }

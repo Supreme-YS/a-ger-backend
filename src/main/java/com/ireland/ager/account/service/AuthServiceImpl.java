@@ -4,10 +4,7 @@ import com.ireland.ager.account.dto.response.AccountResponse;
 import com.ireland.ager.account.dto.response.KakaoResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.repository.AccountRepository;
-import com.ireland.ager.config.exception.ExpiredAccessTokenException;
-import com.ireland.ager.config.exception.IntenalServerErrorException;
-import com.ireland.ager.config.exception.NotFoundException;
-import com.ireland.ager.config.exception.UnAuthorizedTokenException;
+import com.ireland.ager.config.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -160,6 +157,7 @@ public class AuthServiceImpl {
     }
 
     public int isValidToken(String accessToken) {
+        validateTokkenExists(accessToken);
         String vaildCheckHost = "https://kapi.kakao.com/v1/user/access_token_info";
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -175,5 +173,10 @@ public class AuthServiceImpl {
             else
                 throw new IntenalServerErrorException();
         }
+    }
+    public void validateTokkenExists(String accessToken){
+        if(accessToken.isEmpty())
+            throw new NotFoundTokkenException();
+
     }
 }
