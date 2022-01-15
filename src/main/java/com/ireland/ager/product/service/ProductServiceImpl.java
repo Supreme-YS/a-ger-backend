@@ -2,6 +2,10 @@ package com.ireland.ager.product.service;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
+import com.ireland.ager.config.exception.InvaildDataException;
+import com.ireland.ager.config.exception.InvaildUploadException;
+import com.ireland.ager.config.exception.NotFoundException;
+import com.ireland.ager.config.exception.UnAuthorizedTokenException;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.entity.Product;
@@ -35,7 +39,6 @@ public class ProductServiceImpl {
         Account account = accountService.findAccountByAccessToken(accessToken);
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
         Product product = productRequest.toProduct(account, uploadImagesUrl);
-        //상품 저장
         productRepository.save(product);
         return product;
     }
@@ -44,26 +47,25 @@ public class ProductServiceImpl {
 //    @Cacheable(key = "#productId", value = "product", cacheManager = "redisCacheManager")
     public Product findProductById(Long productId) {
         Optional<Product> product = productRepository.findById(productId);
+        product.orElseThrow(NotFoundException::new);
         product.get().addViewCnt(product.get());
         productRepository.save(product.get());
+        //Todo 옵셔널을 사용해서 위에서 널 체크는 확인 하였으니 .orElse빼고 Product만 반환하고 싶다. 작동에는 이상무
         return product.orElse(null);
     }
 
-    public Boolean updateProductById(Long productId,
+    public Product updateProductById(Long productId,
                                      String accessToken,
                                      List<MultipartFile> multipartFile,
                                      ProductUpdateRequest productUpdateRequest) {
         // 원래 정보를 꺼내온다.
         Optional<Product> productById = productRepository.findById(productId);
-
-        if (!productById.isPresent()) {
-            // 정보가 없다면 False
-            return Boolean.FALSE;
-        }
-        if (!(productById.orElse(null).getAccount().equals(accountService.findAccountByAccessToken(accessToken)))) {
+        if (!(productById.orElseThrow(NotFoundException::new).getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
             // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
-            return Boolean.FALSE;
+            throw new UnAuthorizedTokenException();
         }
+        validateFileExists(multipartFile);
+        //들어온 multiFile의 리스트를 확인 하는 과정
         if (multipartFile != null) {
             List<String> updateFileImageUrlList = null;
             List<String> currentFileImageUrlList = productById.orElse(null).getUrlList();
@@ -79,14 +81,23 @@ public class ProductServiceImpl {
         Account accountById = accountService.findAccountById(productById.orElse(null).getAccount().getAccountId());
         Product toProductUpdate = productUpdateRequest.toProductUpdate(productById.orElse(null), accountById, productById.get().getUrlList());
         productRepository.save(toProductUpdate);
-        return Boolean.TRUE;
+        return toProductUpdate;
     }
 
     //FIXME 상품 삭제시 S3저장소에 이미지도 삭제하기 해결 완료
-    public void deleteProductById(Long productId) {
-        uploadService.delete(productRepository
-                .findById(productId).orElse(null)
-                .getUrlList());
+    public void deleteProductById(Long productId,String accessToken) {
+        Optional<Product> productById = productRepository.findById(productId);
+        if (!(productById.orElseThrow(NotFoundException::new).getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
+            // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
+            throw new UnAuthorizedTokenException();
+        }
+        uploadService.delete(productRepository.findById(productId).orElseThrow(NotFoundException::new).getUrlList());
         productRepository.deleteById(productId);
+    }
+    //Todo 들어온 파일리스트가 널값이면 사진갯수 에러를 반환하는 메서드이다. 하지만 파일의 갯수가 없어도 사이즈가 1로 찍힌다.
+    // 파일 사이즈는 콘솔창에 업로드 파일의 갯수 찾아서 보면 확인 가능
+    public void validateFileExists(List<MultipartFile> file){
+        if(file.isEmpty())
+            throw new InvaildUploadException();
     }
 }

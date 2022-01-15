@@ -2,6 +2,9 @@ package com.ireland.ager.product.controller;
 
 
 import com.ireland.ager.account.service.AuthServiceImpl;
+import com.ireland.ager.main.common.CommonResult;
+import com.ireland.ager.main.common.SingleResult;
+import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
@@ -28,21 +31,22 @@ public class ProductController {
     private final AuthServiceImpl authService;
     private final TradeServiceImpl tradeService;
 
+    private final ResponseService responseService;
+
 
     @GetMapping("/{productId}")
-    public ResponseEntity<ProductResponse> findProductById(
+    public ResponseEntity<SingleResult<ProductResponse>> findProductById(
             /**
              * @Method : findProductById
              * @Description : 상품 하나의 정보를 불러온다
              */
             @PathVariable Long productId) {
-        log.info("{}", productId);
-        Product product = productService.findProductById(productId);
-        return new ResponseEntity<>(ProductResponse.toProductResponse(product), HttpStatus.OK);
+        return new ResponseEntity<>(responseService.getSingleResult(ProductResponse.toProductResponse
+                (productService.findProductById(productId))), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ProductResponse> createProduct(
+    public ResponseEntity<SingleResult<ProductResponse>> createProduct(
             /**
              * @Method : postProduct
              * @Description : 판매자가 판매할 제품을 등록한다.
@@ -50,23 +54,16 @@ public class ProductController {
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
             @RequestPart(value = "product") ProductRequest productRequest) {
-
-        int vaildTokenStatusValue = authService.isValidToken(accessToken);
-
-        if (vaildTokenStatusValue == 200) {
+            //Todo 토큰값이 유효하지 않을떄
+            authService.isValidToken(accessToken);
+            //Todo MultipartFile size가 비어있어도 자꾸 1로 뜨는 오류 (1개 선택해서 넣으면 사이즈1, 2개 선택해서 넣으면 2 장난하나?)
+            productService.validateFileExists(multipartFile);
             String[] splitToken = accessToken.split(" ");
-            Product product = productService.createProduct(splitToken[1], productRequest, multipartFile);
-            return new ResponseEntity<>(ProductResponse.toProductResponse(product), HttpStatus.CREATED);
-        } else if (vaildTokenStatusValue == 401) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return new ResponseEntity<>(responseService.getSingleResult
+                    (ProductResponse.toProductResponse(productService.createProduct(splitToken[1], productRequest, multipartFile))), HttpStatus.CREATED);
     }
-
     @PatchMapping("/{productId}")
-    public ResponseEntity<Boolean> updateProduct(
+    public ResponseEntity<SingleResult<ProductResponse>> updateProduct(
             /**
              * @Method : updateProduct
              * @Description : 상품에 대한 정보를 수정한다.
@@ -76,40 +73,33 @@ public class ProductController {
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
             @RequestPart(value = "product") ProductUpdateRequest productUpdateRequest) {
 
-        int vaildTokenStatusValue = authService.isValidToken(accessToken);
-        if (vaildTokenStatusValue == 200) {
+            authService.isValidToken(accessToken);
             String[] splitToken = accessToken.split(" ");
-            Boolean isUpdated = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);
-            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
-        } else if (vaildTokenStatusValue == 401) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            return new ResponseEntity<>(responseService.getSingleResult(ProductResponse.toProductResponse
+                    (productService.updateProductById(productId,splitToken[1],multipartFile,productUpdateRequest))),HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{productId}")
-    public ResponseEntity<String> deleteProductById(
+    public ResponseEntity<CommonResult> deleteProductById(
             /**
              * @Method : deleteProductById
              * @Description : 상품 아이디를 기준으로 삭제한다
              */
             @RequestHeader("Authorization") String accessToken,
             @PathVariable long productId) {
-        int vaildTokenStatusValue = authService.isValidToken(accessToken);
-
-        if (vaildTokenStatusValue == 200) {
-            productService.deleteProductById(productId);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else if (vaildTokenStatusValue == 401) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            //토큰 유효성 검사
+            authService.isValidToken(accessToken);
+            String[] splitToken = accessToken.split(" ");
+            productService.deleteProductById(productId,splitToken[1]);
+            return new ResponseEntity<>(responseService.getSuccessResult(),HttpStatus.OK);
     }
 
     @PatchMapping("/status/{productId}")
     public ResponseEntity<Boolean> setStatus(
+            /**
+             * @Method : setStatus
+             * @Description : 상품 아이디를 기준으로 상품 상태를 변경한다.
+             */
             @RequestHeader("Authorization") String accessToken,
             @PathVariable long productId,
             @RequestPart(value = "status") String status) {

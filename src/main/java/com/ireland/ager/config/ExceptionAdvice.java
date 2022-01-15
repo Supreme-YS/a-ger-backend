@@ -55,4 +55,9 @@ public class ExceptionAdvice {
         CommonResult commonResult=responseService.getFailResult(CommonResponse.UNAUTHORIZEDTOKEN);
         return new ResponseEntity<>(commonResult,HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(NotFoundTokkenException.class)
+    public ResponseEntity<CommonResult> unAuthorizedTokenException(NotFoundTokkenException e) {
+        CommonResult commonResult=responseService.getFailResult(CommonResponse.NOTFOUNDTOKKEN);
+        return new ResponseEntity<>(commonResult,HttpStatus.UNAUTHORIZED);
+    }
 }

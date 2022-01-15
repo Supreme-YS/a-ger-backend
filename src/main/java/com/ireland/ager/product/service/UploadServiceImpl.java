@@ -1,10 +1,13 @@
 package com.ireland.ager.product.service;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
+import com.ireland.ager.config.exception.InvaildFileExtensionException;
+import com.ireland.ager.config.exception.InvaildUploadException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,8 +55,9 @@ public class UploadServiceImpl {
             @Param: uploadFiles
             @content: 이미지 파일들을 s3에 업로드하고 url을 return
         */
-
+        log.info("업로드 파일의 갯수 : {}",uploadFiles.size());
         List<String> uploadUrl = new ArrayList<>();
+
 
         for (MultipartFile uploadFile : uploadFiles) {
             String origName = uploadFile.getOriginalFilename();
@@ -70,7 +74,7 @@ public class UploadServiceImpl {
                 file.delete();
                 uploadUrl.add(url);
             } catch (StringIndexOutOfBoundsException | IOException e) {
-                url = null;
+                   url=null;
             }
         }
         return uploadUrl;
@@ -87,7 +91,8 @@ public class UploadServiceImpl {
         try {
             upload.waitForCompletion();
         } catch (AmazonClientException | InterruptedException amazonClientException) {
-            amazonClientException.printStackTrace();
+            log.info("getCause : {}",amazonClientException.getCause());
+            throw new InvaildFileExtensionException();
         }
     }
 }
