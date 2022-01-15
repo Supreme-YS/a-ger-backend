@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -81,12 +80,12 @@ public class ProductServiceImpl {
 
     //FIXME 상품 삭제시 S3저장소에 이미지도 삭제하기 해결 완료
     public void deleteProductById(Long productId,String accessToken) {
-        Optional<Product> productById = productRepository.findById(productId);
-        if (!(productById.orElseThrow(NotFoundException::new).getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
+        Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
+        if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
             // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             throw new UnAuthorizedTokenException();
         }
-        uploadService.delete(productRepository.findById(productId).orElseThrow(NotFoundException::new).getUrlList());
+        uploadService.delete(productById.getUrlList());
         productRepository.deleteById(productId);
     }
     //Todo 들어온 파일리스트가 널값이면 사진갯수 에러를 반환하는 메서드이다. 하지만 파일의 갯수가 없어도 사이즈가 1로 찍힌다.
