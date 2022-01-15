@@ -8,10 +8,12 @@ import com.ireland.ager.config.exception.UnAuthorizedTokenException;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
+import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,10 +30,20 @@ public class ProductServiceImpl {
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
 
-    public List<Product> getAllProducts() {
-        List<Product> productList = productRepository.findAll();
+    public List<ProductResponse> findProductAllOrderByCreatedAtDesc() {
+        List<Product> productList = productRepository.findAll(Sort.by(Sort.Direction.DESC,"createdAt"));
+        if(productList.isEmpty()) throw new NotFoundException();
+        return ProductResponse.toProductListResponse(productList);
+    }
 
-        return productRepository.findAll();
+    public List<ProductResponse> findProductAllOrderByProductViewCntDesc() {
+        List<Product> productList = productRepository.findAll(Sort.by(Sort.Direction.DESC,"productViewCnt"));
+        if(productList.isEmpty()) throw new NotFoundException();
+        return ProductResponse.toProductListResponse(productList);
+    }
+    public List<ProductResponse> findProductAllByCategory(String category) {
+        List<Product> productsByCategory = productRepository.findProductsByCategory(Category.valueOf(category)).orElseThrow(NotFoundException::new);
+        return ProductResponse.toProductListResponse(productsByCategory);
     }
 
     public ProductResponse createProduct(String accessToken,
@@ -65,7 +77,7 @@ public class ProductServiceImpl {
         }
         validateFileExists(multipartFile);
         //들어온 multiFile의 리스트를 확인 하는 과정
-        List<String> updateFileImageUrlList = null;
+        List<String> updateFileImageUrlList;
         List<String> currentFileImageUrlList = productById.getUrlList();
         uploadService.delete(currentFileImageUrlList);
         try {
