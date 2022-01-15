@@ -13,6 +13,7 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,6 +30,11 @@ public class ProductServiceImpl {
     private final ProductRepository productRepository;
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
+
+    public List<ProductResponse> findProductAll(Integer page, Integer size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return ProductResponse.toProductListResponse(productRepository.findAll(pageRequest).getContent());
+    }
 
     public List<ProductResponse> findProductAllOrderByCreatedAtDesc() {
         List<Product> productList = productRepository.findAll(Sort.by(Sort.Direction.DESC,"createdAt"));
