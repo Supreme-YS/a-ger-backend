@@ -7,6 +7,7 @@ import com.ireland.ager.config.exception.NotFoundException;
 import com.ireland.ager.config.exception.UnAuthorizedTokenException;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
+import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +29,19 @@ public class ProductServiceImpl {
     private final UploadServiceImpl uploadService;
 
     public List<Product> getAllProducts() {
+        List<Product> productList = productRepository.findAll();
+
         return productRepository.findAll();
     }
 
-    public Product createProduct(String accessToken,
+    public ProductResponse createProduct(String accessToken,
                                  ProductRequest productRequest,
                                  List<MultipartFile> multipartFile) {
         Account account = accountService.findAccountByAccessToken(accessToken);
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
         Product product = productRequest.toProduct(account, uploadImagesUrl);
         productRepository.save(product);
-        return product;
+        return ProductResponse.toProductResponse(product);
     }
 
     //FIXME 캐시 적용 하는 곳,,
@@ -50,7 +53,7 @@ public class ProductServiceImpl {
         return product;
     }
 
-    public Product updateProductById(Long productId,
+    public ProductResponse updateProductById(Long productId,
                                      String accessToken,
                                      List<MultipartFile> multipartFile,
                                      ProductUpdateRequest productUpdateRequest) {
@@ -75,7 +78,7 @@ public class ProductServiceImpl {
         Account accountById = accountService.findAccountById(productById.getAccount().getAccountId());
         Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountById, productById.getUrlList());
         productRepository.save(toProductUpdate);
-        return toProductUpdate;
+        return ProductResponse.toProductResponse(toProductUpdate);
     }
 
     //FIXME 상품 삭제시 S3저장소에 이미지도 삭제하기 해결 완료

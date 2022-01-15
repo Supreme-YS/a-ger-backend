@@ -2,8 +2,11 @@ package com.ireland.ager.main.common.service;
 
 import com.ireland.ager.main.common.CommonResponse;
 import com.ireland.ager.main.common.CommonResult;
+import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.SingleResult;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ResponseService {
@@ -12,6 +15,13 @@ public class ResponseService {
     public <T> SingleResult<T> getSingleResult(T data) {
         SingleResult<T> result = new SingleResult<>();
         result.setData(data);
+        setSuccessResult(result);
+        return result;
+    }
+    //복수건 결과 처리 메소드
+    public <T> ListResult<T> getListResult(List<T> list) {
+        ListResult<T> result = new ListResult<>();
+        result.setData(list);
         setSuccessResult(result);
         return result;
     }
