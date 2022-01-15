@@ -8,7 +8,6 @@ import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
-import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import com.ireland.ager.product.service.TradeServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -95,7 +94,7 @@ public class ProductController {
     }
 
     @PatchMapping("/status/{productId}")
-    public ResponseEntity<Boolean> setStatus(
+    public ResponseEntity<CommonResult> setStatus(
             /**
              * @Method : setStatus
              * @Description : 상품 아이디를 기준으로 상품 상태를 변경한다.
@@ -104,16 +103,9 @@ public class ProductController {
             @PathVariable long productId,
             @RequestPart(value = "status") String status) {
         // 유효한 토큰인지 확인한다.
-        int vaildTokenStatusValue = authService.isValidToken(accessToken);
-        // 유효한 토큰이라면, 서비스에서 로직을 처리한다.
-        if (vaildTokenStatusValue == 200) {
-            String[] splitToken = accessToken.split(" ");
-            Boolean isUpdated = tradeService.isUpdated(productId, splitToken[1], status);
-            return new ResponseEntity<>(isUpdated, HttpStatus.CREATED);
-        } else if (vaildTokenStatusValue == 401) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        } else {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        authService.isValidToken(accessToken);
+        String[] splitToken = accessToken.split(" ");
+        tradeService.isUpdated(productId, splitToken[1], status);
+        return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.CREATED);
     }
 }
