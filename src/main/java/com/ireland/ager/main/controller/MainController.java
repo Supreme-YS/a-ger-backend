@@ -24,14 +24,14 @@ public class MainController {
 
     @GetMapping("/api/product")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProducts(
-            @RequestPart(value = "page") Integer page,
+            @RequestPart(value = "productId") Long productId,
             @RequestPart(value = "size") Integer size) {
         /**
          * @Method : getlistAllProducts
-         * @Description :  페이지{page} 정보와 화면에 보이고 싶은 갯수{size}를 넘겨주면 그에 맞는 페이지를 불러온다.
+         * @Description :  프론트에서 리스트 중에 가장 작은 페이지아이디{productId}와 화면에 보일 갯수{size} 를넘겨준다.
          */
         return new ResponseEntity<>(responseService.getListResult(
-                productService.findProductAllByCreatedAtDesc(page,size)), HttpStatus.OK);
+                productService.findProductAllByCreatedAtDesc(productId,size)), HttpStatus.OK);
     }
     @GetMapping("/api/product/views")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByViewCnt(

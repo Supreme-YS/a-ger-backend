@@ -13,7 +13,9 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,10 +33,12 @@ public class ProductServiceImpl {
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
     //Todo 전체 조회에서 NotFound에러는 반환을 안해줍니다 상품이 없는건 에러가 아니라고 생각해서 프론트에서 빈 리스트를 보면 추가적인 멘트를 남기는 작업을 하면 될거 같습니다.
-    public List<ProductResponse> findProductAllByCreatedAtDesc(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return ProductResponse.toProductListResponse(productRepository.findAll(pageRequest).getContent());
+
+    public List<ProductResponse> findProductAllByCreatedAtDesc(Long prductId, Integer size) {
+        Pageable pageRequest = PageRequest.of(0, size);
+        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdIsLessThanOrderByCreatedAtDesc(prductId,pageRequest).getContent());
     }
+
 
     public List<ProductResponse> findProductAllByProductViewCntDesc(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("productViewCnt").descending());
