@@ -36,8 +36,7 @@ public class ProductServiceImpl {
 
     public List<ProductResponse> findProductAllByCreatedAtDesc(Long prductId, Integer size) {
         Pageable pageRequest = PageRequest.of(0, size);
-        Page<Product> productPage= productRepository.findProductsByProductIdIsLessThanOrderByCreatedAtDesc(prductId,pageRequest);
-        return ProductResponse.toProductListResponse(productPage.getContent());
+        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdIsLessThanOrderByCreatedAtDesc(prductId,pageRequest).getContent());
     }
 
 
