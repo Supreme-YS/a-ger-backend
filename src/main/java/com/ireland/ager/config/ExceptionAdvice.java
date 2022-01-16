@@ -17,47 +17,55 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(ExpiredAccessTokenException.class)
     public ResponseEntity<CommonResult> expiredAccessTokenException(ExpiredAccessTokenException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.EXPIREDACCESSTOKEN);
-        return new ResponseEntity<>(commonResult,HttpStatus.UNAUTHORIZED);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.EXPIREDACCESSTOKEN);
+        return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
     }
+
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<CommonResult> notFoundException(NotFoundException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.NOTFOUND);
-        return new ResponseEntity<>(commonResult,HttpStatus.NOT_FOUND);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.NOTFOUND);
+        return new ResponseEntity<>(commonResult, HttpStatus.NOT_FOUND);
     }
+
     @ExceptionHandler(UnAuthorizedAccessException.class)
     public ResponseEntity<CommonResult> unAuthorizedAccessException(UnAuthorizedAccessException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.UNAUTHORIZEDACCESS);
-        return new ResponseEntity<>(commonResult,HttpStatus.UNAUTHORIZED);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.UNAUTHORIZEDACCESS);
+        return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
     }
+
     @ExceptionHandler(InvaildUploadException.class)
     public ResponseEntity<CommonResult> invaildUploadException(InvaildUploadException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.INVALIDUPLOAD);
-        return new ResponseEntity<>(commonResult,HttpStatus.BAD_REQUEST);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDUPLOAD);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvaildDataException.class)
     public ResponseEntity<CommonResult> invaildDataException(InvaildDataException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.INVALIDDATA);
-        return new ResponseEntity<>(commonResult,HttpStatus.BAD_REQUEST);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDDATA);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvaildFileExtensionException.class)
     public ResponseEntity<CommonResult> invaildFileExtensionException(InvaildFileExtensionException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.INVALIDFILEEXTENSION);
-        return new ResponseEntity<>(commonResult,HttpStatus.BAD_REQUEST);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDFILEEXTENSION);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(IntenalServerErrorException.class)
     public ResponseEntity<CommonResult> intenalServerErrorException(IntenalServerErrorException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.INTERNALSERVERERROR);
-        return new ResponseEntity<>(commonResult,HttpStatus.INTERNAL_SERVER_ERROR);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INTERNALSERVERERROR);
+        return new ResponseEntity<>(commonResult, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
     @ExceptionHandler(UnAuthorizedTokenException.class)
     public ResponseEntity<CommonResult> unAuthorizedTokenException(UnAuthorizedTokenException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.UNAUTHORIZEDTOKEN);
-        return new ResponseEntity<>(commonResult,HttpStatus.BAD_REQUEST);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.UNAUTHORIZEDTOKEN);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(NotFoundTokenException.class)
     public ResponseEntity<CommonResult> unAuthorizedTokenException(NotFoundTokenException e) {
-        CommonResult commonResult=responseService.getFailResult(CommonResponse.NOTFOUNDTOKEN);
-        return new ResponseEntity<>(commonResult,HttpStatus.UNAUTHORIZED);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.NOTFOUNDTOKEN);
+        return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
     }
 }

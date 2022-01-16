@@ -13,6 +13,5 @@ public enum ProductStatus {
     ProductStatus(String description) {
         this.description = description;
     }
-
 }
 

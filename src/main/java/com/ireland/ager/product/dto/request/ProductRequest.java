@@ -15,6 +15,7 @@ public class ProductRequest {
     String productPrice;
     String productDetail;
     String category;
+
     public Product toProduct(Account account,
                              List<String> uploadImageUrl) {
         Product product = new Product();

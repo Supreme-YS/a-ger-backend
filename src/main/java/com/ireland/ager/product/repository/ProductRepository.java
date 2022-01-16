@@ -12,5 +12,6 @@ import java.util.List;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findProductsByCategory(Pageable pageable, Category category);
-    Page<Product> findProductsByProductIdIsLessThanOrderByCreatedAtDesc(Long productId,Pageable pageRequest);
+
+    Page<Product> findProductsByProductIdIsLessThanOrderByCreatedAtDesc(Long productId, Pageable pageRequest);
 }

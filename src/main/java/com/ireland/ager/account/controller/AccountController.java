@@ -55,7 +55,7 @@ public class AccountController {
     public ResponseEntity<SingleResult<AccountAllResponse>> getMyAccount(@RequestHeader("Authorization") String accessToken) {
         authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
-        AccountAllResponse accountAllResponse=accountService.findMyAccountByAccessToken(splitToken[1]);
+        AccountAllResponse accountAllResponse = accountService.findMyAccountByAccessToken(splitToken[1]);
         return new ResponseEntity<>(
                 responseService.getSingleResult(accountAllResponse), HttpStatus.OK);
     }

@@ -13,7 +13,6 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,27 +32,27 @@ public class ProductServiceImpl {
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
     //Todo 전체 조회에서 NotFound에러는 반환을 안해줍니다 상품이 없는건 에러가 아니라고 생각해서 프론트에서 빈 리스트를 보면 추가적인 멘트를 남기는 작업을 하면 될거 같습니다.
+    //TODO : "더 이상 등록된 제품이 없습니다." 문구 추가 필요 - FRONTEND
 
     public List<ProductResponse> findProductAllByCreatedAtDesc(Long prductId, Integer size) {
         Pageable pageRequest = PageRequest.of(0, size);
-        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdIsLessThanOrderByCreatedAtDesc(prductId,pageRequest).getContent());
+        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdIsLessThanOrderByCreatedAtDesc(prductId, pageRequest).getContent());
     }
-
 
     public List<ProductResponse> findProductAllByProductViewCntDesc(Integer page, Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("productViewCnt").descending());
         return ProductResponse.toProductListResponse(productRepository.findAll(pageRequest).getContent());
     }
 
-    public List<ProductResponse> findProductAllByCategory(Integer page, Integer size,String category) {
+    public List<ProductResponse> findProductAllByCategory(Integer page, Integer size, String category) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("productViewCnt").descending());
-        List<Product> productList = productRepository.findProductsByCategory(pageRequest,Category.valueOf(category));
+        List<Product> productList = productRepository.findProductsByCategory(pageRequest, Category.valueOf(category));
         return ProductResponse.toProductListResponse(productList);
     }
 
     public ProductResponse createProduct(String accessToken,
-                                 ProductRequest productRequest,
-                                 List<MultipartFile> multipartFile) {
+                                         ProductRequest productRequest,
+                                         List<MultipartFile> multipartFile) {
         Account account = accountService.findAccountByAccessToken(accessToken);
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
         Product product = productRequest.toProduct(account, uploadImagesUrl);
@@ -64,16 +63,16 @@ public class ProductServiceImpl {
     //FIXME 캐시 적용 하는 곳,,
 //    @Cacheable(key = "#productId", value = "product", cacheManager = "redisCacheManager")
     public Product findProductById(Long productId) {
-        Product product=productRepository.findById(productId).orElseThrow(NotFoundException::new);
+        Product product = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         product.addViewCnt(product);
         productRepository.save(product);
         return product;
     }
 
     public ProductResponse updateProductById(Long productId,
-                                     String accessToken,
-                                     List<MultipartFile> multipartFile,
-                                     ProductUpdateRequest productUpdateRequest) {
+                                             String accessToken,
+                                             List<MultipartFile> multipartFile,
+                                             ProductUpdateRequest productUpdateRequest) {
         // 원래 정보를 꺼내온다.
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
@@ -99,7 +98,7 @@ public class ProductServiceImpl {
     }
 
     //FIXME 상품 삭제시 S3저장소에 이미지도 삭제하기 해결 완료
-    public void deleteProductById(Long productId,String accessToken) {
+    public void deleteProductById(Long productId, String accessToken) {
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
             // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
@@ -108,10 +107,11 @@ public class ProductServiceImpl {
         uploadService.delete(productById.getUrlList());
         productRepository.deleteById(productId);
     }
+
     //Todo 들어온 파일리스트가 널값이면 사진갯수 에러를 반환하는 메서드이다. 하지만 파일의 갯수가 없어도 사이즈가 1로 찍힌다.
     // 파일 사이즈는 콘솔창에 업로드 파일의 갯수 찾아서 보면 확인 가능
-    public void validateFileExists(List<MultipartFile> file){
-        if(file.isEmpty())
+    public void validateFileExists(List<MultipartFile> file) {
+        if (file.isEmpty())
             throw new InvaildUploadException();
     }
 }

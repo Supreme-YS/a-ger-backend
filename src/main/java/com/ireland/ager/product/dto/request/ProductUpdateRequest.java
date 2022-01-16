@@ -20,7 +20,6 @@ public class ProductUpdateRequest {
     String category;
     String status;
 
-
     public Product toProductUpdate(Product product, Account account,
                                    List<String> uploadImageUrl) {
         List<String> images = new ArrayList<>();

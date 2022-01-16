@@ -1,5 +1,18 @@
 package com.ireland.ager.product.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum Category {
-    전자기기, 생활용품, 의류, 기타, 삽니다
+    ELECTRONIC("전자기기"),
+    HOUSEHOLDS("생활용품"),
+    CLOTHES("의류"),
+    OTHERS("기타"),
+    BUY("삽니다");
+
+    private String description;
+
+    Category(String description) {
+        this.description = description;
+    }
 }

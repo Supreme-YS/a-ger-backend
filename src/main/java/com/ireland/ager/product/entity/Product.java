@@ -59,7 +59,7 @@ public class Product extends BaseEntity implements Serializable {
     }
 
     public void addViewCnt(Product addProduct) {
-        this.setProductViewCnt(addProduct.getProductViewCnt()+1);
+        this.setProductViewCnt(addProduct.getProductViewCnt() + 1);
     }
 
 }

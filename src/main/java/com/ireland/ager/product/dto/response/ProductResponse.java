@@ -40,10 +40,11 @@ public class ProductResponse {
                 .urlList(product.getUrlList())
                 .build();
     }
+
     public static List<ProductResponse> toProductListResponse(List<Product> productList) {
-        List<ProductResponse> productResponseList=new ArrayList<>();
-        for(Product product: productList) {
-            ProductResponse productResponse=ProductResponse.toProductResponse(product);
+        List<ProductResponse> productResponseList = new ArrayList<>();
+        for (Product product : productList) {
+            ProductResponse productResponse = ProductResponse.toProductResponse(product);
             productResponseList.add(productResponse);
         }
         return productResponseList;
