@@ -1,5 +1,6 @@
 package com.ireland.ager.chat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Product;
 import lombok.*;
@@ -24,22 +25,28 @@ public class MessageRoom {
     private Set<Message> messages= new LinkedHashSet<>();
 
     @ManyToOne
-
+    @JsonIgnore
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "seller_id")
+    private Account sellerId;
+
     @OneToOne
+    @JsonIgnore
     @JoinColumn(name = "buyer_id")
     private Account buyerId;
 
-    public MessageRoom toCreateMessageRoom(Product product,Account buyerId) {
+    public void toCreateMessageRoom(Product product,Account buyerId) {
         this.setBuyerId(buyerId);
+        this.setSellerId(product.getAccount());
         this.setProduct(product);
-        return this;
     }
 
-    public MessageRoom toAddMessage(MessageRoom messageRoom,Message message) {
+    public void toAddMessage(MessageRoom messageRoom,Message message) {
         messageRoom.getMessages().add(message);
-        return messageRoom;
+        message.setMessageRoom(messageRoom);
     }
 }

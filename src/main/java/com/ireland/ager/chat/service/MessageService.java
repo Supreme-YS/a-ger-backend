@@ -19,10 +19,9 @@ public class MessageService {
     private final MessageRoomRepository messageRoomRepository;
     private final AccountServiceImpl accountService;
     private final ProductServiceImpl productService;
-    public void insertMessage(Message message) {
-        MessageRoom messageRoom = messageRoomRepository.findById(message.getMessageRoom().getRoomId())
-                .orElseThrow(NotFoundException::new);
-        messageRoom.getMessages().add(message);
+    public void insertMessage(Long roomId, Message message) {
+        MessageRoom messageRoom = messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
+        messageRoom.toAddMessage(messageRoom,message);
         messageRoomRepository.save(messageRoom);
     }
 
