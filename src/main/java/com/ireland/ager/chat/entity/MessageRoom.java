@@ -21,7 +21,7 @@ public class MessageRoom {
     private Long roomId;
 
     //순서 보장을 위해 linkedHashSet
-    @OneToMany(mappedBy = "messageRoom",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "messageRoom",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Message> messages= new LinkedHashSet<>();
 
     @ManyToOne
