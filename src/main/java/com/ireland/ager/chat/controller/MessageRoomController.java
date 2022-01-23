@@ -9,19 +9,20 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/room")
 public class MessageRoomController {
     private final MessageService messageService;
     private final MessageRoomRepository messageRoomRepository;
     /* 방 입장시 지금까지 나눈 정보가 필요하기 때문에 MessageRoom 정보가 필요하다.
      */
-    @GetMapping("/room/enter/{roomId}")
+    @GetMapping("/{roomId}")
     public MessageRoom roomEnter(@PathVariable Long roomId) {
         MessageRoom messageRoom = messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
 
         return messageRoom;
     }
 
-    @PostMapping("/room")
+    @PostMapping
     public MessageRoom insertRoom(
             @RequestParam Long productId,
             @RequestParam Long buyerId

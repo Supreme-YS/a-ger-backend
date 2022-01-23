@@ -3,10 +3,7 @@ package com.ireland.ager.chat.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -24,5 +21,6 @@ public class Message {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "messageRoom_id")
     private MessageRoom messageRoom;
 }
