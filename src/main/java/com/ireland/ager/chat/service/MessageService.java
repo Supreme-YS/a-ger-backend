@@ -3,8 +3,10 @@ package com.ireland.ager.chat.service;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
+import com.ireland.ager.chat.dto.response.MessageRoomResponse;
 import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
+import com.ireland.ager.chat.repository.MessageRepository;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
 import com.ireland.ager.config.exception.NotFoundException;
 import com.ireland.ager.product.entity.Product;
@@ -21,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MessageService {
     private final MessageRoomRepository messageRoomRepository;
+    private final MessageRepository messageRepository;
     private final AccountServiceImpl accountService;
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
@@ -48,6 +51,15 @@ public class MessageService {
     public List<MessageRoom> findRoomByAccessToken(String accessToken) {
         Account account = accountService.findAccountByAccessToken(accessToken);
         Optional<List<MessageRoom>> messageRoomsById = messageRoomRepository.findMessageRoomsBySellerIdOrBuyerId(account,account);
+        //null이어도 에러 처리를 할 필요는 없다.
+        if(messageRoomsById.isPresent()) {
+            getMessageRoomResponse(messageRoomsById.get());
+        }
         return messageRoomsById.orElse(null);
+    }
+
+    public List<MessageRoomResponse> getMessageRoomResponse(List<MessageRoom> messageRoomsById) {
+
+        return null;
     }
 }
