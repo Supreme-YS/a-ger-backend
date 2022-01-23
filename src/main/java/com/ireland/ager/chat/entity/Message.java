@@ -1,9 +1,12 @@
 package com.ireland.ager.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ireland.ager.config.BaseEntity;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -11,16 +14,15 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class Message extends BaseEntity {
     @Id
     @GeneratedValue
     private Long messageId;
     private MessageType messageType;
     private Long senderId;
     private String message;
-
     @ManyToOne
     @JsonIgnore
-    @JoinColumn(name = "messageRoom_id")
+    @JoinColumn(name = "room_id")
     private MessageRoom messageRoom;
 }

@@ -45,14 +45,6 @@ public class Product extends BaseEntity implements Serializable {
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToOne
-    @JoinColumn(name = "buyer_account_id")
-    private Account buyer;
-
-    @ManyToOne
-    @JoinColumn(name = "seller_account_id")
-    private Account seller;
-
     public void addAccount(Account updateAccount) {
         updateAccount.getProducts().add(this);
         this.setAccount(updateAccount);

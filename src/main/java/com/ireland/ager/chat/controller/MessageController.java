@@ -2,6 +2,7 @@ package com.ireland.ager.chat.controller;
 
 import com.ireland.ager.chat.dto.MessageDto;
 import com.ireland.ager.chat.entity.Message;
+import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.entity.MessageType;
 import com.ireland.ager.chat.service.MessageService;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,8 @@ public class MessageController {
         if(MessageType.ENTER.equals(message.getMessageType())) {
             message.setMessage(message.getSenderId()+"이 입장했습니다.");
         }
-        messageService.insertMessage(roomId,message);
-        sendingOperations.convertAndSend("sub/comm/room"+message.getMessageRoom().getRoomId());
+        MessageRoom messageRoom = messageService.insertMessage(roomId, message);
+        sendingOperations.convertAndSend("sub/comm/room"+messageRoom.getRoomId());
         return message;
     }
 }
