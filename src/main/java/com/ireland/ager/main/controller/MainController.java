@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
@@ -24,8 +21,8 @@ public class MainController {
 
     @GetMapping("/api/product")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProducts(
-            @RequestPart(value = "productId") Long productId,
-            @RequestPart(value = "size") Integer size) {
+            @RequestParam(value = "productId") Long productId,
+            @RequestParam(value = "size") Integer size) {
         /**
          * @Method : getlistAllProducts
          * @Description :  프론트에서 리스트 중에 가장 작은 페이지아이디{productId}와 화면에 보일 갯수{size} 를넘겨준다.
@@ -35,16 +32,16 @@ public class MainController {
     }
     @GetMapping("/api/product/views")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByViewCnt(
-            @RequestPart(value = "page") Integer page,
-            @RequestPart(value = "size") Integer size) {
+            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "size") Integer size) {
         return new ResponseEntity<>(responseService.getListResult(
                 productService.findProductAllByProductViewCntDesc(page,size)), HttpStatus.OK);
     }
     @GetMapping("/api/product/category")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByCategory(
-            @RequestPart(value = "productId") Long productId,
-            @RequestPart(value = "size") Integer size,
-            @RequestPart(value = "category") String category) {
+            @RequestParam(value = "productId") Long productId,
+            @RequestParam(value = "size") Integer size,
+            @RequestParam(value = "category") String category) {
         return new ResponseEntity<>(responseService.getListResult(
                 productService.findProductAllByCategory(productId,size,category)), HttpStatus.OK);
     }

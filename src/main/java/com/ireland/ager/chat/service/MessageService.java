@@ -17,12 +17,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Slf4j
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class MessageService {
     private final MessageRoomRepository messageRoomRepository;
@@ -40,18 +42,27 @@ public class MessageService {
     public void deleteById(String accessToken,Long roomId) {
         Account accountByAccessToken=accountService.findAccountByAccessToken(accessToken);
         MessageRoom messageRoom=findByRoomId(roomId);
-        if(!accountByAccessToken.equals(messageRoom.getSellerId())) {
-            // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 False
+        //TODO: Room에 account 정보에 null 값을 넣는다.
+        deleteAccountWithMessageRoom(messageRoom,accountByAccessToken);
+        //REMARK: 둘 다 null 값이면 delete 처리를 한다.
+
+        if(messageRoom.getBuyerId().equals(null) && messageRoom.getSellerId().equals(null)) {
+            messageRoomRepository.deleteById(roomId);
+        }
+    }
+    public void deleteAccountWithMessageRoom(MessageRoom messageRoom, Account account) {
+        if(!(account.equals(messageRoom.getSellerId()) || account.equals(messageRoom.getBuyerId()))) {
+            //REMARK 권한이 없는 경우 에러 처리
             throw new UnAuthorizedAccessException();
         }
-        messageRoomRepository.deleteById(roomId);
+        if (messageRoom.getBuyerId().equals(account)) messageRoom.setBuyerId(null);
+        else messageRoom.setSellerId(null);
+        messageRoomRepository.save(messageRoom);
     }
     public RoomCreateResponse insertRoom(Long productId, String accessToken) {
         Account buyerAccount = accountService.findAccountByAccessToken(accessToken);
         Product sellProduct = productService.findProductById(productId);
-        /*
-        product의 account와 채팅을 하려는 사용자가 같을때는 채팅방 개설이 되지 않아야 한다.
-         */
+        //REMARK: product의 account와 채팅을 하려는 사용자가 같을때는 채팅방 개설이 되지 않아야 한다.
         if(buyerAccount.equals(sellProduct.getAccount())) {
             throw new UnAuthorizedChatException();
         }
@@ -79,7 +90,10 @@ public class MessageService {
         List<MessageRoom> messageRoomsById = messageRoomRepository.findMessageRoomsBySellerIdOrBuyerId(account,account).orElseThrow(NotFoundException::new);
         List<MessageSummaryResponse> messageSummaryResponseList = new ArrayList<>();
         for(MessageRoom messageRoom: messageRoomsById) {
-            messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
+            //TODO: add하기 전에 check를 한다. null이 있는지 없는지.
+            if(!(messageRoom.getSellerId().equals(null) && messageRoom.getBuyerId().equals(null))) {
+                messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
+            }
         }
         //TODO seller일땐 buyer정보, buyer일땐 seller 정보 반환해야 한다.
         return messageSummaryResponseList;

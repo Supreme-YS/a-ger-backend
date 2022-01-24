@@ -46,9 +46,9 @@ public class ProductServiceImpl {
 
     public List<ProductResponse> findProductAllByCategory(Long productId, Integer size, String category) {
         Pageable pageRequest = PageRequest.of(0, size);
-        return ProductResponse.toProductListResponse(
-                productRepository.findProductsByProductIdLessThanAndCategoryOrderByCreatedAtDesc(
-                        productId,pageRequest, Category.valueOf(category)).getContent());
+        List<Product> productContent = productRepository.findProductsByProductIdLessThanAndCategoryOrderByCreatedAtDesc(
+                productId, pageRequest, Category.valueOf(category)).getContent();
+        return ProductResponse.toProductListResponse(productContent);
     }
 
     public ProductResponse createProduct(String accessToken,
