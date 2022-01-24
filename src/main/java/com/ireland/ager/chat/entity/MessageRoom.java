@@ -41,6 +41,7 @@ public class MessageRoom {
     @JoinColumn(name = "buyer_id")
     private Account buyerId;
 
+    private int rommStatus=3;
     public void toCreateMessageRoom(Product product,Account buyerId) {
         this.setBuyerId(buyerId);
         this.setSellerId(product.getAccount());
