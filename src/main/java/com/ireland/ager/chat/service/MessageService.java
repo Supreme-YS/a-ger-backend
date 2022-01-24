@@ -43,22 +43,30 @@ public class MessageService {
         Account accountByAccessToken=accountService.findAccountByAccessToken(accessToken);
         MessageRoom messageRoom=findByRoomId(roomId);
         //TODO: Room에 account 정보에 null 값을 넣는다.
-        deleteAccountWithMessageRoom(messageRoom,accountByAccessToken);
+        MessageRoom messageRoomAfterDelete = deleteAccountWithMessageRoom(messageRoom, accountByAccessToken);
         //REMARK: 둘 다 null 값이면 delete 처리를 한다.
-
-        if(messageRoom.getBuyerId().equals(null) && messageRoom.getSellerId().equals(null)) {
+        if(messageRoomAfterDelete.getRommStatus()==0) {
             messageRoomRepository.deleteById(roomId);
         }
     }
-    public void deleteAccountWithMessageRoom(MessageRoom messageRoom, Account account) {
+    public MessageRoom deleteAccountWithMessageRoom(MessageRoom messageRoom, Account account) {
         if(!(account.equals(messageRoom.getSellerId()) || account.equals(messageRoom.getBuyerId()))) {
             //REMARK 권한이 없는 경우 에러 처리
             throw new UnAuthorizedAccessException();
         }
-        if (messageRoom.getBuyerId().equals(account)) messageRoom.setBuyerId(null);
-        else messageRoom.setSellerId(null);
-        messageRoomRepository.save(messageRoom);
+        //TODO: 비트마스크 처리
+        if(messageRoom.getRommStatus()==0) return messageRoom;
+        if(messageRoom.getRommStatus()!=3) {
+            messageRoom.setRommStatus(0);
+        }
+        else {
+            //3일떄 seller를 0할때 buyer를 0할때
+            if(messageRoom.getSellerId().equals(account)) messageRoom.setRommStatus(1);
+            else messageRoom.setRommStatus(2);
+        }
+        return messageRoomRepository.save(messageRoom);
     }
+
     public RoomCreateResponse insertRoom(Long productId, String accessToken) {
         Account buyerAccount = accountService.findAccountByAccessToken(accessToken);
         Product sellProduct = productService.findProductById(productId);
@@ -91,8 +99,15 @@ public class MessageService {
         List<MessageSummaryResponse> messageSummaryResponseList = new ArrayList<>();
         for(MessageRoom messageRoom: messageRoomsById) {
             //TODO: add하기 전에 check를 한다. null이 있는지 없는지.
-            if(!(messageRoom.getSellerId().equals(null) && messageRoom.getBuyerId().equals(null))) {
-                messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
+            if(account.equals(messageRoom.getSellerId())) { //seller일때
+                if(messageRoom.getRommStatus()==2||messageRoom.getRommStatus()==3) {
+                    messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
+                }
+            }
+            else {
+                if(messageRoom.getRommStatus()==1||messageRoom.getRommStatus()==3) {
+                    messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
+                }
             }
         }
         //TODO seller일땐 buyer정보, buyer일땐 seller 정보 반환해야 한다.
