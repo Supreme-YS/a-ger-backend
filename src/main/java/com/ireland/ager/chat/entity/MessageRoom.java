@@ -24,6 +24,8 @@ public class MessageRoom {
     @OneToMany(mappedBy = "messageRoom",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Message> messages= new LinkedHashSet<>();
 
+    private String latestMessage; //insertMessage 최신화되는? 1. 메세지보낼때마다 저장 2. 조회 리스트 10개 -> 10개만큼 조회
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "product_id")
@@ -48,5 +50,6 @@ public class MessageRoom {
     public void toAddMessage(MessageRoom messageRoom,Message message) {
         messageRoom.getMessages().add(message);
         message.setMessageRoom(messageRoom);
+        messageRoom.setLatestMessage(message.getMessage());
     }
 }

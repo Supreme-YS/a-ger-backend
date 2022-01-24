@@ -1,6 +1,7 @@
 package com.ireland.ager.chat.controller;
 
 import com.ireland.ager.account.service.AuthServiceImpl;
+import com.ireland.ager.chat.dto.response.MessageSummaryResponse;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
 import com.ireland.ager.chat.service.MessageService;
@@ -36,7 +37,7 @@ public class MessageRoomController {
     }
     //TODO: 내 채팅방 조회 기능. list
     @GetMapping
-    public List<MessageRoom> getRoomList(
+    public List<MessageSummaryResponse> getRoomList(
             @RequestHeader("Authorization") String accessToken
     ) {
         //TODO 반환 리스트를 줄때 room_id와 가장 최근 채팅을 보여주면 된다.
