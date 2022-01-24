@@ -36,7 +36,7 @@ public class ProductServiceImpl {
 
     public List<ProductResponse> findProductAllByCreatedAtDesc(Long prductId, Integer size) {
         Pageable pageRequest = PageRequest.of(0, size);
-        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdIsLessThanOrderByCreatedAtDesc(prductId, pageRequest).getContent());
+        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdLessThanOrderByCreatedAtDesc(prductId, pageRequest).getContent());
     }
 
     public List<ProductResponse> findProductAllByProductViewCntDesc(Integer page, Integer size) {
@@ -44,10 +44,11 @@ public class ProductServiceImpl {
         return ProductResponse.toProductListResponse(productRepository.findAll(pageRequest).getContent());
     }
 
-    public List<ProductResponse> findProductAllByCategory(Integer page, Integer size, String category) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("productViewCnt").descending());
-        List<Product> productList = productRepository.findProductsByCategory(pageRequest, Category.valueOf(category));
-        return ProductResponse.toProductListResponse(productList);
+    public List<ProductResponse> findProductAllByCategory(Long productId, Integer size, String category) {
+        Pageable pageRequest = PageRequest.of(0, size);
+        return ProductResponse.toProductListResponse(
+                productRepository.findProductsByProductIdLessThanAndCategoryOrderByCreatedAtDesc(
+                        productId,pageRequest, Category.valueOf(category)).getContent());
     }
 
     public ProductResponse createProduct(String accessToken,

@@ -42,10 +42,10 @@ public class MainController {
     }
     @GetMapping("/api/product/category")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByCategory(
-            @RequestPart(value = "page") Integer page,
+            @RequestPart(value = "productId") Long productId,
             @RequestPart(value = "size") Integer size,
             @RequestPart(value = "category") String category) {
         return new ResponseEntity<>(responseService.getListResult(
-                productService.findProductAllByCategory(page,size,category)), HttpStatus.OK);
+                productService.findProductAllByCategory(productId,size,category)), HttpStatus.OK);
     }
 }
