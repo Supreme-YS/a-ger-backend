@@ -4,10 +4,12 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.chat.dto.response.MessageSummaryResponse;
+import com.ireland.ager.chat.dto.response.RoomCreateResponse;
 import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
 import com.ireland.ager.config.exception.NotFoundException;
+import com.ireland.ager.config.exception.UnAuthorizedAccessException;
 import com.ireland.ager.config.exception.UnAuthorizedChatException;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
@@ -32,8 +34,19 @@ public class MessageService {
         messageRoom.toAddMessage(messageRoom,message);
         return messageRoomRepository.save(messageRoom);
     }
-
-    public MessageRoom insertRoom(Long productId, String accessToken) {
+    public MessageRoom findByRoomId(Long roomId) {
+        return messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
+    }
+    public void deleteById(String accessToken,Long roomId) {
+        Account accountByAccessToken=accountService.findAccountByAccessToken(accessToken);
+        MessageRoom messageRoom=findByRoomId(roomId);
+        if(!accountByAccessToken.equals(messageRoom.getSellerId())) {
+            // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 False
+            throw new UnAuthorizedAccessException();
+        }
+        messageRoomRepository.deleteById(roomId);
+    }
+    public RoomCreateResponse insertRoom(Long productId, String accessToken) {
         Account buyerAccount = accountService.findAccountByAccessToken(accessToken);
         Product sellProduct = productService.findProductById(productId);
         /*
@@ -44,14 +57,23 @@ public class MessageService {
         }
         Optional<MessageRoom> messageRoom = messageRoomRepository.findMessageRoomByProductAndBuyerId(sellProduct, buyerAccount);
         if(messageRoom.isPresent()) { //TODO 방을 만들때 이미 만들어져 있는 방은 생성하지 않아야 한다. messageDetailsResponse
-            return messageRoom.get();
+            return RoomCreateResponse.toRoomCreateResponse(messageRoom.get());
         }
         MessageRoom insertMessageRoom = new MessageRoom();
         insertMessageRoom.toCreateMessageRoom(sellProduct,buyerAccount);
         messageRoomRepository.save(insertMessageRoom);
-        return insertMessageRoom;
+        return RoomCreateResponse.toRoomCreateResponse(insertMessageRoom);
     }
-
+    public MessageRoom roomEnterByAccessToken(String accessToken, Long roomId) {
+        MessageRoom messageRoombyRoomId = messageRoomRepository.findMessageRoomWithMessageByRoomId(roomId).orElseThrow(NotFoundException::new);
+        Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
+        //TODO: 권한이 있는 사용자만 채팅방에 입장할 수 있다.
+        if(!(accountByAccessToken.equals(messageRoombyRoomId.getSellerId())
+                || accountByAccessToken.equals(messageRoombyRoomId.getBuyerId()))) {
+            throw new UnAuthorizedAccessException();
+        }
+        return messageRoombyRoomId;
+    }
     public List<MessageSummaryResponse> findRoomByAccessToken(String accessToken) {
         Account account = accountService.findAccountByAccessToken(accessToken);
         List<MessageRoom> messageRoomsById = messageRoomRepository.findMessageRoomsBySellerIdOrBuyerId(account,account).orElseThrow(NotFoundException::new);
@@ -68,4 +90,6 @@ public class MessageService {
     public Account getAccountBySellOrBuy(MessageRoom messageRoom,Account account) {
         return account.equals(messageRoom.getBuyerId()) ? messageRoom.getSellerId(): messageRoom.getBuyerId();
     }
+
+
 }
