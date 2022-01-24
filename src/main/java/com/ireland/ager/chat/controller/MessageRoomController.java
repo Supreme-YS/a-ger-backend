@@ -26,9 +26,9 @@ public class MessageRoomController {
         return messageRoom;
     }
 
-    @PostMapping
+    @PostMapping("/{productId}")
     public MessageRoom insertRoom(
-            @RequestParam Long productId,
+            @PathVariable Long productId,
             @RequestHeader("Authorization") String accessToken
     ) {
         authService.isValidToken(accessToken);
