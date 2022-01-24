@@ -34,14 +34,14 @@ public class ProductServiceImpl {
     //Todo 전체 조회에서 NotFound에러는 반환을 안해줍니다 상품이 없는건 에러가 아니라고 생각해서 프론트에서 빈 리스트를 보면 추가적인 멘트를 남기는 작업을 하면 될거 같습니다.
     //TODO : "더 이상 등록된 제품이 없습니다." 문구 추가 필요 - FRONTEND
 
-    public List<ProductResponse> findProductAllByCreatedAtDesc(Long prductId, Integer size) {
+    public List<ProductResponse> findProductAllByCreatedAtDesc(Long productId, Integer size) {
         Pageable pageRequest = PageRequest.of(0, size);
-        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdLessThanOrderByCreatedAtDesc(prductId, pageRequest).getContent());
+        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdLessThanOrderByCreatedAtDesc(productId, pageRequest).getContent());
     }
 
-    public List<ProductResponse> findProductAllByProductViewCntDesc(Integer page, Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("productViewCnt").descending());
-        return ProductResponse.toProductListResponse(productRepository.findAll(pageRequest).getContent());
+    public List<ProductResponse> findProductAllByProductViewCntDesc(Long productId, Integer size) {
+        PageRequest pageRequest = PageRequest.of(0, size);
+        return ProductResponse.toProductListResponse(productRepository.findProductByProductIdIsLessThanOrderByProductViewCntDesc(productId,pageRequest).getContent());
     }
 
     public List<ProductResponse> findProductAllByCategory(Long productId, Integer size, String category) {

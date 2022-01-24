@@ -32,10 +32,10 @@ public class MainController {
     }
     @GetMapping("/api/product/views")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByViewCnt(
-            @RequestParam(value = "page") Integer page,
+            @RequestParam(value = "productId") Long productId,
             @RequestParam(value = "size") Integer size) {
         return new ResponseEntity<>(responseService.getListResult(
-                productService.findProductAllByProductViewCntDesc(page,size)), HttpStatus.OK);
+                productService.findProductAllByProductViewCntDesc(productId,size)), HttpStatus.OK);
     }
     @GetMapping("/api/product/category")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByCategory(
