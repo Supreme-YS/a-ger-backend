@@ -8,6 +8,7 @@ import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
 import com.ireland.ager.config.exception.NotFoundException;
+import com.ireland.ager.config.exception.UnAuthorizedChatException;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,12 @@ public class MessageService {
     public MessageRoom insertRoom(Long productId, String accessToken) {
         Account buyerAccount = accountService.findAccountByAccessToken(accessToken);
         Product sellProduct = productService.findProductById(productId);
+        /*
+        product의 account와 채팅을 하려는 사용자가 같을때는 채팅방 개설이 되지 않아야 한다.
+         */
+        if(buyerAccount.equals(sellProduct.getAccount())) {
+            throw new UnAuthorizedChatException();
+        }
         Optional<MessageRoom> messageRoom = messageRoomRepository.findMessageRoomByProductAndBuyerId(sellProduct, buyerAccount);
         if(messageRoom.isPresent()) { //TODO 방을 만들때 이미 만들어져 있는 방은 생성하지 않아야 한다. messageDetailsResponse
             return messageRoom.get();
@@ -59,14 +66,6 @@ public class MessageService {
         return MessageSummaryResponse.toMessageSummaryResponse(messageRoom,account);
     }
     public Account getAccountBySellOrBuy(MessageRoom messageRoom,Account account) {
-        log.info("Accessaccount:{}",account);
-        log.info("Selleraccount:{}",messageRoom.getSellerId());
-        log.info("Buyeraccount:{}",messageRoom.getBuyerId());
-        if(account.equals(messageRoom.getBuyerId())) {
-            return messageRoom.getSellerId();
-        }
-        else {
-            return messageRoom.getBuyerId();
-        }
+        return account.equals(messageRoom.getBuyerId()) ? messageRoom.getSellerId(): messageRoom.getBuyerId();
     }
 }

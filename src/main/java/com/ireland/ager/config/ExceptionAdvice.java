@@ -68,4 +68,9 @@ public class ExceptionAdvice {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.NOTFOUNDTOKEN);
         return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
     }
+    @ExceptionHandler(UnAuthorizedChatException.class)
+    public ResponseEntity<CommonResult> unAuthorizedChatException(UnAuthorizedChatException e) {
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.UNAUTHORIZEDCHAT);
+        return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
+    }
 }
