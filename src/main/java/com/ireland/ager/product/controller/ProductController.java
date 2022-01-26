@@ -9,7 +9,7 @@ import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.service.ProductServiceImpl;
-import com.ireland.ager.product.service.TradeServiceImpl;
+import com.ireland.ager.trade.service.TradeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,6 @@ public class ProductController {
 
     private final ProductServiceImpl productService;
     private final AuthServiceImpl authService;
-    private final TradeServiceImpl tradeService;
 
     private final ResponseService responseService;
 
@@ -101,21 +100,5 @@ public class ProductController {
         String[] splitToken = accessToken.split(" ");
         productService.deleteProductById(productId, splitToken[1]);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);
-    }
-
-    @PatchMapping("/status/{productId}")
-    public ResponseEntity<CommonResult> setStatus(
-            /**
-             * @Method : setStatus
-             * @Description : 상품 아이디를 기준으로 상품 상태를 변경한다.
-             */
-            @RequestHeader("Authorization") String accessToken,
-            @PathVariable long productId,
-            @RequestPart(value = "status") String status) {
-        // 유효한 토큰인지 확인한다.
-        authService.isValidToken(accessToken);
-        String[] splitToken = accessToken.split(" ");
-        tradeService.isUpdated(productId, splitToken[1], status);
-        return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.CREATED);
     }
 }

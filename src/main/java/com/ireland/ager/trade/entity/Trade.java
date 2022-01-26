@@ -28,4 +28,11 @@ public class Trade {
     @JsonIgnore
     @JoinColumn(name = "buyer_id")
     private Account buyerId;
+
+    public static Trade toTrade(Product product,Account buyerId) {
+        return Trade.builder()
+                .product(product)
+                .buyerId(buyerId)
+                .build();
+    }
 }
