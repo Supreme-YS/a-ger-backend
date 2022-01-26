@@ -6,13 +6,18 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.ProductStatus;
 import lombok.Data;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
 public class ProductRequest {
+    @NotBlank(message = "상품 제목은 필수 항목입니다.")
     String productName;
+    @Min(value = 0,message="상품 가격을 확인해주세요")
     String productPrice;
+    @NotBlank(message = "상품 상세정보는 필수 항목입니다.")
     String productDetail;
     String category;
 

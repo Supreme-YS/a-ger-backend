@@ -1,4 +1,4 @@
-package com.ireland.ager.config.exception;
+package com.ireland.ager.account.exception;
 
 public class NotFoundTokenException extends  RuntimeException {
     public NotFoundTokenException(){

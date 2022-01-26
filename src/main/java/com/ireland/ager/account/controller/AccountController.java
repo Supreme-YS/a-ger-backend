@@ -90,4 +90,6 @@ public class AccountController {
         accountService.deleteAccount(splitToken[1], accountId);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);
     }
+
+
 }

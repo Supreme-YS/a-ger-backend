@@ -19,6 +19,8 @@ public enum CommonResponse {
     UNAUTHORIZEDTOKEN(-400,"카카오 액세스 토큰이 유효하지 않습니다"),
     UNAUTHORIZEDCHAT(-600,"채팅방을 개설할 수 없습니다"),
     NOTFOUNDTOKEN(-401,"카카오 액서스 토큰이 없습니다.");
+
+
     int code;
     String msg;
 }

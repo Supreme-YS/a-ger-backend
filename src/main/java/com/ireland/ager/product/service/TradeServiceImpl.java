@@ -1,8 +1,8 @@
 package com.ireland.ager.product.service;
 
 import com.ireland.ager.account.service.AccountServiceImpl;
-import com.ireland.ager.config.exception.NotFoundException;
-import com.ireland.ager.config.exception.UnAuthorizedAccessException;
+import com.ireland.ager.main.exception.NotFoundException;
+import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.ProductStatus;
 import com.ireland.ager.product.repository.ProductRepository;

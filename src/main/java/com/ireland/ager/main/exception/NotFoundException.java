@@ -1,4 +1,4 @@
-package com.ireland.ager.config.exception;
+package com.ireland.ager.main.exception;
 
 public class NotFoundException extends RuntimeException{
     public NotFoundException() {

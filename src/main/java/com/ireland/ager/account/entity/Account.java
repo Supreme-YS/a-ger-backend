@@ -1,5 +1,6 @@
 package com.ireland.ager.account.entity;
 
+import com.ireland.ager.Review.entity.Review;
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
 import lombok.*;
@@ -7,6 +8,7 @@ import lombok.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 @NamedEntityGraph(
@@ -34,4 +36,7 @@ public class Account extends BaseEntity implements Serializable {
     String refreshToken;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     Set<Product> products = new HashSet<>();
+
+    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    private Set<Review> reviews = new LinkedHashSet<>();
 }
