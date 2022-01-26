@@ -36,16 +36,28 @@ public class ProductServiceImpl {
     //TODO : "더 이상 등록된 제품이 없습니다." 문구 추가 필요 - FRONTEND
 
     public List<ProductResponse> findProductAllByCreatedAtDesc(Long productId, Integer size) {
+        //TODO 일단 productId값을 가져와서 1을 더해준다. Lessthan이므로 1을 더해준다. 하지만 굳이 이러지 말고 productId값을 9999999999L값을 주어준다면 쿼리도 안날라가고 처리하기는 쉬우나 간지가 안난다.
+        if(productId==0) {
+            //productId=99999999999L;
+            productId = productRepository.countProductByProductId(productId)+1;
+            log.info("프로덕트 아이디 값은?? {}",productId);
+        }
         Pageable pageRequest = PageRequest.of(0, size);
         return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdLessThanOrderByCreatedAtDesc(productId, pageRequest).getContent());
     }
-
+    //TODO 조회수순으로 조회
     public List<ProductResponse> findProductAllByProductViewCntDesc(Long productId, Integer size) {
+        if(productId==0) {
+            productId = productRepository.countProductByProductId(productId)+1;
+        }
         PageRequest pageRequest = PageRequest.of(0, size);
         return ProductResponse.toProductListResponse(productRepository.findProductByProductIdIsLessThanOrderByProductViewCntDesc(productId,pageRequest).getContent());
     }
-
+    //TODO 카테고리별로 조회
     public List<ProductResponse> findProductAllByCategory(Long productId, Integer size, String category) {
+        if(productId==0) {
+            productId = productRepository.countProductByProductId(productId)+1;
+        }
         Pageable pageRequest = PageRequest.of(0, size);
         List<Product> productContent = productRepository.findProductsByProductIdLessThanAndCategoryOrderByCreatedAtDesc(
                 productId, pageRequest, Category.valueOf(category)).getContent();
