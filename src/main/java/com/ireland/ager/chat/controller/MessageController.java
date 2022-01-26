@@ -1,6 +1,6 @@
 package com.ireland.ager.chat.controller;
 
-import com.ireland.ager.chat.dto.MessageDto;
+import com.ireland.ager.chat.dto.request.MessageRequest;
 import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.entity.MessageType;
@@ -20,7 +20,7 @@ public class MessageController {
     @MessageMapping("/message/{roomId}")
     public Message message(
             @PathVariable Long roomId,
-            MessageDto messageDto) {
+            MessageRequest messageDto) {
         Message message=messageDto.toMessage(messageDto);
         if(MessageType.ENTER.equals(message.getMessageType())) {
             message.setMessage(message.getSenderId()+"이 입장했습니다.");

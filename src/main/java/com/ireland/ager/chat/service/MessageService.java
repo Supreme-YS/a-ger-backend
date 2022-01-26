@@ -56,7 +56,7 @@ public class MessageService {
         }
         //TODO: 비트마스크 처리
         if(messageRoom.getRommStatus()==0) return messageRoom;
-        if(messageRoom.getRommStatus()!=3) {
+        if(messageRoom.getRommStatus()!=3) { //FIXME: 1이나 2일때 buyer
             messageRoom.setRommStatus(0);
         }
         else {
@@ -104,7 +104,7 @@ public class MessageService {
                     messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
                 }
             }
-            else {
+            else { //buyer일때
                 if(messageRoom.getRommStatus()==1||messageRoom.getRommStatus()==3) {
                     messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
                 }
