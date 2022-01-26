@@ -19,7 +19,7 @@ public class MainController {
     private final ProductServiceImpl productService;
     private final ResponseService responseService;
 
-    @GetMapping("/api/product")
+    @GetMapping("/api/product/time")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProducts(
             @RequestParam(value = "productId") Long productId,
             @RequestParam(value = "size") Integer size) {

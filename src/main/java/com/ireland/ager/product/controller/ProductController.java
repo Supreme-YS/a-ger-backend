@@ -56,8 +56,6 @@ public class ProductController {
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
             @RequestPart(value = "product") @Valid ProductRequest productRequest, BindingResult bindingResult) {
-        //Todo 토큰값이 유효하지 않을떄
-        authService.isValidToken(accessToken);
 
         //Todo  토큰 까지 확인이 되고 사용자가 입력한 입력 값 검증로직 제목: 공백불가  가격: 공백불가,0이상  내용: 공백 불가
         productService.validateUploadForm(bindingResult);
@@ -80,8 +78,6 @@ public class ProductController {
             @PathVariable Long productId,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
             @RequestPart(value = "product") ProductUpdateRequest productUpdateRequest) {
-
-        authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         ProductResponse productResponse = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);
         return new ResponseEntity<>(responseService.getSingleResult(productResponse), HttpStatus.CREATED);
@@ -95,8 +91,6 @@ public class ProductController {
              */
             @RequestHeader("Authorization") String accessToken,
             @PathVariable long productId) {
-        //토큰 유효성 검사
-        authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         productService.deleteProductById(productId, splitToken[1]);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);

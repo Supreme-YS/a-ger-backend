@@ -31,8 +31,6 @@ public class MessageRoomController {
             @PathVariable Long roomId,
             @RequestHeader("Authorization") String accessToken
     ) {
-
-        authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         //TODO buyer, seller인지 체크하는 로직 필요
         MessageDetailsResponse messageRoom = messageService.roomEnterByAccessToken(splitToken[1], roomId);
@@ -44,7 +42,6 @@ public class MessageRoomController {
             @PathVariable Long productId,
             @RequestHeader("Authorization") String accessToken
     ) {
-        authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         RoomCreateResponse roomCreateResponse = messageService.insertRoom(productId, splitToken[1]);
         return new ResponseEntity<>(responseService.getSingleResult(roomCreateResponse), HttpStatus.CREATED);
@@ -65,7 +62,6 @@ public class MessageRoomController {
             @PathVariable Long roomId,
             @RequestHeader("Authorization") String accessToken
     ) {
-        authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         messageService.deleteById(splitToken[1],roomId);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);
