@@ -2,7 +2,7 @@ package com.ireland.ager.product.service;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
-import com.ireland.ager.product.exception.InvaildUploadException;
+import com.ireland.ager.product.exception.*;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.account.exception.UnAuthorizedTokenException;
 import com.ireland.ager.product.dto.request.ProductRequest;
@@ -16,6 +16,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
@@ -113,5 +115,17 @@ public class ProductServiceImpl {
     public void validateFileExists(List<MultipartFile> file) {
         if (file.isEmpty())
             throw new InvaildUploadException();
+    }
+
+    //Todo 업로드시에 입렵 폼 값 검증
+    public void validateUploadForm(BindingResult bindingResult){
+        if(bindingResult.getErrorCount()>=3) throw new InvaildFormException();
+        if(bindingResult.hasErrors()){
+            bindingResult.getAllErrors().forEach(objectError -> {
+                if((objectError.getDefaultMessage().equals("3010"))) throw new InvaildProductTitleException();
+                else if((objectError.getDefaultMessage().equals("3020")||objectError.getDefaultMessage().equals("3021") )) throw new InvaildProductPriceException();
+                else if(objectError.getDefaultMessage().equals("3030"))throw new InvaildProductDetailException();
+            });
+        }
     }
 }

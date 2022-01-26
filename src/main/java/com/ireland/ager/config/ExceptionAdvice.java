@@ -10,14 +10,14 @@ import com.ireland.ager.main.common.CommonResult;
 import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.main.exception.IntenalServerErrorException;
 import com.ireland.ager.main.exception.NotFoundException;
-import com.ireland.ager.product.exception.InvaildDataException;
-import com.ireland.ager.product.exception.InvaildFileExtensionException;
-import com.ireland.ager.product.exception.InvaildUploadException;
+import com.ireland.ager.product.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.InvalidPropertiesFormatException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor

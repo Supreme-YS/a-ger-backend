@@ -13,11 +13,12 @@ import java.util.List;
 
 @Data
 public class ProductRequest {
-    @NotBlank(message = "상품 제목은 필수 항목입니다.")
+    @NotBlank(message = "3010")
     String productName;
-    @Min(value = 0,message="상품 가격을 확인해주세요")
+    @NotBlank(message = "3020")
+    @Min(value = 0,message="3021")
     String productPrice;
-    @NotBlank(message = "상품 상세정보는 필수 항목입니다.")
+    @NotBlank(message = "3030")
     String productDetail;
     String category;
 
