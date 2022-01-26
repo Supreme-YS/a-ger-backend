@@ -31,6 +31,7 @@ public class MessageRoomController {
             @PathVariable Long roomId,
             @RequestHeader("Authorization") String accessToken
     ) {
+
         authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         //TODO buyer, seller인지 체크하는 로직 필요
