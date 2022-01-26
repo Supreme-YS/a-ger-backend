@@ -10,14 +10,14 @@ import com.ireland.ager.main.common.CommonResult;
 import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.main.exception.IntenalServerErrorException;
 import com.ireland.ager.main.exception.NotFoundException;
-import com.ireland.ager.product.exception.InvaildDataException;
-import com.ireland.ager.product.exception.InvaildFileExtensionException;
-import com.ireland.ager.product.exception.InvaildUploadException;
+import com.ireland.ager.product.exception.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.InvalidPropertiesFormatException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -81,5 +81,25 @@ public class ExceptionAdvice {
     public ResponseEntity<CommonResult> unAuthorizedChatException(UnAuthorizedChatException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.UNAUTHORIZEDCHAT);
         return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
+    }
+    @ExceptionHandler(InvaildFormException.class)
+    public ResponseEntity<CommonResult> invaildFormException(InvaildFormException e) {
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildForm);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(InvaildProductTitleException.class)
+    public ResponseEntity<CommonResult> invaildProductTitleException(InvaildProductTitleException e){
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductTitle);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(InvaildProductPriceException.class)
+    public ResponseEntity<CommonResult> invaildProductPriceException(InvaildProductPriceException e){
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductPrice);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(InvaildProductDetailException.class)
+    public ResponseEntity<CommonResult> invaildProductDetailException(InvaildProductDetailException e){
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductDetail);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 }
