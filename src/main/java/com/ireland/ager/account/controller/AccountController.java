@@ -53,7 +53,6 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity<SingleResult<AccountAllResponse>> getMyAccount(@RequestHeader("Authorization") String accessToken) {
-        //authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         AccountAllResponse accountAllResponse = accountService.findMyAccountByAccessToken(splitToken[1]);
         return new ResponseEntity<>(
@@ -64,7 +63,6 @@ public class AccountController {
     public ResponseEntity<SingleResult<OtherAccountResponse>> getOtherAccount(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId) {
-        authService.isValidToken(accessToken);
         OtherAccountResponse otherAccountByAccountId = accountService.findOtherAccountByAccountId(accountId);
         return new ResponseEntity<>(
                 responseService.getSingleResult(otherAccountByAccountId), HttpStatus.OK);
@@ -75,7 +73,6 @@ public class AccountController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId,
             @RequestBody AccountUpdateRequest accountUpdateRequest) {
-        authService.isValidToken(accessToken);
         String[] spitToken = accessToken.split(" ");
         AccountAllResponse accountAllResponse = accountService.updateAccount(spitToken[1], accountId, accountUpdateRequest);
         return new ResponseEntity<>(responseService.getSingleResult(accountAllResponse), HttpStatus.OK);
@@ -85,7 +82,6 @@ public class AccountController {
     public ResponseEntity<CommonResult> deleteAccount(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId) {
-        authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         accountService.deleteAccount(splitToken[1], accountId);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);

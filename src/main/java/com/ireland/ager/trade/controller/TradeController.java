@@ -29,8 +29,6 @@ public class TradeController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long roomId,
             @RequestParam String status) {
-        // 유효한 토큰인지 확인한다.
-        authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         tradeService.isUpdated(roomId, splitToken[1], status);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.CREATED);
