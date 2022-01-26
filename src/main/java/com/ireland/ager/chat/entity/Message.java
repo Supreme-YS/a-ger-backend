@@ -18,6 +18,7 @@ public class Message extends BaseEntity {
     @Id
     @GeneratedValue
     private Long messageId;
+    @Enumerated(EnumType.STRING)
     private MessageType messageType;
     private Long senderId;
     private String message;
