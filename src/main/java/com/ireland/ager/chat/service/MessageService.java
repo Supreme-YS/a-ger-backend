@@ -3,14 +3,15 @@ package com.ireland.ager.chat.service;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
+import com.ireland.ager.chat.dto.response.MessageDetailsResponse;
 import com.ireland.ager.chat.dto.response.MessageSummaryResponse;
 import com.ireland.ager.chat.dto.response.RoomCreateResponse;
 import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
-import com.ireland.ager.config.exception.NotFoundException;
-import com.ireland.ager.config.exception.UnAuthorizedAccessException;
-import com.ireland.ager.config.exception.UnAuthorizedChatException;
+import com.ireland.ager.main.exception.NotFoundException;
+import com.ireland.ager.account.exception.UnAuthorizedAccessException;
+import com.ireland.ager.chat.exception.UnAuthorizedChatException;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -54,10 +55,16 @@ public class MessageService {
             //REMARK 권한이 없는 경우 에러 처리
             throw new UnAuthorizedAccessException();
         }
-        //TODO: 비트마스크 처리
         if(messageRoom.getRommStatus()==0) return messageRoom;
         if(messageRoom.getRommStatus()!=3) { //FIXME: 1이나 2일때 buyer
-            messageRoom.setRommStatus(0);
+            if(messageRoom.getRommStatus()==2 && messageRoom.getSellerId().equals(account)) {
+                messageRoom.setRommStatus(0);
+            }
+            else if(messageRoom.getRommStatus()==1 && messageRoom.getBuyerId().equals(account)) {
+                messageRoom.setRommStatus(0);
+            }
+            if(messageRoom.getSellerId().equals(account)) messageRoom.setRommStatus(1);
+            else messageRoom.setRommStatus(2);
         }
         else {
             //3일떄 seller를 0할때 buyer를 0할때
@@ -83,7 +90,7 @@ public class MessageService {
         messageRoomRepository.save(insertMessageRoom);
         return RoomCreateResponse.toRoomCreateResponse(insertMessageRoom);
     }
-    public MessageRoom roomEnterByAccessToken(String accessToken, Long roomId) {
+    public MessageDetailsResponse roomEnterByAccessToken(String accessToken, Long roomId) {
         MessageRoom messageRoombyRoomId = messageRoomRepository.findMessageRoomWithMessageByRoomId(roomId).orElseThrow(NotFoundException::new);
         Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
         //TODO: 권한이 있는 사용자만 채팅방에 입장할 수 있다.
@@ -91,7 +98,7 @@ public class MessageService {
                 || accountByAccessToken.equals(messageRoombyRoomId.getBuyerId()))) {
             throw new UnAuthorizedAccessException();
         }
-        return messageRoombyRoomId;
+        return MessageDetailsResponse.toMessageDetailsResponse(messageRoombyRoomId);
     }
     public List<MessageSummaryResponse> findRoomByAccessToken(String accessToken) {
         Account account = accountService.findAccountByAccessToken(accessToken);

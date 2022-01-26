@@ -14,9 +14,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -52,9 +55,20 @@ public class ProductController {
              */
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
-            @RequestPart(value = "product") ProductRequest productRequest) {
+            @RequestPart(value = "product") @Valid ProductRequest productRequest, BindingResult bindingResult) {
         //Todo 토큰값이 유효하지 않을떄
         authService.isValidToken(accessToken);
+
+        //Todo  토큰 까지 확인이 되고 사용자가 입력한 입력 값 검증로직 제목: 공백불가  가격: 공백불가,0이상  내용: 공백 불가
+        if (bindingResult.hasErrors()) {
+           List<ObjectError> error=bindingResult.getAllErrors();
+           for(int i=0;i<error.size();i++){
+               log.info("error{}번쨰: {}",i,error.get(i));
+           }
+        }
+
+
+
         //Todo MultipartFile size가 비어있어도 자꾸 1로 뜨는 오류 (1개 선택해서 넣으면 사이즈1, 2개 선택해서 넣으면 2 장난하나?)
         productService.validateFileExists(multipartFile);
         String[] splitToken = accessToken.split(" ");

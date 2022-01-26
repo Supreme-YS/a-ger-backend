@@ -35,7 +35,8 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-
+	//입력 폼 validation 추가
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// AWS 의존성 추가
 	// https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
