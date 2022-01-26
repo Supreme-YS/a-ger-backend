@@ -53,7 +53,7 @@ public class AccountController {
 
     @GetMapping
     public ResponseEntity<SingleResult<AccountAllResponse>> getMyAccount(@RequestHeader("Authorization") String accessToken) {
-        authService.isValidToken(accessToken);
+        //authService.isValidToken(accessToken);
         String[] splitToken = accessToken.split(" ");
         AccountAllResponse accountAllResponse = accountService.findMyAccountByAccessToken(splitToken[1]);
         return new ResponseEntity<>(
