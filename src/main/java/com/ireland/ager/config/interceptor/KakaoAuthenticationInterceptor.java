@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -29,7 +28,7 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String requestUrl = request.getRequestURI();
         final Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        String pathVariable=(String)pathVariables.get("productId");
+        String pathVariable=pathVariables.get("productId");
         if(!(PatternMatchUtils.simpleMatch(excludeList,requestUrl)
                 || PatternMatchUtils.simpleMatch("/api/product/"+pathVariable,requestUrl))) {
             authService.isValidToken(token);

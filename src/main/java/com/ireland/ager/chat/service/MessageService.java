@@ -46,7 +46,7 @@ public class MessageService {
         //TODO: Room에 account 정보에 null 값을 넣는다.
         MessageRoom messageRoomAfterDelete = deleteAccountWithMessageRoom(messageRoom, accountByAccessToken);
         //REMARK: 둘 다 null 값이면 delete 처리를 한다.
-        if(messageRoomAfterDelete.getRommStatus()==0) {
+        if(messageRoomAfterDelete.getRoomStatus()==0) {
             messageRoomRepository.deleteById(roomId);
         }
     }
@@ -55,21 +55,21 @@ public class MessageService {
             //REMARK 권한이 없는 경우 에러 처리
             throw new UnAuthorizedAccessException();
         }
-        if(messageRoom.getRommStatus()==0) return messageRoom;
-        if(messageRoom.getRommStatus()!=3) { //FIXME: 1이나 2일때 buyer
-            if(messageRoom.getRommStatus()==2 && messageRoom.getSellerId().equals(account)) {
-                messageRoom.setRommStatus(0);
+        if(messageRoom.getRoomStatus()==0) return messageRoom;
+        if(messageRoom.getRoomStatus()!=3) { //FIXME: 1이나 2일때 buyer
+            if(messageRoom.getRoomStatus()==2 && messageRoom.getSellerId().equals(account)) {
+                messageRoom.setRoomStatus(0);
             }
-            else if(messageRoom.getRommStatus()==1 && messageRoom.getBuyerId().equals(account)) {
-                messageRoom.setRommStatus(0);
+            else if(messageRoom.getRoomStatus()==1 && messageRoom.getBuyerId().equals(account)) {
+                messageRoom.setRoomStatus(0);
             }
-            if(messageRoom.getSellerId().equals(account)) messageRoom.setRommStatus(1);
-            else messageRoom.setRommStatus(2);
+            if(messageRoom.getSellerId().equals(account)) messageRoom.setRoomStatus(1);
+            else messageRoom.setRoomStatus(2);
         }
         else {
             //3일떄 seller를 0할때 buyer를 0할때
-            if(messageRoom.getSellerId().equals(account)) messageRoom.setRommStatus(1);
-            else messageRoom.setRommStatus(2);
+            if(messageRoom.getSellerId().equals(account)) messageRoom.setRoomStatus(1);
+            else messageRoom.setRoomStatus(2);
         }
         return messageRoomRepository.save(messageRoom);
     }
@@ -107,12 +107,12 @@ public class MessageService {
         for(MessageRoom messageRoom: messageRoomsById) {
             //TODO: add하기 전에 check를 한다. null이 있는지 없는지.
             if(account.equals(messageRoom.getSellerId())) { //seller일때
-                if(messageRoom.getRommStatus()==2||messageRoom.getRommStatus()==3) {
+                if(messageRoom.getRoomStatus()==2||messageRoom.getRoomStatus()==3) {
                     messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
                 }
             }
             else { //buyer일때
-                if(messageRoom.getRommStatus()==1||messageRoom.getRommStatus()==3) {
+                if(messageRoom.getRoomStatus()==1||messageRoom.getRoomStatus()==3) {
                     messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
                 }
             }
