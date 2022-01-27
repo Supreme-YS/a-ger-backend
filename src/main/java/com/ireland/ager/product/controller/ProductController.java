@@ -77,7 +77,8 @@ public class ProductController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long productId,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
-            @RequestPart(value = "product") ProductUpdateRequest productUpdateRequest) {
+            @RequestPart(value = "product") @Valid ProductUpdateRequest productUpdateRequest,BindingResult bindingResult) {
+        productService.validateUploadForm(bindingResult);
         String[] splitToken = accessToken.split(" ");
         ProductResponse productResponse = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);
         return new ResponseEntity<>(responseService.getSingleResult(productResponse), HttpStatus.CREATED);

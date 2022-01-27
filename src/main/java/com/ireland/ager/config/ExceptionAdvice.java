@@ -102,4 +102,14 @@ public class ExceptionAdvice {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductDetail);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(InvaildProductCategoryException.class)
+    public ResponseEntity<CommonResult> InvaildProductCategoryException(InvaildProductCategoryException e){
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductCategory);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(InvaildProductStatusException.class)
+    public ResponseEntity<CommonResult> InvaildProductStatusException(InvaildProductStatusException e){
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductStatus);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
 }
