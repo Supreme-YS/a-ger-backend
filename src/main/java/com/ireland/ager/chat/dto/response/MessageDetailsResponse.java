@@ -11,11 +11,13 @@ import java.util.Set;
 @Builder
 public class MessageDetailsResponse {
     Long roomId;
+    String reviewStatus;
     Set<Message> messages;
 
     public static MessageDetailsResponse toMessageDetailsResponse(MessageRoom messageRoom) {
         return MessageDetailsResponse.builder()
                 .roomId(messageRoom.getRoomId())
+                .reviewStatus(messageRoom.getReviewStatus().name())
                 .messages(messageRoom.getMessages())
                 .build();
     }

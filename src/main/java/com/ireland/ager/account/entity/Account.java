@@ -1,6 +1,6 @@
 package com.ireland.ager.account.entity;
 
-import com.ireland.ager.Review.entity.Review;
+import com.ireland.ager.review.entity.Review;
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
 import lombok.*;
@@ -37,6 +37,6 @@ public class Account extends BaseEntity implements Serializable {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     Set<Product> products = new HashSet<>();
 
-    @OneToMany(mappedBy = "account", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "sellerId", cascade = CascadeType.ALL)
     private Set<Review> reviews = new LinkedHashSet<>();
 }
