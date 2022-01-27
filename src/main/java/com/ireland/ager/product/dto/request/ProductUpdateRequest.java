@@ -7,6 +7,8 @@ import com.ireland.ager.product.entity.ProductStatus;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +16,16 @@ import java.util.List;
 @Slf4j
 @Data
 public class ProductUpdateRequest {
+    @NotBlank(message = "3010")
     String productName;
+    @NotBlank(message = "3020")
+    @Min(value = 0,message="3021")
     String productPrice;
+    @NotBlank(message = "3030")
     String productDetail;
+    @NotBlank(message = "3040")
     String category;
+    @NotBlank(message = "3050")
     String status;
 
     public Product toProductUpdate(Product product, Account account,

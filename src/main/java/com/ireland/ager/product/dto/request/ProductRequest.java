@@ -20,6 +20,7 @@ public class ProductRequest {
     String productPrice;
     @NotBlank(message = "3030")
     String productDetail;
+    @NotBlank(message = "3040")
     String category;
 
     public Product toProduct(Account account,

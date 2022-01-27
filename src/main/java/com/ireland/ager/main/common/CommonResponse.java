@@ -1,5 +1,6 @@
 package com.ireland.ager.main.common;
 
+import com.ireland.ager.product.exception.InvaildProductCategoryException;
 import com.ireland.ager.product.exception.InvaildProductDetailException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,14 +21,14 @@ public enum CommonResponse {
     UNAUTHORIZEDTOKEN(-400,"카카오 액세스 토큰이 유효하지 않습니다"),
     UNAUTHORIZEDCHAT(-600,"채팅방을 개설할 수 없습니다"),
     NOTFOUNDTOKEN(-401,"카카오 액서스 토큰이 없습니다."),
-
     InvaildProductDetail(-3030,"상품 설명을 입력해주세요"),
-
     InvaildProductPrice(-3020,"상품 가격을 확인해주세요.(공백X,판매가격 0원 이상)"),
-
     InvaildProductTitle(-3010,"상품 제목을 입력해주세요"),
+    InvaildForm(-3030,"입력값이 하나도 없습니다."),
+    InvaildProductCategory(-3040,"카테고리값이 없습니다."),
+    InvaildProductStatus(-3050,"상품 상태값이 없습니다.");
 
-    InvaildForm(-3030,"입력값이 하나도 없습니다.");
+
 
 
     int code;

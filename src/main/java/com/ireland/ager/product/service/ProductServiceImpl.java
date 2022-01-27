@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -134,10 +135,20 @@ public class ProductServiceImpl {
         if(bindingResult.getErrorCount()>=3) throw new InvaildFormException();
         if(bindingResult.hasErrors()){
             bindingResult.getAllErrors().forEach(objectError -> {
-                if((objectError.getDefaultMessage().equals("3010"))) throw new InvaildProductTitleException();
-                else if((objectError.getDefaultMessage().equals("3020")||objectError.getDefaultMessage().equals("3021") )) throw new InvaildProductPriceException();
-                else if(objectError.getDefaultMessage().equals("3030"))throw new InvaildProductDetailException();
+                String errorCode=objectError.getDefaultMessage();
+                switch (Objects.requireNonNull(errorCode)){
+                    case "3010" :  throw new InvaildProductTitleException();
+                    case "3020" :
+                    case "3021" :
+                        throw new InvaildProductPriceException();
+                    case "3030" :  throw new InvaildProductDetailException();
+                    case "3040" :  throw new InvaildProductCategoryException();
+                    case "3050" :  throw new InvaildProductStatusException();
+                }
             });
         }
     }
 }
+// if((objectError.getDefaultMessage().equals("3010"))) throw new InvaildProductTitleException();
+//         else if((objectError.getDefaultMessage().equals("3020")||objectError.getDefaultMessage().equals("3021") )) throw new InvaildProductPriceException();
+//         else if(objectError.getDefaultMessage().equals("3030"))throw new InvaildProductDetailException();
