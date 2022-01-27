@@ -41,6 +41,9 @@ public class MessageRoom {
     @JoinColumn(name = "buyer_id")
     private Account buyerId;
 
+    @Enumerated(EnumType.STRING)
+    private ReviewStatus reviewStatus=ReviewStatus.NOTSALE;
+
     private int roomStatus=3;
     public void toCreateMessageRoom(Product product,Account buyerId) {
         this.setBuyerId(buyerId);
