@@ -8,6 +8,7 @@ import com.ireland.ager.chat.entity.ReviewStatus;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.review.dto.request.ReviewRequest;
+import com.ireland.ager.review.dto.response.ReviewResponse;
 import com.ireland.ager.review.entity.Review;
 import com.ireland.ager.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class ReviewServiceImpl {
     private final MessageRoomRepository messageRoomRepository;
     private final ReviewRepository reviewRepository;
     private final AccountServiceImpl accountService;
-    public void postReview(Long roomId,ReviewRequest reviewRequest,String accessToken) {
+    public ReviewResponse postReview(Long roomId, ReviewRequest reviewRequest, String accessToken) {
         MessageRoom messageRoom=messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
         Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
         if (!Objects.equals(accountByAccessToken.getAccountId(), messageRoom.getBuyerId().getAccountId())) {
@@ -32,6 +33,8 @@ public class ReviewServiceImpl {
             messageRoom.setReviewStatus(ReviewStatus.POST);
             messageRoomRepository.save(messageRoom);
             reviewRepository.save(review);
+            return ReviewResponse.toReviewResponse(review);
         }
+        else throw new NotFoundException();
     }
 }
