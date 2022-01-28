@@ -8,6 +8,7 @@ import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.review.dto.request.ReviewRequest;
+import com.ireland.ager.review.entity.Review;
 import com.ireland.ager.review.service.ReviewServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,9 +28,11 @@ public class ReviewController {
           @RequestHeader("Authorization") String accessToken,
           @PathVariable Long roomId,
           @RequestPart(value = "review") ReviewRequest reviewRequest) {
-      reviewService.postReview(roomId,reviewRequest);
+      String[] splitToken = accessToken.split(" ");
+      reviewService.postReview(roomId,reviewRequest,splitToken[1]);
       return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);
   }
+
 
 
 }
