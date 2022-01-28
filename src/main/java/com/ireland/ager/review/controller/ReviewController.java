@@ -25,8 +25,16 @@ import javax.validation.Valid;
 public class ReviewController {
     private final ReviewServiceImpl reviewService;
     private final ResponseService responseService;
+    //TODO 리뷰조회 내 정보에서 내가 받은 후기를 눌렀을때 리스트가 조회된다.
+    @GetMapping({"/{accountId}")
+    public ResponseEntity;
+
+
+
+
+    //TODO 리뷰 작성
   @PostMapping("/{roomId}")
-  public ResponseEntity<CommonResult> postReview(
+  public ResponseEntity<SingleResult<ReviewResponse>> postReview(
           @RequestHeader("Authorization") String accessToken,
           @PathVariable Long roomId,
           @RequestPart(value = "review") ReviewRequest reviewRequest) {
