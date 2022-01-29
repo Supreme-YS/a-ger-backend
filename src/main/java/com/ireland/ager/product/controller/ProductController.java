@@ -59,11 +59,16 @@ public class ProductController {
 
         //Todo  토큰 까지 확인이 되고 사용자가 입력한 입력 값 검증로직 제목: 공백불가  가격: 공백불가,0이상  내용: 공백 불가
         productService.validateUploadForm(bindingResult);
-
         //Todo MultipartFile size가 비어있어도 자꾸 1로 뜨는 오류 (1개 선택해서 넣으면 사이즈1, 2개 선택해서 넣으면 2 장난하나?)
         productService.validateFileExists(multipartFile);
         String[] splitToken = accessToken.split(" ");
+        MultipartFile thumnailfile=multipartFile.get(0).;
+
+        log.info("사이즈는 {}",multipartFile.size());
         ProductResponse productResponse = productService.createProduct(splitToken[1], productRequest, multipartFile);
+        log.info("이름은 : {}",thumnailfile.getOriginalFilename());
+        String thumnailURL= productService.makeThumnail(thumnailfile);
+        log.info("썸네일 생성 비상!!!! :{}",thumnailURL);
         return new ResponseEntity<>(responseService.getSingleResult
                 (productResponse), HttpStatus.CREATED);
     }

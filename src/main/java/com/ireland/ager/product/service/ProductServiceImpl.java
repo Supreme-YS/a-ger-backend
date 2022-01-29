@@ -1,5 +1,10 @@
 package com.ireland.ager.product.service;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.product.exception.*;
@@ -13,6 +18,8 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,9 +27,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -33,6 +45,12 @@ public class ProductServiceImpl {
     private final ProductRepository productRepository;
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
+    @Value("${cloud.aws.s3.bucket.url}")
+    private String defaultUrl;
+    @Value("${cloud.aws.s3.bucket.name}") // 프로퍼티에서 cloud.aws.s3.bucket에 대한 정보를 불러옴
+    public String bucket;
+    private final AmazonS3Client amazonS3Client;
+
     //Todo 전체 조회에서 NotFound에러는 반환을 안해줍니다 상품이 없는건 에러가 아니라고 생각해서 프론트에서 빈 리스트를 보면 추가적인 멘트를 남기는 작업을 하면 될거 같습니다.
     //TODO : "더 이상 등록된 제품이 없습니다." 문구 추가 필요 - FRONTEND
 
@@ -69,6 +87,8 @@ public class ProductServiceImpl {
                                          ProductRequest productRequest,
                                          List<MultipartFile> multipartFile) {
         Account account = accountService.findAccountByAccessToken(accessToken);
+        //첫번째 이미지를 썸네일로 만들어서 업로드 해준다.
+
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
         Product product = productRequest.toProduct(account, uploadImagesUrl);
         productRepository.save(product);
@@ -128,6 +148,40 @@ public class ProductServiceImpl {
     public void validateFileExists(List<MultipartFile> file) {
         if (file.isEmpty())
             throw new InvaildUploadException();
+    }
+
+    //TODO 썸네일 만들기
+    public String makeThumnail(MultipartFile uploadFile) {
+        String origName = uploadFile.getOriginalFilename();
+        String url;
+        try {
+            // 확장자를 찾기 위한 코드
+            final String ext = origName.substring(origName.lastIndexOf('.'));
+            // 파일이름 암호화
+            final String saveFileName = "thum_"+getUuid() + ext;
+            File file = new File(System.getProperty("user.dir") + saveFileName);
+            uploadFile.transferTo(file);
+            Thumbnails.of(file).size(100,100).toFile(file);
+            uploadOnS3(saveFileName, file);
+            url = defaultUrl + saveFileName;
+        } catch (StringIndexOutOfBoundsException | IOException e) {
+            url = null;
+        }
+        return url;
+    }
+    private static String getUuid() {
+        return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+    private void uploadOnS3(final String findName, final File file) {
+        final TransferManager transferManager = new TransferManager(this.amazonS3Client);
+        final PutObjectRequest request = new PutObjectRequest(bucket, findName, file);
+        final Upload upload = transferManager.upload(request);
+        try {
+            upload.waitForCompletion();
+        } catch (AmazonClientException | InterruptedException amazonClientException) {
+            log.info("getCause : {}", amazonClientException.getCause());
+            throw new InvaildFileExtensionException();
+        }
     }
 
     //Todo 업로드시에 입렵 폼 값 검증

@@ -55,9 +55,8 @@ public class UploadServiceImpl {
         */
         log.info("업로드 파일의 갯수 : {}", uploadFiles.size());
         List<String> uploadUrl = new ArrayList<>();
-
-
         for (MultipartFile uploadFile : uploadFiles) {
+            log.info("파일 확인용 : {}: ",uploadFile.getOriginalFilename());
             String origName = uploadFile.getOriginalFilename();
             String url;
             try {
@@ -69,8 +68,8 @@ public class UploadServiceImpl {
                 uploadFile.transferTo(file);
                 uploadOnS3(saveFileName, file);
                 url = defaultUrl + saveFileName;
-                file.delete();
                 uploadUrl.add(url);
+                file.delete();
             } catch (StringIndexOutOfBoundsException | IOException e) {
                 url = null;
             }
