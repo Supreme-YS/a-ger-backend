@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,6 +18,7 @@ import java.util.List;
 @EqualsAndHashCode(of = "productId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 public class Product extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue
