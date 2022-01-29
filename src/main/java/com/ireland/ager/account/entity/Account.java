@@ -4,6 +4,7 @@ import com.ireland.ager.review.entity.Review;
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -24,6 +25,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = "accountId", callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 public class Account extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue
