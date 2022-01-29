@@ -2,6 +2,7 @@ package com.ireland.ager.review.service;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.exception.UnAuthorizedAccessException;
+import com.ireland.ager.account.repository.AccountRepository;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.entity.ReviewStatus;
@@ -16,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -26,6 +29,7 @@ public class ReviewServiceImpl {
     private final MessageRoomRepository messageRoomRepository;
     private final ReviewRepository reviewRepository;
     private final AccountServiceImpl accountService;
+    private final AccountRepository accountRepository;
     public ReviewResponse postReview(Long roomId, ReviewRequest reviewRequest, String accessToken) {
         MessageRoom messageRoom=messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
         Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken); //구매자Account
@@ -43,9 +47,10 @@ public class ReviewServiceImpl {
         else throw new DuplicateReviewException();
     }
 
-//    public List<ReviewResponse> findReviewList(Long accountId) {
-//        messageRoomRepository.findById(accountId);
-//
-//        return
-//    }
+    public List<ReviewResponse> findReviewList(Long accountId) {
+        Optional<Account> account=accountRepository.findById(accountId);
+        List<Review> reviewList=reviewRepository.findAllBySellerId(account);
+
+        return ReviewResponse.toReviewResponse(reviewList);
+    }
 }

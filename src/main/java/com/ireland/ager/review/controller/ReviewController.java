@@ -27,13 +27,12 @@ public class ReviewController {
     private final ReviewServiceImpl reviewService;
     private final ResponseService responseService;
     //TODO 리뷰조회 내 정보에서 내가 받은 후기를 눌렀을때 리스트가 조회된다.
-//    @GetMapping("/list/{accountId}")
-//    public ResponseEntity<ListResult<ReviewResponse>> getReviewList(
-//            @PathVariable Long accountId
-//    ) {
-//        reviewService.findReviewList(accountId);
-//        return new ResponseEntity<>(responseService.getListResult(ReviewResponse), HttpStatus.CREATED);
-//    }
+    @GetMapping("/list/{accountId}")
+    public ResponseEntity<ListResult<ReviewResponse>> getReviewList(
+            @PathVariable Long accountId
+    ) {
+        return new ResponseEntity<>(responseService.getListResult( reviewService.findReviewList(accountId)), HttpStatus.CREATED);
+    }
 
 
     //TODO 리뷰 작성
