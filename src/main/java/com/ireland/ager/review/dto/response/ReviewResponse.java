@@ -18,17 +18,22 @@ import java.time.LocalDateTime;
 @ToString
 @Builder
 public class ReviewResponse {
-    String buyerId;
+    String buyerName;
+    Long buyerId;
     String comment;
+    String sellerNickname;
+    Long sellerId;
     int stars;
     LocalDateTime createdAt;
     public static ReviewResponse toReviewResponse(Review review) {
         return ReviewResponse.builder()
-                .buyerId(review.getBuyerNickname())
+                .buyerName(review.getBuyerNickname())
+                .buyerId(review.getBuyerId())
                 .comment(review.getComment())
+                .sellerNickname(review.getSellerNickname())
+                .sellerId(review.getSellerId().getAccountId())
                 .stars(review.getStars())
                 .createdAt(review.getCreatedAt())
                 .build();
     }
-
 }

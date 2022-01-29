@@ -26,7 +26,8 @@ public enum CommonResponse {
     InvaildProductTitle(-3010,"상품 제목을 입력해주세요"),
     InvaildForm(-3030,"입력값이 하나도 없습니다."),
     InvaildProductCategory(-3040,"카테고리값이 없습니다."),
-    InvaildProductStatus(-3050,"상품 상태값이 없습니다.");
+    InvaildProductStatus(-3050,"상품 상태값이 없습니다."),
+    DuplicateReview(-4000,"이미 리뷰를 작성하셨습니다.");
 
 
 

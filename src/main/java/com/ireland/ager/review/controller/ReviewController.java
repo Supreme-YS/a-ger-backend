@@ -4,6 +4,7 @@ package com.ireland.ager.review.controller;
 //import com.ireland.ager.Review.dto.ReviewRequest;
 import com.ireland.ager.account.dto.response.AccountAllResponse;
 import com.ireland.ager.main.common.CommonResult;
+import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.SingleResult;
 import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.product.dto.request.ProductRequest;
@@ -26,10 +27,13 @@ public class ReviewController {
     private final ReviewServiceImpl reviewService;
     private final ResponseService responseService;
     //TODO 리뷰조회 내 정보에서 내가 받은 후기를 눌렀을때 리스트가 조회된다.
-    @GetMapping({"/{accountId}")
-    public ResponseEntity;
-
-
+//    @GetMapping("/list/{accountId}")
+//    public ResponseEntity<ListResult<ReviewResponse>> getReviewList(
+//            @PathVariable Long accountId
+//    ) {
+//        reviewService.findReviewList(accountId);
+//        return new ResponseEntity<>(responseService.getListResult(ReviewResponse), HttpStatus.CREATED);
+//    }
 
 
     //TODO 리뷰 작성
@@ -39,8 +43,8 @@ public class ReviewController {
           @PathVariable Long roomId,
           @RequestPart(value = "review") ReviewRequest reviewRequest) {
       String[] splitToken = accessToken.split(" ");
-      ReviewResponse reviewResponse=reviewService.postReview(roomId,reviewRequest,splitToken[1]);
-      return new ResponseEntity<>(responseService.getSingleResult(reviewResponse), HttpStatus.OK);
+      return new ResponseEntity<>(responseService.getSingleResult
+              (reviewService.postReview(roomId,reviewRequest,splitToken[1])), HttpStatus.CREATED);
   }
 
 

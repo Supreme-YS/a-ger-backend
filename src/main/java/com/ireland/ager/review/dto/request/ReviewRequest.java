@@ -14,12 +14,14 @@ public class ReviewRequest {
     String comment;
     int stars;
 
-    public static Review toReview(ReviewRequest reviewRequest, Account account, Product product){
+    public static Review toReview(ReviewRequest reviewRequest, Account seller, Product product,Account buyer){
         Review review = new Review();
-        review.addAccount(account);
+        review.addAccount(seller);
         review.setComment(reviewRequest.comment);
         review.setStars(reviewRequest.stars);
-        review.setBuyerNickname(account.getProfileNickname());
+        review.setBuyerNickname(buyer.getProfileNickname());
+        review.setBuyerId(buyer.getAccountId());
+        review.setSellerNickname(seller.getProfileNickname());
         review.setTitle(product.getProductName());
         return  review;
     }
