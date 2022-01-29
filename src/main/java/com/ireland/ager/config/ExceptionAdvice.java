@@ -11,6 +11,7 @@ import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.main.exception.IntenalServerErrorException;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.product.exception.*;
+import com.ireland.ager.review.exception.DuplicateReviewException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -110,6 +111,11 @@ public class ExceptionAdvice {
     @ExceptionHandler(InvaildProductStatusException.class)
     public ResponseEntity<CommonResult> InvaildProductStatusException(InvaildProductStatusException e){
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductStatus);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(DuplicateReviewException.class)
+    public ResponseEntity<CommonResult> DuplicateReviewException(DuplicateReviewException e){
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.DuplicateReview);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 }

@@ -18,7 +18,8 @@ public class KakaoAuthenticationConfig implements WebMvcConfigurer {
                 .excludePathPatterns(
                         "/api/account/login-url",
                         "/api/account/login"
-                        ,"/api/token/**");
+                        ,"/api/token/**"
+                        ,"/api/review/list/**");
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 }

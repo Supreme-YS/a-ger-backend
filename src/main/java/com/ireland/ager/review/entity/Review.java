@@ -22,7 +22,10 @@ public class Review extends BaseEntity {
     private String comment;
     private String title;
     private String buyerNickname;
+    private Long buyerId;
+    private String sellerNickname;
     private int stars;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Account sellerId;
