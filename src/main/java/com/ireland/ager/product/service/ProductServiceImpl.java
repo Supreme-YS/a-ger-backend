@@ -32,6 +32,8 @@ import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -159,12 +161,13 @@ public class ProductServiceImpl {
             final String ext = origName.substring(origName.lastIndexOf('.'));
             // 파일이름 암호화
             final String saveFileName = "thum_"+getUuid() + ext;
-            File file = new File(System.getProperty("user.dir") + saveFileName);
-            uploadFile.transferTo(file);
-            Thumbnails.of(file).size(100,100).toFile(file);
-            uploadOnS3(saveFileName, file);
+            Path path= Paths.get("C:\Users\jaeho\AppData\Local\Temp\tomcat.8080.9173467581201420659\work\Tomcat\localhost\ROOT\upload" + saveFileName).toAbsolutePath();
+            uploadFile.transferTo(path.toFile());
+            Thumbnails.of(path.toFile()).size(100,100).toFile(path.toFile());
+            uploadOnS3(saveFileName, path.toFile());
             url = defaultUrl + saveFileName;
         } catch (StringIndexOutOfBoundsException | IOException e) {
+            e.printStackTrace();
             url = null;
         }
         return url;

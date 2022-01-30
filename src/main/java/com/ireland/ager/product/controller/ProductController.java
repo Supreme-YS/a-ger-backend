@@ -62,12 +62,12 @@ public class ProductController {
         //Todo MultipartFile size가 비어있어도 자꾸 1로 뜨는 오류 (1개 선택해서 넣으면 사이즈1, 2개 선택해서 넣으면 2 장난하나?)
         productService.validateFileExists(multipartFile);
         String[] splitToken = accessToken.split(" ");
-        MultipartFile thumnailfile=multipartFile.get(0).;
+        MultipartFile thumbnail=multipartFile.get(0);
 
         log.info("사이즈는 {}",multipartFile.size());
         ProductResponse productResponse = productService.createProduct(splitToken[1], productRequest, multipartFile);
-        log.info("이름은 : {}",thumnailfile.getOriginalFilename());
-        String thumnailURL= productService.makeThumnail(thumnailfile);
+        log.info("이름은 : {}",thumbnail.getOriginalFilename());
+        String thumnailURL= productService.makeThumnail(thumbnail);
         log.info("썸네일 생성 비상!!!! :{}",thumnailURL);
         return new ResponseEntity<>(responseService.getSingleResult
                 (productResponse), HttpStatus.CREATED);
