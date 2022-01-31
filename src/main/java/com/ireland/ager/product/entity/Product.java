@@ -40,6 +40,8 @@ public class Product extends BaseEntity implements Serializable {
 
     private String thumbNailUrl;
 
+
+
     @ElementCollection
     @CollectionTable(name = "productUrlList", joinColumns = @JoinColumn(name = "productId")) // 2
     @Column(name = "url") // 3
