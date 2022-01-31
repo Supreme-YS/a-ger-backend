@@ -62,6 +62,8 @@ public class UploadServiceImpl {
         */
         log.info("업로드 파일의 갯수 : {}", uploadFiles.size());
         //첫번쨰 장을 썸네일 로 만든다.
+        MultipartFile thumbFile=uploadFiles.get(0);
+        makeThumbNail(thumbFile);
         List<String> uploadUrl = new ArrayList<>();
         for (MultipartFile uploadFile : uploadFiles) {
             log.info("파일 확인용 : {}: ",uploadFile.getOriginalFilename());
@@ -101,21 +103,22 @@ public class UploadServiceImpl {
         int mediumHeight = 100;
         int mediumWidth = (int) (resizeRatio * mediumHeight);
         BufferedImage thumbnail_medium = Thumbnails.of(image).size(mediumWidth,mediumHeight).asBufferedImage();
-        return uploadImageToAWSS3(thumbnail_medium,saveFileName,ext);
+       return uploadThumbNailToS3(thumbnail_medium,saveFileName,ext);
     }
-    public String uploadImageToAWSS3(BufferedImage image,String Filename,String ext)
+    public String uploadThumbNailToS3(BufferedImage image,String Filename,String ext)
             throws IllegalStateException, IOException {
         String url;
         try {
             // outputstream에 image객체를 저장
             ByteArrayOutputStream os = new ByteArrayOutputStream();
-            ImageIO.write(image, ext, os);
+            log.info("확장자는 :{}",ext.substring(1));
+            ImageIO.write(image, ext.substring(1), os);
             //byte[]로 변환
             byte[] bytes = os.toByteArray();
             //metadata 설정
             ObjectMetadata objectMetadata = new ObjectMetadata();
             objectMetadata.setContentLength(bytes.length);
-            objectMetadata.setContentType(ext);
+            objectMetadata.setContentType(ext.substring(1));
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             final TransferManager transferManager = new TransferManager(this.amazonS3Client);
             final PutObjectRequest request = new PutObjectRequest(bucket, Filename, byteArrayInputStream,objectMetadata);
@@ -124,12 +127,9 @@ public class UploadServiceImpl {
                 //Todo 아마존 sdk를 이용하여서 url가져오는 방법  통신을 하는 과정이 추가 되므로 안쓰려고 한다.
 //                return amazonS3Client.getUrl(bucket,Filename).toString();
         } catch (AmazonServiceException | InterruptedException e) {
-            log.info("에러 삐용삐용");
             e.printStackTrace();
-            return "error";
         }
         url=defaultUrl+Filename;
-        log.info("URL은 : {}",url);
         return url;
     }
 

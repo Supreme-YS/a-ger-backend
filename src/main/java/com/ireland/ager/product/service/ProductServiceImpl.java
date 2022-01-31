@@ -93,9 +93,9 @@ public class ProductServiceImpl {
                                          List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
         //첫번째 이미지를 썸네일로 만들어서 업로드 해준다.
-        MultipartFile firstImage=multipartFile.get(0);
+
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        Product product = productRequest.toProduct(account, uploadImagesUrl,uploadService.makeThumbNail(firstImage));
+        Product product = productRequest.toProduct(account, uploadImagesUrl);
         productRepository.save(product);
         return ProductResponse.toProductResponse(product);
     }
@@ -120,6 +120,7 @@ public class ProductServiceImpl {
             throw new UnAuthorizedTokenException();
         }
         validateFileExists(multipartFile);
+        MultipartFile firstImage=multipartFile.get(0);
         //들어온 multiFile의 리스트를 확인 하는 과정
         List<String> updateFileImageUrlList;
         List<String> currentFileImageUrlList = productById.getUrlList();
