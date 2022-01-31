@@ -31,11 +31,16 @@ public class Product extends BaseEntity implements Serializable {
     private String productDetail;
     private Long productViewCnt;
 
+
     @Enumerated(EnumType.STRING)
     private Category category;
 
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
+
+    private String thumbNailUrl;
+
+
 
     @ElementCollection
     @CollectionTable(name = "productUrlList", joinColumns = @JoinColumn(name = "productId")) // 2

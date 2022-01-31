@@ -9,9 +9,11 @@ import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.service.ProductServiceImpl;
+import com.ireland.ager.product.service.UploadServiceImpl;
 import com.ireland.ager.trade.service.TradeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -19,8 +21,11 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -34,6 +39,7 @@ public class ProductController {
     private final AuthServiceImpl authService;
 
     private final ResponseService responseService;
+    private final UploadServiceImpl uploadService;
 
 
     @GetMapping("/{productId}")
@@ -55,15 +61,15 @@ public class ProductController {
              */
             @RequestHeader("Authorization") String accessToken,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
-            @RequestPart(value = "product") @Valid ProductRequest productRequest, BindingResult bindingResult) {
+            @RequestPart(value = "product") @Valid ProductRequest productRequest, BindingResult bindingResult) throws IOException {
 
         //Todo  토큰 까지 확인이 되고 사용자가 입력한 입력 값 검증로직 제목: 공백불가  가격: 공백불가,0이상  내용: 공백 불가
         productService.validateUploadForm(bindingResult);
-
         //Todo MultipartFile size가 비어있어도 자꾸 1로 뜨는 오류 (1개 선택해서 넣으면 사이즈1, 2개 선택해서 넣으면 2 장난하나?)
         productService.validateFileExists(multipartFile);
         String[] splitToken = accessToken.split(" ");
         ProductResponse productResponse = productService.createProduct(splitToken[1], productRequest, multipartFile);
+
         return new ResponseEntity<>(responseService.getSingleResult
                 (productResponse), HttpStatus.CREATED);
     }
@@ -77,7 +83,7 @@ public class ProductController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long productId,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
-            @RequestPart(value = "product") @Valid ProductUpdateRequest productUpdateRequest,BindingResult bindingResult) {
+            @RequestPart(value = "product") @Valid ProductUpdateRequest productUpdateRequest,BindingResult bindingResult) throws IOException {
         productService.validateUploadForm(bindingResult);
         String[] splitToken = accessToken.split(" ");
         ProductResponse productResponse = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);

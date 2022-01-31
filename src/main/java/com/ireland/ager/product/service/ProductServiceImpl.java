@@ -1,5 +1,12 @@
 package com.ireland.ager.product.service;
 
+import com.amazonaws.AmazonClientException;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.transfer.TransferManager;
+import com.amazonaws.services.s3.transfer.Upload;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.product.exception.*;
@@ -13,6 +20,8 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,9 +29,17 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -33,6 +50,12 @@ public class ProductServiceImpl {
     private final ProductRepository productRepository;
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
+    @Value("${cloud.aws.s3.bucket.url}")
+    private String defaultUrl;
+    @Value("${cloud.aws.s3.bucket.name}") // 프로퍼티에서 cloud.aws.s3.bucket에 대한 정보를 불러옴
+    public String bucket;
+    private final AmazonS3Client amazonS3Client;
+
     //Todo 전체 조회에서 NotFound에러는 반환을 안해줍니다 상품이 없는건 에러가 아니라고 생각해서 프론트에서 빈 리스트를 보면 추가적인 멘트를 남기는 작업을 하면 될거 같습니다.
     //TODO : "더 이상 등록된 제품이 없습니다." 문구 추가 필요 - FRONTEND
 
@@ -67,10 +90,12 @@ public class ProductServiceImpl {
 
     public ProductResponse createProduct(String accessToken,
                                          ProductRequest productRequest,
-                                         List<MultipartFile> multipartFile) {
+                                         List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
+        //첫번째 이미지를 썸네일로 만들어서 업로드 해준다.
+        String thumbNailUrl= uploadService.makeThumbNail(multipartFile.get(0));
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        Product product = productRequest.toProduct(account, uploadImagesUrl);
+        Product product = productRequest.toProduct(account, uploadImagesUrl,thumbNailUrl);
         productRepository.save(product);
         return ProductResponse.toProductResponse(product);
     }
@@ -87,7 +112,7 @@ public class ProductServiceImpl {
     public ProductResponse updateProductById(Long productId,
                                              String accessToken,
                                              List<MultipartFile> multipartFile,
-                                             ProductUpdateRequest productUpdateRequest) {
+                                             ProductUpdateRequest productUpdateRequest) throws IOException {
         // 원래 정보를 꺼내온다.
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
@@ -95,6 +120,7 @@ public class ProductServiceImpl {
             throw new UnAuthorizedTokenException();
         }
         validateFileExists(multipartFile);
+        MultipartFile firstImage=multipartFile.get(0);
         //들어온 multiFile의 리스트를 확인 하는 과정
         List<String> updateFileImageUrlList;
         List<String> currentFileImageUrlList = productById.getUrlList();
@@ -102,7 +128,7 @@ public class ProductServiceImpl {
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
             productById.setUrlList(updateFileImageUrlList);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
         //REMARK 악취가 난다..... 해결 완료
@@ -130,6 +156,36 @@ public class ProductServiceImpl {
             throw new InvaildUploadException();
     }
 
+    //TODO 썸네일 만들기
+    public String makeThumbnail(MultipartFile uploadFile) {
+        String fileName=createFileName(uploadFile.getOriginalFilename());
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(uploadFile.getSize());
+        objectMetadata.setContentType(uploadFile.getContentType());
+        try(InputStream inputStream=uploadFile.getInputStream()) {
+            uploadFile(inputStream,objectMetadata,fileName);
+            return getFileUrl(fileName);
+        }catch (IOException e){
+            throw new IllegalArgumentException(String.format("파일 변화중 에러가 발생했습니다. (%s)",uploadFile.getOriginalFilename()));
+        }
+    }
+    private String createFileName(String originalFIleName){
+        return UUID.randomUUID().toString().concat(getFileExtension(originalFIleName));
+    }
+
+    private String getFileExtension(String fileName) {
+        try{
+            return fileName.substring(fileName.lastIndexOf("."));
+        } catch (StringIndexOutOfBoundsException e){
+            throw  new IllegalArgumentException(String.format("잘못된 형시의 파일(%s) 입니다.",fileName));
+        }
+    }
+    private void uploadFile(InputStream inputStream,ObjectMetadata objectMetadata,String fileName){
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName,inputStream,objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+    }
+    private String getFileUrl(String fileName){
+        return amazonS3Client.getUrl(bucket,fileName).toString();
+    }
     //Todo 업로드시에 입렵 폼 값 검증
     public void validateUploadForm(BindingResult bindingResult){
         if(bindingResult.getErrorCount()>=3) throw new InvaildFormException();
