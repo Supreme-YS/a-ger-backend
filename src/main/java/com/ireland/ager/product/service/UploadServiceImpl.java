@@ -63,7 +63,6 @@ public class UploadServiceImpl {
         log.info("업로드 파일의 갯수 : {}", uploadFiles.size());
         //첫번쨰 장을 썸네일 로 만든다.
         MultipartFile thumbFile=uploadFiles.get(0);
-        makeThumbNail(thumbFile);
         List<String> uploadUrl = new ArrayList<>();
         for (MultipartFile uploadFile : uploadFiles) {
             log.info("파일 확인용 : {}: ",uploadFile.getOriginalFilename());

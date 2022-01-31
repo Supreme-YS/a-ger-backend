@@ -93,9 +93,9 @@ public class ProductServiceImpl {
                                          List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
         //첫번째 이미지를 썸네일로 만들어서 업로드 해준다.
-
+        String thumbNailUrl= uploadService.makeThumbNail(multipartFile.get(0));
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        Product product = productRequest.toProduct(account, uploadImagesUrl);
+        Product product = productRequest.toProduct(account, uploadImagesUrl,thumbNailUrl);
         productRepository.save(product);
         return ProductResponse.toProductResponse(product);
     }

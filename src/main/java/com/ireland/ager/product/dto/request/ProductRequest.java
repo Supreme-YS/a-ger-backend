@@ -24,7 +24,7 @@ public class ProductRequest {
     String category;
 
     public Product toProduct(Account account,
-                             List<String> uploadImageUrl) {
+                             List<String> uploadImageUrl,String thumbNailUrl) {
         Product product = new Product();
         List<String> images = new ArrayList<>();
         for (String url : uploadImageUrl) {
@@ -38,6 +38,7 @@ public class ProductRequest {
         product.setProductViewCnt(0L);
         product.setProductName(productName);
         product.setStatus(ProductStatus.SALE);
+        product.setThumbNailUrl(thumbNailUrl);
         product.setCategory(Category.valueOf(this.category));
         return product;
     }
