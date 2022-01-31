@@ -155,37 +155,6 @@ public class ProductServiceImpl {
         if (file.isEmpty())
             throw new InvaildUploadException();
     }
-
-    //TODO 썸네일 만들기
-    public String makeThumbnail(MultipartFile uploadFile) {
-        String fileName=createFileName(uploadFile.getOriginalFilename());
-        ObjectMetadata objectMetadata=new ObjectMetadata();
-        objectMetadata.setContentLength(uploadFile.getSize());
-        objectMetadata.setContentType(uploadFile.getContentType());
-        try(InputStream inputStream=uploadFile.getInputStream()) {
-            uploadFile(inputStream,objectMetadata,fileName);
-            return getFileUrl(fileName);
-        }catch (IOException e){
-            throw new IllegalArgumentException(String.format("파일 변화중 에러가 발생했습니다. (%s)",uploadFile.getOriginalFilename()));
-        }
-    }
-    private String createFileName(String originalFIleName){
-        return UUID.randomUUID().toString().concat(getFileExtension(originalFIleName));
-    }
-
-    private String getFileExtension(String fileName) {
-        try{
-            return fileName.substring(fileName.lastIndexOf("."));
-        } catch (StringIndexOutOfBoundsException e){
-            throw  new IllegalArgumentException(String.format("잘못된 형시의 파일(%s) 입니다.",fileName));
-        }
-    }
-    private void uploadFile(InputStream inputStream,ObjectMetadata objectMetadata,String fileName){
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName,inputStream,objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
-    }
-    private String getFileUrl(String fileName){
-        return amazonS3Client.getUrl(bucket,fileName).toString();
-    }
     //Todo 업로드시에 입렵 폼 값 검증
     public void validateUploadForm(BindingResult bindingResult){
         if(bindingResult.getErrorCount()>=3) throw new InvaildFormException();
