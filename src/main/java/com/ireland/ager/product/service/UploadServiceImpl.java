@@ -1,20 +1,27 @@
 package com.ireland.ager.product.service;
 
 import com.amazonaws.AmazonClientException;
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.ireland.ager.product.exception.InvaildFileExtensionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -46,7 +53,7 @@ public class UploadServiceImpl {
         }
     }
 
-    public List<String> uploadImages(List<MultipartFile> uploadFiles) {
+    public List<String> uploadImages(List<MultipartFile> uploadFiles) throws IOException {
         /*
             @Method: uploadImages
             @Author: potter,frank
@@ -54,22 +61,28 @@ public class UploadServiceImpl {
             @content: 이미지 파일들을 s3에 업로드하고 url을 return
         */
         log.info("업로드 파일의 갯수 : {}", uploadFiles.size());
+        //첫번쨰 장을 썸네일 로 만든다.
         List<String> uploadUrl = new ArrayList<>();
         for (MultipartFile uploadFile : uploadFiles) {
             log.info("파일 확인용 : {}: ",uploadFile.getOriginalFilename());
             String origName = uploadFile.getOriginalFilename();
             String url;
-            try {
+            ObjectMetadata objectMetadata=new ObjectMetadata();
+            objectMetadata.setContentLength(uploadFile.getSize());
+            objectMetadata.setContentType(uploadFile.getContentType());
+            try(InputStream inputStream=uploadFile.getInputStream()) {
                 // 확장자를 찾기 위한 코드
                 final String ext = origName.substring(origName.lastIndexOf('.'));
                 // 파일이름 암호화
                 final String saveFileName = getUuid() + ext;
-                File file = new File(System.getProperty("user.dir") + saveFileName);
-                uploadFile.transferTo(file);
-                uploadOnS3(saveFileName, file);
+                //파일을 저장하는 방식 파일저장후 업로드후 파일 삭제
+//                File file = new File(System.getProperty("user.dir") + saveFileName);
+//                uploadFile.transferTo(file);
+                //FIXME 업로드 부분 바뀐 방식 inputStream으로 파일을 저장 안하고 네트워크에서 네트워크로 스무스하게 넘어가는 바이브로 변경
+                uploadOnS3(saveFileName, inputStream,objectMetadata);
                 url = defaultUrl + saveFileName;
                 uploadUrl.add(url);
-                file.delete();
+                //file.delete();
             } catch (StringIndexOutOfBoundsException | IOException e) {
                 url = null;
             }
@@ -77,13 +90,56 @@ public class UploadServiceImpl {
         return uploadUrl;
     }
 
+    public String makeThumbNail(MultipartFile multipartFile) throws IOException {
+        String origName=multipartFile.getOriginalFilename();
+        final String ext = origName.substring(origName.lastIndexOf('.'));
+        final String saveFileName = "Thumbnail_"+getUuid() + ext;
+        BufferedImage image = ImageIO.read(multipartFile.getInputStream());
+        double getWidth = image.getWidth();
+        double getHeight = image.getHeight();
+        double resizeRatio = getWidth / getHeight;
+        int mediumHeight = 100;
+        int mediumWidth = (int) (resizeRatio * mediumHeight);
+        BufferedImage thumbnail_medium = Thumbnails.of(image).size(mediumWidth,mediumHeight).asBufferedImage();
+        return uploadImageToAWSS3(thumbnail_medium,saveFileName,ext);
+    }
+    public String uploadImageToAWSS3(BufferedImage image,String Filename,String ext)
+            throws IllegalStateException, IOException {
+        String url;
+        try {
+            // outputstream에 image객체를 저장
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ImageIO.write(image, ext, os);
+            //byte[]로 변환
+            byte[] bytes = os.toByteArray();
+            //metadata 설정
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentLength(bytes.length);
+            objectMetadata.setContentType(ext);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
+            final TransferManager transferManager = new TransferManager(this.amazonS3Client);
+            final PutObjectRequest request = new PutObjectRequest(bucket, Filename, byteArrayInputStream,objectMetadata);
+            final Upload upload = transferManager.upload(request);
+                upload.waitForCompletion();
+                //Todo 아마존 sdk를 이용하여서 url가져오는 방법  통신을 하는 과정이 추가 되므로 안쓰려고 한다.
+//                return amazonS3Client.getUrl(bucket,Filename).toString();
+        } catch (AmazonServiceException | InterruptedException e) {
+            log.info("에러 삐용삐용");
+            e.printStackTrace();
+            return "error";
+        }
+        url=defaultUrl+Filename;
+        log.info("URL은 : {}",url);
+        return url;
+    }
+
     private static String getUuid() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
-    private void uploadOnS3(final String findName, final File file) {
+    private void uploadOnS3(final String fileName, final InputStream inputStream,final  ObjectMetadata objectMetadata) {
         final TransferManager transferManager = new TransferManager(this.amazonS3Client);
-        final PutObjectRequest request = new PutObjectRequest(bucket, findName, file);
+        final PutObjectRequest request = new PutObjectRequest(bucket, fileName, inputStream,objectMetadata);
         final Upload upload = transferManager.upload(request);
         try {
             upload.waitForCompletion();

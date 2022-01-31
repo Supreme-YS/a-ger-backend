@@ -38,6 +38,7 @@ public class Product extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
+    private String thumbNailUrl;
 
     @ElementCollection
     @CollectionTable(name = "productUrlList", joinColumns = @JoinColumn(name = "productId")) // 2

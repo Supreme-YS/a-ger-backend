@@ -2,6 +2,8 @@ package com.ireland.ager.product.service;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -32,6 +34,7 @@ import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -87,12 +90,12 @@ public class ProductServiceImpl {
 
     public ProductResponse createProduct(String accessToken,
                                          ProductRequest productRequest,
-                                         List<MultipartFile> multipartFile) {
+                                         List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
         //첫번째 이미지를 썸네일로 만들어서 업로드 해준다.
-
+        MultipartFile firstImage=multipartFile.get(0);
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        Product product = productRequest.toProduct(account, uploadImagesUrl);
+        Product product = productRequest.toProduct(account, uploadImagesUrl,uploadService.makeThumbNail(firstImage));
         productRepository.save(product);
         return ProductResponse.toProductResponse(product);
     }
@@ -109,7 +112,7 @@ public class ProductServiceImpl {
     public ProductResponse updateProductById(Long productId,
                                              String accessToken,
                                              List<MultipartFile> multipartFile,
-                                             ProductUpdateRequest productUpdateRequest) {
+                                             ProductUpdateRequest productUpdateRequest) throws IOException {
         // 원래 정보를 꺼내온다.
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
@@ -124,7 +127,7 @@ public class ProductServiceImpl {
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
             productById.setUrlList(updateFileImageUrlList);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
         //REMARK 악취가 난다..... 해결 완료
@@ -153,40 +156,35 @@ public class ProductServiceImpl {
     }
 
     //TODO 썸네일 만들기
-    public String makeThumnail(MultipartFile uploadFile) {
-        String origName = uploadFile.getOriginalFilename();
-        String url;
-        try {
-            // 확장자를 찾기 위한 코드
-            final String ext = origName.substring(origName.lastIndexOf('.'));
-            // 파일이름 암호화
-            final String saveFileName = "thum_"+getUuid() + ext;
-            Path path= Paths.get("C:\Users\jaeho\AppData\Local\Temp\tomcat.8080.9173467581201420659\work\Tomcat\localhost\ROOT\upload" + saveFileName).toAbsolutePath();
-            uploadFile.transferTo(path.toFile());
-            Thumbnails.of(path.toFile()).size(100,100).toFile(path.toFile());
-            uploadOnS3(saveFileName, path.toFile());
-            url = defaultUrl + saveFileName;
-        } catch (StringIndexOutOfBoundsException | IOException e) {
-            e.printStackTrace();
-            url = null;
+    public String makeThumbnail(MultipartFile uploadFile) {
+        String fileName=createFileName(uploadFile.getOriginalFilename());
+        ObjectMetadata objectMetadata=new ObjectMetadata();
+        objectMetadata.setContentLength(uploadFile.getSize());
+        objectMetadata.setContentType(uploadFile.getContentType());
+        try(InputStream inputStream=uploadFile.getInputStream()) {
+            uploadFile(inputStream,objectMetadata,fileName);
+            return getFileUrl(fileName);
+        }catch (IOException e){
+            throw new IllegalArgumentException(String.format("파일 변화중 에러가 발생했습니다. (%s)",uploadFile.getOriginalFilename()));
         }
-        return url;
     }
-    private static String getUuid() {
-        return UUID.randomUUID().toString().replaceAll("-", "");
-    }
-    private void uploadOnS3(final String findName, final File file) {
-        final TransferManager transferManager = new TransferManager(this.amazonS3Client);
-        final PutObjectRequest request = new PutObjectRequest(bucket, findName, file);
-        final Upload upload = transferManager.upload(request);
-        try {
-            upload.waitForCompletion();
-        } catch (AmazonClientException | InterruptedException amazonClientException) {
-            log.info("getCause : {}", amazonClientException.getCause());
-            throw new InvaildFileExtensionException();
-        }
+    private String createFileName(String originalFIleName){
+        return UUID.randomUUID().toString().concat(getFileExtension(originalFIleName));
     }
 
+    private String getFileExtension(String fileName) {
+        try{
+            return fileName.substring(fileName.lastIndexOf("."));
+        } catch (StringIndexOutOfBoundsException e){
+            throw  new IllegalArgumentException(String.format("잘못된 형시의 파일(%s) 입니다.",fileName));
+        }
+    }
+    private void uploadFile(InputStream inputStream,ObjectMetadata objectMetadata,String fileName){
+        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName,inputStream,objectMetadata).withCannedAcl(CannedAccessControlList.PublicRead));
+    }
+    private String getFileUrl(String fileName){
+        return amazonS3Client.getUrl(bucket,fileName).toString();
+    }
     //Todo 업로드시에 입렵 폼 값 검증
     public void validateUploadForm(BindingResult bindingResult){
         if(bindingResult.getErrorCount()>=3) throw new InvaildFormException();
