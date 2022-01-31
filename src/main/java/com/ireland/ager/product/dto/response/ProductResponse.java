@@ -24,7 +24,7 @@ public class ProductResponse {
     ProductStatus status;
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
-    List<String> urlList;
+    String thumbNailUrl;
 
     public static ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()
@@ -37,7 +37,7 @@ public class ProductResponse {
                 .status(product.getStatus())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
-                .urlList(product.getUrlList())
+                .thumbNailUrl(product.getThumbNailUrl())
                 .build();
     }
 
