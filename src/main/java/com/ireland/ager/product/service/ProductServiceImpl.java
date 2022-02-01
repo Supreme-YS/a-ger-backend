@@ -124,7 +124,8 @@ public class ProductServiceImpl {
         //들어온 multiFile의 리스트를 확인 하는 과정
         List<String> updateFileImageUrlList;
         List<String> currentFileImageUrlList = productById.getUrlList();
-        uploadService.delete(currentFileImageUrlList);
+        String currentFileThumbnailUrl=productById.getThumbNailUrl();
+        uploadService.delete(currentFileImageUrlList,currentFileThumbnailUrl);
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
             productById.setUrlList(updateFileImageUrlList);
@@ -145,7 +146,7 @@ public class ProductServiceImpl {
             // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             throw new UnAuthorizedTokenException();
         }
-        uploadService.delete(productById.getUrlList());
+        uploadService.delete(productById.getUrlList(),productById.getThumbNailUrl());
         productRepository.deleteById(productId);
     }
 
