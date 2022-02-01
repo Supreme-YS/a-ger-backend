@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Builder
-public class ProductResponse {
+public class ProductThumbResponse {
     Long productId;
     String productName;
     String productPrice;
@@ -25,10 +25,9 @@ public class ProductResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     String thumbNailUrl;
-    List<String> urlList;
 
-    public static ProductResponse toProductResponse(Product product) {
-        return ProductResponse.builder()
+    public static ProductThumbResponse toProductThumbResponse(Product product) {
+        return ProductThumbResponse.builder()
                 .productId(product.getProductId())
                 .productName(product.getProductName())
                 .productPrice(product.getProductPrice())
@@ -39,15 +38,13 @@ public class ProductResponse {
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .thumbNailUrl(product.getThumbNailUrl())
-                .urlList(product.getUrlList())
                 .build();
     }
 
-
-    public static List<ProductResponse> toProductListResponse(List<Product> productList) {
-        List<ProductResponse> productResponseList = new ArrayList<>();
+    public static List<ProductThumbResponse> toProductListResponse(List<Product> productList) {
+        List<ProductThumbResponse> productResponseList = new ArrayList<>();
         for (Product product : productList) {
-            ProductResponse productResponse = ProductResponse.toProductResponse(product);
+            ProductThumbResponse productResponse = ProductThumbResponse.toProductThumbResponse(product);
             productResponseList.add(productResponse);
         }
         return productResponseList;
