@@ -9,6 +9,7 @@ import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
+import com.ireland.ager.product.dto.response.ProductThumbResponse;
 import com.ireland.ager.product.exception.*;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.account.exception.UnAuthorizedTokenException;
@@ -59,7 +60,7 @@ public class ProductServiceImpl {
     //Todo 전체 조회에서 NotFound에러는 반환을 안해줍니다 상품이 없는건 에러가 아니라고 생각해서 프론트에서 빈 리스트를 보면 추가적인 멘트를 남기는 작업을 하면 될거 같습니다.
     //TODO : "더 이상 등록된 제품이 없습니다." 문구 추가 필요 - FRONTEND
 
-    public List<ProductResponse> findProductAllByCreatedAtDesc(Long productId, Integer size) {
+    public List<ProductThumbResponse> findProductAllByCreatedAtDesc(Long productId, Integer size) {
         //TODO 일단 productId값을 가져와서 1을 더해준다. Lessthan이므로 1을 더해준다. 하지만 굳이 이러지 말고 productId값을 9999999999L값을 주어준다면 쿼리도 안날라가고 처리하기는 쉬우나 간지가 안난다.
         if(productId==0) {
             //productId=99999999999L;
@@ -67,25 +68,25 @@ public class ProductServiceImpl {
             log.info("프로덕트 아이디 값은?? {}",productId);
         }
         Pageable pageRequest = PageRequest.of(0, size);
-        return ProductResponse.toProductListResponse(productRepository.findProductsByProductIdLessThanOrderByCreatedAtDesc(productId, pageRequest).getContent());
+        return ProductThumbResponse.toProductListResponse(productRepository.findProductsByProductIdLessThanOrderByCreatedAtDesc(productId, pageRequest).getContent());
     }
     //TODO 조회수순으로 조회
-    public List<ProductResponse> findProductAllByProductViewCntDesc(Long productId, Integer size) {
+    public List<ProductThumbResponse> findProductAllByProductViewCntDesc(Long productId, Integer size) {
         if(productId==0) {
             productId = productRepository.countProductByProductId(productId)+1;
         }
         PageRequest pageRequest = PageRequest.of(0, size);
-        return ProductResponse.toProductListResponse(productRepository.findProductByProductIdIsLessThanOrderByProductViewCntDesc(productId,pageRequest).getContent());
+        return ProductThumbResponse.toProductListResponse(productRepository.findProductByProductIdIsLessThanOrderByProductViewCntDesc(productId,pageRequest).getContent());
     }
     //TODO 카테고리별로 조회
-    public List<ProductResponse> findProductAllByCategory(Long productId, Integer size, String category) {
+    public List<ProductThumbResponse> findProductAllByCategory(Long productId, Integer size, String category) {
         if(productId==0) {
             productId = productRepository.countProductByProductId(productId)+1;
         }
         Pageable pageRequest = PageRequest.of(0, size);
         List<Product> productContent = productRepository.findProductsByProductIdLessThanAndCategoryOrderByCreatedAtDesc(
                 productId, pageRequest, Category.valueOf(category)).getContent();
-        return ProductResponse.toProductListResponse(productContent);
+        return ProductThumbResponse.toProductListResponse(productContent);
     }
 
     public ProductResponse createProduct(String accessToken,
@@ -124,7 +125,8 @@ public class ProductServiceImpl {
         //들어온 multiFile의 리스트를 확인 하는 과정
         List<String> updateFileImageUrlList;
         List<String> currentFileImageUrlList = productById.getUrlList();
-        uploadService.delete(currentFileImageUrlList);
+        String currentFileThumbnailUrl=productById.getThumbNailUrl();
+        uploadService.delete(currentFileImageUrlList,currentFileThumbnailUrl);
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
             productById.setUrlList(updateFileImageUrlList);
@@ -145,7 +147,7 @@ public class ProductServiceImpl {
             // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             throw new UnAuthorizedTokenException();
         }
-        uploadService.delete(productById.getUrlList());
+        uploadService.delete(productById.getUrlList(),productById.getThumbNailUrl());
         productRepository.deleteById(productId);
     }
 

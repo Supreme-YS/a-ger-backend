@@ -47,7 +47,8 @@ public class UploadServiceImpl {
      * currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
      */
 
-    public void delete(List<String> currentFileImageUrlList) {
+    public void delete(List<String> currentFileImageUrlList,String thumbNailUrl) {
+        amazonS3Client.deleteObject(bucket, thumbNailUrl.split("/")[3]);
         for (String url : currentFileImageUrlList) {
             amazonS3Client.deleteObject(bucket, url.split("/")[3]);
         }
