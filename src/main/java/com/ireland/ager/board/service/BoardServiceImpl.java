@@ -48,12 +48,14 @@ public class BoardServiceImpl {
 
     }
 
+    //FIXME : viewCnt 체크하기
     public BoardResponse findPostById(String accessToken, Long boardId) {
         Account account = accountService.findAccountByAccessToken(accessToken);
         Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
         if (!(account.equals(board.getAccountId()))) {
             return BoardResponse.toOtherBoard(board);
         }
+        board.addViewCnt(board);
         return BoardResponse.toBoardResponse(board);
     }
 }
