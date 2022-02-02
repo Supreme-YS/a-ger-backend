@@ -2,11 +2,9 @@ package com.ireland.ager.board.dto.request;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.board.entity.Board;
-import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
-@Builder
+@Data
 public class BoardRequest {
 
     String title;

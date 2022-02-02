@@ -1,5 +1,6 @@
 package com.ireland.ager.board.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
 import lombok.*;
@@ -18,6 +19,7 @@ public class Board extends BaseEntity {
     private Long boardId;
 
     @ManyToOne
+    @JsonIgnore
     private Account accountId;
 
     @Column(length = 100, nullable = false)
