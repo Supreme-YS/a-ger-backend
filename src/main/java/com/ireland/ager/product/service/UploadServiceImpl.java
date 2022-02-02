@@ -121,7 +121,7 @@ public class UploadServiceImpl {
             objectMetadata.setContentType(ext.substring(1));
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             final TransferManager transferManager = new TransferManager(this.amazonS3Client);
-            final PutObjectRequest request = new PutObjectRequest(bucket, Filename, byteArrayInputStream,objectMetadata);
+            final PutObjectRequest request = new PutObjectRequest(bucket+"/thumb", Filename, byteArrayInputStream,objectMetadata);
             final Upload upload = transferManager.upload(request);
                 upload.waitForCompletion();
                 //Todo 아마존 sdk를 이용하여서 url가져오는 방법  통신을 하는 과정이 추가 되므로 안쓰려고 한다.
