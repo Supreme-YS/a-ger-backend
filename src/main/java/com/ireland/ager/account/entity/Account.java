@@ -43,4 +43,6 @@ public class Account extends BaseEntity implements Serializable {
 
     @OneToMany(mappedBy = "accountId", cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
+//    private Set<Board> boards = new HashSet<>();
+
 }

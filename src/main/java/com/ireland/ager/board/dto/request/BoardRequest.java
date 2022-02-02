@@ -2,24 +2,28 @@ package com.ireland.ager.board.dto.request;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.board.entity.Board;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-import java.time.LocalDateTime;
-
-@Data
+@Getter
+@Builder
 public class BoardRequest {
+
     String title;
-    String contents;
-    LocalDateTime updatedAt;
-    LocalDateTime createdAt;
+    String content;
 
     public static Board toBoard(BoardRequest boardRequest, Account account) {
         Board board = new Board();
-        board.builder()
-                .title(boardRequest.title)
-                .content(boardRequest.contents)
-                .accountId(account)
-                .build();
+        board.addAccount(account);
+        board.setTitle(boardRequest.getTitle());
+        board.setContent(boardRequest.getContent());
+        board.setBoardViewCnt(0L);
+        return board;
+    }
+
+    public static Board toBoardUpdate(BoardRequest boardRequest, Board board) {
+        board.setTitle(boardRequest.getTitle());
+        board.setContent(boardRequest.getContent());
         return board;
     }
 }
