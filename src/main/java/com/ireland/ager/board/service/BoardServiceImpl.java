@@ -53,6 +53,7 @@ public class BoardServiceImpl {
         Account account = accountService.findAccountByAccessToken(accessToken);
         Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
         if (!(account.equals(board.getAccountId()))) {
+            board.addViewCnt(board);
             return BoardResponse.toOtherBoard(board);
         }
         board.addViewCnt(board);
