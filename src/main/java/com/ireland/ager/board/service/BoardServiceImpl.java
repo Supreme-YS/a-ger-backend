@@ -47,6 +47,7 @@ public class BoardServiceImpl {
         boardRepository.deleteById(board.getBoardId());
 
     }
+
     public BoardResponse findPostById(String accessToken, Long boardId) {
         Account account = accountService.findAccountByAccessToken(accessToken);
         Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);

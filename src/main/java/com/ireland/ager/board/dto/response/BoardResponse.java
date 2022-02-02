@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Builder
@@ -43,5 +45,14 @@ public class BoardResponse {
                 .updateAt(board.getUpdatedAt())
                 .isOwner(false)
                 .build();
+    }
+
+    public static List<BoardResponse> toBoardListResponse(List<Board> boardList) {
+        List<BoardResponse> boardResponseList = new ArrayList<>();
+        for (Board board : boardList) {
+            BoardResponse boardResponse = BoardResponse.toBoardResponse(board);
+            boardResponseList.add(boardResponse);
+        }
+        return boardResponseList;
     }
 }

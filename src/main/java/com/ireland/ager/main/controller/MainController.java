@@ -8,7 +8,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
@@ -30,6 +33,7 @@ public class MainController {
         return new ResponseEntity<>(responseService.getListResult(
                 productService.findProductAllByCreatedAtDesc(productId,size)), HttpStatus.OK);
     }
+
     @GetMapping("/api/product/views")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByViewCnt(
             @RequestParam(value = "productId") Long productId,
@@ -37,6 +41,7 @@ public class MainController {
         return new ResponseEntity<>(responseService.getListResult(
                 productService.findProductAllByProductViewCntDesc(productId,size)), HttpStatus.OK);
     }
+
     @GetMapping("/api/product/category")
     public ResponseEntity<ListResult<ProductResponse>> getlistAllProductsByCategory(
             @RequestParam(value = "productId") Long productId,
