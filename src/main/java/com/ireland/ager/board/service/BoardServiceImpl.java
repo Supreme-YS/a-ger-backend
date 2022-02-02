@@ -48,7 +48,6 @@ public class BoardServiceImpl {
 
     }
 
-    //FIXME : viewCnt 체크하기
     public BoardResponse findPostById(String accessToken, Long boardId) {
         Account account = accountService.findAccountByAccessToken(accessToken);
         Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
