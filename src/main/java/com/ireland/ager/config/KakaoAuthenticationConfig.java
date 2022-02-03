@@ -14,12 +14,7 @@ public class KakaoAuthenticationConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(kakaoAuthenticationInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns(
-                        "/api/account/login-url",
-                        "/api/account/login"
-                        ,"/api/token/**"
-                        ,"/api/review/list/**");
+                .addPathPatterns("/**");
         WebMvcConfigurer.super.addInterceptors(registry);
     }
 }

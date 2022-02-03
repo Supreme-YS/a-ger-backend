@@ -30,8 +30,10 @@ public class ProductUpdateRequest {
     String status;
 
     public Product toProductUpdate(Product product, Account account,
-                                   List<Url> uploadImageUrl) {
-        for (Url url : uploadImageUrl) {
+                                   List<String> uploadImageUrl) {
+        for (String str : uploadImageUrl) {
+            Url url=new Url();
+            url.setUrl(str);
             product.addUrl(url);
         }
         product.setProductDetail(this.productDetail);

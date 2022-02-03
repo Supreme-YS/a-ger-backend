@@ -20,6 +20,7 @@ import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.repository.ProductRepository;
+import com.ireland.ager.product.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
@@ -40,9 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -51,6 +50,7 @@ import java.util.UUID;
 public class ProductServiceImpl {
 
     private final ProductRepository productRepository;
+    private final UrlRepository urlRepository;
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
     @Value("${cloud.aws.s3.bucket.url}")
@@ -123,26 +123,35 @@ public class ProductServiceImpl {
             throw new UnAuthorizedTokenException();
         }
         validateFileExists(multipartFile);
-        MultipartFile firstImage=multipartFile.get(0);
-        //들어온 multiFile의 리스트를 확인 하는 과정
-        List<String> updateFileImageUrlList;
         List<Url> currentFileImageUrlList = productById.getUrlList();
-        String currentFileThumbnailUrl=productById.getThumbNailUrl();
-        uploadService.delete(currentFileImageUrlList,currentFileThumbnailUrl);
+        String currentFileThumbnailUrl = productById.getThumbNailUrl();
+        uploadService.delete(currentFileImageUrlList, currentFileThumbnailUrl);
+        //여기서부터 연관 관계 삭제 하고 추가하는 과정 거친다.
+        //1. 연관관계 삭제. 여기가 안돼, 마지막이 삭제가 안된다.
+        // product에 orphanremoval = true로 줘서 url의 pk가 null이 되면 delete되게 설정했다.
+//        for(Url url:productById.getUrlList()) {
+//            log.info("urlList-urlId : {}",url.getUrlId());
+//            productById.getUrlList().remove(url); //연결만 끊어줘도 자동삭제된다.
+//        }
+        for(Iterator<Url> it = productById.getUrlList().iterator() ; it.hasNext() ; )
+        {
+            Url url = it.next();
+            url.setProduct(null);
+            it.remove();
+        }
+        //2. 이미지 업로드한다. 안된다. 현재 썸네일만 된다.
+        MultipartFile firstImage = multipartFile.get(0);
+        //들어온 multiFile의 리스트를 확인 하는 과정
+        List<String> updateFileImageUrlList = new ArrayList<>();
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
             productById.setThumbNailUrl(uploadService.makeThumbNail(firstImage));
-            for(String str: updateFileImageUrlList) {
-                Url url=new Url();
-                url.setUrl(str);
-                productById.addUrl(url);
-            }
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
         //REMARK 악취가 난다..... 해결 완료
         Account accountById = accountService.findAccountById(productById.getAccount().getAccountId());
-        Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountById, productById.getUrlList());
+        Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountById, updateFileImageUrlList);
         productRepository.save(toProductUpdate);
         return ProductResponse.toProductResponse(toProductUpdate);
     }

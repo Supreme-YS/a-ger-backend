@@ -36,10 +36,11 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
         Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
         String pathVariable;
         if(pathVariables!=null)  {
-            if(pathVariables.containsKey("productId")) {
+            if(pathVariables.containsKey("productId") && request.getMethod().equals("GET")) {
+                log.info("method:{}", request.getMethod());
                 pathVariable=pathVariables.get("productId");
                 if(!PatternMatchUtils.simpleMatch("/api/product/"+pathVariable,requestUrl)
-                        || !PatternMatchUtils.simpleMatch(excludeList,requestUrl))
+                        && PatternMatchUtils.simpleMatch(excludeList,requestUrl))
                     authService.isValidToken(token);
             }
         }
