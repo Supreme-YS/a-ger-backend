@@ -127,21 +127,14 @@ public class ProductServiceImpl {
         String currentFileThumbnailUrl = productById.getThumbNailUrl();
         uploadService.delete(currentFileImageUrlList, currentFileThumbnailUrl);
         //여기서부터 연관 관계 삭제 하고 추가하는 과정 거친다.
-        //1. 연관관계 삭제. 여기가 안돼, 마지막이 삭제가 안된다.
         // product에 orphanremoval = true로 줘서 url의 pk가 null이 되면 delete되게 설정했다.
-//        for(Url url:productById.getUrlList()) {
-//            log.info("urlList-urlId : {}",url.getUrlId());
-//            productById.getUrlList().remove(url); //연결만 끊어줘도 자동삭제된다.
-//        }
         for(Iterator<Url> it = productById.getUrlList().iterator() ; it.hasNext() ; )
         {
             Url url = it.next();
             url.setProduct(null);
             it.remove();
         }
-        //2. 이미지 업로드한다. 안된다. 현재 썸네일만 된다.
         MultipartFile firstImage = multipartFile.get(0);
-        //들어온 multiFile의 리스트를 확인 하는 과정
         List<String> updateFileImageUrlList = new ArrayList<>();
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
@@ -192,6 +185,3 @@ public class ProductServiceImpl {
         }
     }
 }
-// if((objectError.getDefaultMessage().equals("3010"))) throw new InvaildProductTitleException();
-//         else if((objectError.getDefaultMessage().equals("3020")||objectError.getDefaultMessage().equals("3021") )) throw new InvaildProductPriceException();
-//         else if(objectError.getDefaultMessage().equals("3030"))throw new InvaildProductDetailException();
