@@ -129,6 +129,7 @@ public class ProductServiceImpl {
         uploadService.delete(currentFileImageUrlList,currentFileThumbnailUrl);
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
+            productById.setThumbNailUrl(uploadService.makeThumbNail(firstImage));
             productById.setUrlList(updateFileImageUrlList);
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
