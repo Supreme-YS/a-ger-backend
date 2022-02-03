@@ -29,6 +29,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 	implementation 'com.h2database:h2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
 	implementation 'org.postgresql:postgresql'
 	//자바 역직렬화 문제 해결 패키지
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'

@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class MessageController {
-    private final SimpMessageSendingOperations sendingOperations;
     private final MessageService messageService;
 
     @MessageMapping("/message/{roomId}")
