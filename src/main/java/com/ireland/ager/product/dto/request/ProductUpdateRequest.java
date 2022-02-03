@@ -4,6 +4,7 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.ProductStatus;
+import com.ireland.ager.product.entity.Url;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,11 +31,11 @@ public class ProductUpdateRequest {
 
     public Product toProductUpdate(Product product, Account account,
                                    List<String> uploadImageUrl) {
-        List<String> images = new ArrayList<>();
-        for (String url : uploadImageUrl) {
-            images.add(url);
+        for (String str : uploadImageUrl) {
+            Url url=new Url();
+            url.setUrl(str);
+            product.addUrl(url);
         }
-        product.setUrlList(images);
         product.setProductDetail(this.productDetail);
         product.setProductPrice(productPrice);
         product.setProductViewCnt(product.getProductViewCnt());

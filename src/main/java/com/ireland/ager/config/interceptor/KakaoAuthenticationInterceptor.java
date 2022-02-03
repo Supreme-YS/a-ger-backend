@@ -22,15 +22,29 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
             "/api/product/time"
             ,"/api/product/views"
             ,"/api/product/category"
+            ,"/api/account/login-url/**"
+            ,"/api/account/login/**"
+            ,"/api/token/**"
+            ,"/api/review/list/**"
+            ,"/favicon.ico/**"
+            ,"/favicon.ico"
     };
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String requestUrl = request.getRequestURI();
-        final Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        String pathVariable=pathVariables.get("productId");
-        if(!(PatternMatchUtils.simpleMatch(excludeList,requestUrl)
-                || PatternMatchUtils.simpleMatch("/api/product/"+pathVariable,requestUrl))) {
+        Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+        String pathVariable;
+        if(pathVariables!=null)  {
+            if(pathVariables.containsKey("productId") && request.getMethod().equals("GET")) {
+                log.info("method:{}", request.getMethod());
+                pathVariable=pathVariables.get("productId");
+                if(!PatternMatchUtils.simpleMatch("/api/product/"+pathVariable,requestUrl)
+                        && PatternMatchUtils.simpleMatch(excludeList,requestUrl))
+                    authService.isValidToken(token);
+            }
+        }
+        else if(!PatternMatchUtils.simpleMatch(excludeList,requestUrl)) {
             authService.isValidToken(token);
         }
         return HandlerInterceptor.super.preHandle(request, response, handler);
