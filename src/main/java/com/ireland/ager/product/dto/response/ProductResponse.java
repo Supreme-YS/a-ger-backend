@@ -3,6 +3,7 @@ package com.ireland.ager.product.dto.response;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.ProductStatus;
+import com.ireland.ager.product.entity.Url;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +26,7 @@ public class ProductResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     String thumbNailUrl;
-    List<String> urlList;
+    List<Url> urlList;
 
     public static ProductResponse toProductResponse(Product product) {
         return ProductResponse.builder()

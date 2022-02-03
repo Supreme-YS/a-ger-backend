@@ -10,6 +10,7 @@ import com.amazonaws.services.s3.transfer.Upload;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.product.dto.response.ProductThumbResponse;
+import com.ireland.ager.product.entity.Url;
 import com.ireland.ager.product.exception.*;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.account.exception.UnAuthorizedTokenException;
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -102,7 +104,7 @@ public class ProductServiceImpl {
     }
 
     //FIXME 캐시 적용 하는 곳,,
-//    @Cacheable(key = "#productId", value = "product", cacheManager = "redisCacheManager")
+    @Cacheable(value = "product")
     public Product findProductById(Long productId) {
         Product product = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         product.addViewCnt(product);
@@ -124,13 +126,17 @@ public class ProductServiceImpl {
         MultipartFile firstImage=multipartFile.get(0);
         //들어온 multiFile의 리스트를 확인 하는 과정
         List<String> updateFileImageUrlList;
-        List<String> currentFileImageUrlList = productById.getUrlList();
+        List<Url> currentFileImageUrlList = productById.getUrlList();
         String currentFileThumbnailUrl=productById.getThumbNailUrl();
         uploadService.delete(currentFileImageUrlList,currentFileThumbnailUrl);
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
             productById.setThumbNailUrl(uploadService.makeThumbNail(firstImage));
-            productById.setUrlList(updateFileImageUrlList);
+            for(String str: updateFileImageUrlList) {
+                Url url=new Url();
+                url.setUrl(str);
+                productById.addUrl(url);
+            }
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }

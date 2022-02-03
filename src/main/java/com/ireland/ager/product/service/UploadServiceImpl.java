@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
+import com.ireland.ager.product.entity.Url;
 import com.ireland.ager.product.exception.InvaildFileExtensionException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +49,7 @@ public class UploadServiceImpl {
      * currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
      */
 
-    public void delete(List<String> currentFileImageUrlList,String thumbNailUrl) throws AmazonServiceException {
+    public void delete(List<Url> currentFileImageUrlList,String thumbNailUrl) throws AmazonServiceException {
         try {
             amazonS3Client.deleteObject(bucket, thumbNailUrl.split("/")[3]);
             log.info("삭제될 파일의 이름은 : {}",thumbNailUrl.split("/")[3]);
@@ -56,9 +57,10 @@ public class UploadServiceImpl {
         catch (AmazonServiceException e){
             e.printStackTrace();
         }
-        for (String url : currentFileImageUrlList) {
-            amazonS3Client.deleteObject(bucket, url.split("/")[3]);
-            log.info("삭제될 파일의 이름은 : {}",url.split("/")[3]);
+        for (Url url : currentFileImageUrlList) {
+
+            amazonS3Client.deleteObject(bucket, url.getUrl().split("/")[3]);
+            log.info("삭제될 파일의 이름은 : {}",url.getUrl().split("/")[3]);
         }
     }
 

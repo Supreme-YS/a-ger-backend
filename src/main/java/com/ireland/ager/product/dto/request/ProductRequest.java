@@ -4,6 +4,7 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.ProductStatus;
+import com.ireland.ager.product.entity.Url;
 import lombok.Data;
 
 import javax.validation.constraints.Min;
@@ -26,13 +27,13 @@ public class ProductRequest {
     public Product toProduct(Account account,
                              List<String> uploadImageUrl,String thumbNailUrl) {
         Product product = new Product();
-        List<String> images = new ArrayList<>();
-        for (String url : uploadImageUrl) {
-            images.add(url);
+        for (String str : uploadImageUrl) {
+            Url url =new Url();
+            url.setUrl(str);
+            product.addUrl(url);
         }
         //FIXME Optional Account 반환 문제 해결해야한다.
         product.addAccount(account);
-        product.setUrlList(images);
         product.setProductDetail(this.productDetail);
         product.setProductPrice(productPrice);
         product.setProductViewCnt(0L);
