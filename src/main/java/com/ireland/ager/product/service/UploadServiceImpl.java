@@ -2,6 +2,7 @@ package com.ireland.ager.product.service;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
@@ -47,10 +48,17 @@ public class UploadServiceImpl {
      * currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
      */
 
-    public void delete(List<String> currentFileImageUrlList,String thumbNailUrl) {
-        amazonS3Client.deleteObject(bucket, thumbNailUrl.split("/")[3]);
+    public void delete(List<String> currentFileImageUrlList,String thumbNailUrl) throws AmazonServiceException {
+        try {
+            amazonS3Client.deleteObject(bucket, thumbNailUrl.split("/")[3]);
+            log.info("삭제될 파일의 이름은 : {}",thumbNailUrl.split("/")[3]);
+        }
+        catch (AmazonServiceException e){
+            e.printStackTrace();
+        }
         for (String url : currentFileImageUrlList) {
             amazonS3Client.deleteObject(bucket, url.split("/")[3]);
+            log.info("삭제될 파일의 이름은 : {}",url.split("/")[3]);
         }
     }
 
@@ -121,7 +129,7 @@ public class UploadServiceImpl {
             objectMetadata.setContentType(ext.substring(1));
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             final TransferManager transferManager = new TransferManager(this.amazonS3Client);
-            final PutObjectRequest request = new PutObjectRequest(bucket+"/thumb", Filename, byteArrayInputStream,objectMetadata);
+            final PutObjectRequest request = new PutObjectRequest(bucket, Filename, byteArrayInputStream,objectMetadata);
             final Upload upload = transferManager.upload(request);
                 upload.waitForCompletion();
                 //Todo 아마존 sdk를 이용하여서 url가져오는 방법  통신을 하는 과정이 추가 되므로 안쓰려고 한다.
