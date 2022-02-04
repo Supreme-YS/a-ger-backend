@@ -26,6 +26,7 @@ import java.util.*;
 @AllArgsConstructor
 @DynamicUpdate
 public class Account extends BaseEntity implements Serializable {
+
     @Id
     @GeneratedValue
     Long accountId;
