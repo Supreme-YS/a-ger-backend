@@ -134,6 +134,9 @@ public class ProductServiceImpl {
             url.setProduct(null);
             it.remove();
         }
+        for(Url url : productById.getUrlList()) {
+            url.setProduct(null);
+        }
         MultipartFile firstImage = multipartFile.get(0);
         List<String> updateFileImageUrlList = new ArrayList<>();
         try {
