@@ -37,7 +37,6 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
         String pathVariable;
         if(pathVariables!=null)  {
             if(pathVariables.containsKey("productId") && request.getMethod().equals("GET")) {
-                log.info("method:{}", request.getMethod());
                 pathVariable=pathVariables.get("productId");
                 if(!PatternMatchUtils.simpleMatch("/api/product/"+pathVariable,requestUrl)
                         && PatternMatchUtils.simpleMatch(excludeList,requestUrl))
