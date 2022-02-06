@@ -1,9 +1,7 @@
 package com.ireland.ager.main.common.service;
 
-import com.ireland.ager.main.common.CommonResponse;
-import com.ireland.ager.main.common.CommonResult;
-import com.ireland.ager.main.common.ListResult;
-import com.ireland.ager.main.common.SingleResult;
+import com.ireland.ager.main.common.*;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +23,15 @@ public class ResponseService {
         setSuccessResult(result);
         return result;
     }
+
+    //페이징 결과 처리 메소드
+    public <T> SliceResult<T> getSliceResult(Slice<T> list) {
+        SliceResult<T> result = new SliceResult<>();
+        result.setData(list);
+        setSuccessResult(result);
+        return result;
+    }
+
     // 성공 결과만 처리하는 메소드
     public CommonResult getSuccessResult() {
         CommonResult result = new CommonResult();
