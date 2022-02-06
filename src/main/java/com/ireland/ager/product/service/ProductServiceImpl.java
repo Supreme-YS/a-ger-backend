@@ -45,8 +45,7 @@ public class ProductServiceImpl {
     private final AmazonS3Client amazonS3Client;
 
     public Slice<ProductThumbResponse> findProductAllByCreatedAtDesc(Category category, String keyword, Pageable pageable) {
-        Slice<ProductThumbResponse> allProductOrderByCreatedAtDesc = productRepository.findAllProductPageableOrderByCreatedAtDesc(category,keyword,pageable);
-        return allProductOrderByCreatedAtDesc;
+        return productRepository.findAllProductPageableOrderByCreatedAtDesc(category,keyword,pageable);
     }
 
     public ProductResponse createProduct(String accessToken,

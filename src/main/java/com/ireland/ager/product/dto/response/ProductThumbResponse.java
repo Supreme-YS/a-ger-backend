@@ -15,32 +15,23 @@ import java.util.List;
 @Setter
 @Builder
 public class ProductThumbResponse {
-    Long productId;
     String productName;
     String productPrice;
-    String productDetail;
     Long productViewCnt;
     Category category;
-    ProductStatus status;
     LocalDateTime createdAt;
-    LocalDateTime updatedAt;
     String thumbNailUrl;
 
     public static ProductThumbResponse toProductThumbResponse(Product product) {
         return ProductThumbResponse.builder()
-                .productId(product.getProductId())
                 .productName(product.getProductName())
                 .productPrice(product.getProductPrice())
-                .productDetail(product.getProductDetail())
                 .productViewCnt(product.getProductViewCnt())
                 .category(product.getCategory())
-                .status(product.getStatus())
                 .createdAt(product.getCreatedAt())
-                .updatedAt(product.getUpdatedAt())
                 .thumbNailUrl(product.getThumbNailUrl())
                 .build();
     }
-
     public static List<ProductThumbResponse> toProductListResponse(List<Product> productList) {
         List<ProductThumbResponse> productResponseList = new ArrayList<>();
         for (Product product : productList) {

@@ -9,8 +9,12 @@ import com.ireland.ager.chat.service.MessageService;
 import com.ireland.ager.main.common.CommonResult;
 import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.SingleResult;
+import com.ireland.ager.main.common.SliceResult;
 import com.ireland.ager.main.common.service.ResponseService;
+import com.ireland.ager.product.dto.response.ProductThumbResponse;
+import com.ireland.ager.product.entity.Category;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -48,14 +52,13 @@ public class MessageRoomController {
     }
     //TODO: 내 채팅방 조회 기능. list
     @GetMapping
-    public ResponseEntity<ListResult<MessageSummaryResponse>> getRoomList(
+    public ResponseEntity<SliceResult<MessageSummaryResponse>> searchAllRoomList(
             @RequestHeader("Authorization") String accessToken
-    ) {
-        //TODO 반환 리스트를 줄때 room_id와 가장 최근 채팅을 보여주면 된다.
-        authService.isValidToken(accessToken);
+            , @RequestParam(value = "keyword",required = false) String keyword
+            , Pageable pageable) {
         String[] splitToken = accessToken.split(" ");
-        List<MessageSummaryResponse> roomByAccessToken = messageService.findRoomByAccessToken(splitToken[1]);
-        return new ResponseEntity<>(responseService.getListResult(roomByAccessToken), HttpStatus.OK);
+        return new ResponseEntity<>(responseService.getSliceResult(
+                messageService.findRoomByAccessToken(splitToken[1],keyword,pageable)), HttpStatus.OK);
     }
     @DeleteMapping("/{roomId}")
     public ResponseEntity<CommonResult> roomDelete(
