@@ -54,11 +54,10 @@ public class MessageRoomController {
     @GetMapping
     public ResponseEntity<SliceResult<MessageSummaryResponse>> searchAllRoomList(
             @RequestHeader("Authorization") String accessToken
-            , @RequestParam(value = "keyword",required = false) String keyword
             , Pageable pageable) {
         String[] splitToken = accessToken.split(" ");
         return new ResponseEntity<>(responseService.getSliceResult(
-                messageService.findRoomByAccessToken(splitToken[1],keyword,pageable)), HttpStatus.OK);
+                messageService.findRoomByAccessToken(splitToken[1],pageable)), HttpStatus.OK);
     }
     @DeleteMapping("/{roomId}")
     public ResponseEntity<CommonResult> roomDelete(

@@ -16,6 +16,8 @@ import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -31,7 +33,6 @@ public class MessageService {
     private final MessageRoomRepository messageRoomRepository;
     private final AccountServiceImpl accountService;
     private final ProductServiceImpl productService;
-    private final AuthServiceImpl authService;
     public MessageRoom insertMessage(Long roomId, Message message) {
         MessageRoom messageRoom = messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
         messageRoom.toAddMessage(messageRoom,message);
@@ -100,31 +101,9 @@ public class MessageService {
         }
         return MessageDetailsResponse.toMessageDetailsResponse(messageRoombyRoomId);
     }
-    public List<MessageSummaryResponse> findRoomByAccessToken(String accessToken) {
+    public Slice<MessageSummaryResponse> findRoomByAccessToken(String accessToken,Pageable pageable) {
         Account account = accountService.findAccountByAccessToken(accessToken);
-        List<MessageRoom> messageRoomsById = messageRoomRepository.findMessageRoomsBySellerIdOrBuyerId(account,account).orElseThrow(NotFoundException::new);
-        List<MessageSummaryResponse> messageSummaryResponseList = new ArrayList<>();
-        for(MessageRoom messageRoom: messageRoomsById) {
-            //TODO: add하기 전에 check를 한다. null이 있는지 없는지.
-            if(account.equals(messageRoom.getSellerId())) { //seller일때
-                if(messageRoom.getRoomStatus()==2||messageRoom.getRoomStatus()==3) {
-                    messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
-                }
-            }
-            else { //buyer일때
-                if(messageRoom.getRoomStatus()==1||messageRoom.getRoomStatus()==3) {
-                    messageSummaryResponseList.add(getMessageSummaryResponse(messageRoom,getAccountBySellOrBuy(messageRoom,account)));
-                }
-            }
-        }
-        //TODO seller일땐 buyer정보, buyer일땐 seller 정보 반환해야 한다.
-        return messageSummaryResponseList;
-    }
-    public MessageSummaryResponse getMessageSummaryResponse(MessageRoom messageRoom,Account account) {
-        return MessageSummaryResponse.toMessageSummaryResponse(messageRoom,account);
-    }
-    public Account getAccountBySellOrBuy(MessageRoom messageRoom,Account account) {
-        return account.equals(messageRoom.getBuyerId()) ? messageRoom.getSellerId(): messageRoom.getBuyerId();
+        return messageRoomRepository.findMessageRoomsBySellerIdOrBuyerId(account,account,pageable);
     }
 
 

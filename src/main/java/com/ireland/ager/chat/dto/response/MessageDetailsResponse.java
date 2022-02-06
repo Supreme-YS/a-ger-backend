@@ -22,4 +22,3 @@ public class MessageDetailsResponse {
                 .build();
     }
 }
-//TODO 채팅방 내역 주르륵 보이게 해야함
