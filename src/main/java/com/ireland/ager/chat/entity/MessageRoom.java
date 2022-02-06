@@ -2,6 +2,7 @@ package com.ireland.ager.chat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
+import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
-public class MessageRoom {
+public class MessageRoom extends BaseEntity {
     @Id
     @GeneratedValue
     private Long roomId;
