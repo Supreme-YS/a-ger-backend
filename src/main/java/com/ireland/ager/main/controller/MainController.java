@@ -1,12 +1,16 @@
 package com.ireland.ager.main.controller;
 
 import com.ireland.ager.main.common.ListResult;
+import com.ireland.ager.main.common.SliceResult;
 import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.dto.response.ProductThumbResponse;
+import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,32 +27,12 @@ public class MainController {
     private final ProductServiceImpl productService;
     private final ResponseService responseService;
 
-    @GetMapping("/api/product/time")
-    public ResponseEntity<ListResult<ProductThumbResponse>> getlistAllProducts(
-            @RequestParam(value = "productId") Long productId,
-            @RequestParam(value = "size") Integer size) {
-        /**
-         * @Method : getlistAllProducts
-         * @Description :  프론트에서 리스트 중에 가장 작은 페이지아이디{productId}와 화면에 보일 갯수{size} 를넘겨준다.
-         */
-        return new ResponseEntity<>(responseService.getListResult(
-                productService.findProductAllByCreatedAtDesc(productId,size)), HttpStatus.OK);
-    }
-
-    @GetMapping("/api/product/views")
-    public ResponseEntity<ListResult<ProductThumbResponse>> getlistAllProductsByViewCnt(
-            @RequestParam(value = "productId") Long productId,
-            @RequestParam(value = "size") Integer size) {
-        return new ResponseEntity<>(responseService.getListResult(
-                productService.findProductAllByProductViewCntDesc(productId,size)), HttpStatus.OK);
-    }
-
-    @GetMapping("/api/product/category")
-    public ResponseEntity<ListResult<ProductThumbResponse>> getlistAllProductsByCategory(
-            @RequestParam(value = "productId") Long productId,
-            @RequestParam(value = "size") Integer size,
-            @RequestParam(value = "category") String category) {
-        return new ResponseEntity<>(responseService.getListResult(
-                productService.findProductAllByCategory(productId,size,category)), HttpStatus.OK);
+    @GetMapping("/api/product/search")
+    public ResponseEntity<SliceResult<ProductThumbResponse>> searchAllProducts(
+            @RequestParam(value = "category",required = false)Category category
+            ,@RequestParam(value = "keyword",required = false) String keyword
+            ,Pageable pageable) {
+        return new ResponseEntity<>(responseService.getSliceResult(
+                productService.findProductAllByCreatedAtDesc(category,keyword,pageable)), HttpStatus.OK);
     }
 }
