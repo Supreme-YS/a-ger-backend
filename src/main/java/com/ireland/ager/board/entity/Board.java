@@ -6,6 +6,8 @@ import com.ireland.ager.config.BaseEntity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -30,6 +32,10 @@ public class Board extends BaseEntity {
 
     // 조회수
     private Long boardViewCnt;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "boardId", fetch = FetchType.LAZY)
+    private List<Comment> comments = new ArrayList<Comment>();
 
     // @Setter 대신에 무분별한 setter사용 방지를 위해 @Builder 패턴을 사용한다.
 //    @Builder
