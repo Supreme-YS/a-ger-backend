@@ -11,14 +11,17 @@ import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.board.repository.CommentRepository;
 import com.ireland.ager.main.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import javax.validation.constraints.Size;
 import java.io.IOException;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class CommentServiceImpl {
 
     private final BoardRepository boardRepository;
@@ -32,23 +35,20 @@ public class CommentServiceImpl {
         return CommentResponse.toCommentResponse(newComment);
     }
 
-    public CommentResponse updateComment(String accessToken, Long boardId, Long commentId, CommentRequest commentRequest) {
-        Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    public CommentResponse updateComment(String accessToken,Long commentId, CommentRequest commentRequest) {
         Comment presentComment = commentRepository.findById(commentId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
-
-        if(!(account.getAccountId()).equals(presentComment.getAccountId())) {
+        if(!account.equals(presentComment.getAccountId())) {
             throw new UnAuthorizedAccessException();
         }
-        Comment updateComment = commentRepository.save(CommentRequest.toComment(commentRequest, board, account));
+        Comment updateComment = commentRepository.save(CommentRequest.toComment(commentRequest, presentComment.getBoardId(), account));
         return CommentResponse.toCommentResponse(updateComment);
     }
 
-    public void deleteComment(String accessToken, Long boardId, Long commentId) throws IOException {
-        Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    public void deleteComment(String accessToken,Long commentId) throws IOException {
         Comment presentComment = commentRepository.findById(commentId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
-        if(!(account.getAccountId()).equals(presentComment.getAccountId())) {
+        if(!account.equals(presentComment.getAccountId())) {
             throw new UnAuthorizedAccessException();
         }
         commentRepository.deleteById(presentComment.getCommentId());
