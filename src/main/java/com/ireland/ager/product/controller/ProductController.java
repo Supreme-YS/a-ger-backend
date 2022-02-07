@@ -48,6 +48,7 @@ public class ProductController {
              * @Method : findProductById
              * @Description : 상품 하나의 정보를 불러온다
              */
+            @RequestHeader("Authorization") String accessToken,
             @PathVariable Long productId) {
         productService.addViewCntToRedis(productId);
         return new ResponseEntity<>(responseService.getSingleResult(ProductResponse.toProductResponse

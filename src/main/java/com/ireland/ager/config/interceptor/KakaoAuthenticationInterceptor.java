@@ -32,17 +32,8 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String requestUrl = request.getRequestURI();
-        Map<String, String> pathVariables = (Map<String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-        String pathVariable;
         log.info("URL:{}",requestUrl);
-        if(pathVariables!=null)  {
-            if(pathVariables.containsKey("productId") && request.getMethod().equals("GET")) {
-                pathVariable=pathVariables.get("productId");
-                if(!(PatternMatchUtils.simpleMatch("/api/product/"+pathVariable,requestUrl) || PatternMatchUtils.simpleMatch(excludeList,requestUrl)))
-                    authService.isValidToken(token);
-            }
-        }
-        else if(!PatternMatchUtils.simpleMatch(excludeList,requestUrl)) {
+        if(!PatternMatchUtils.simpleMatch(excludeList,requestUrl)) {
             authService.isValidToken(token);
         }
         return HandlerInterceptor.super.preHandle(request, response, handler);
