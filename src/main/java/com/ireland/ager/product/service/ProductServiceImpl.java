@@ -2,17 +2,17 @@ package com.ireland.ager.product.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.ireland.ager.account.entity.Account;
-import com.ireland.ager.account.service.AccountServiceImpl;
-import com.ireland.ager.product.dto.response.ProductThumbResponse;
-import com.ireland.ager.product.entity.Url;
-import com.ireland.ager.product.exception.*;
-import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.account.exception.UnAuthorizedTokenException;
+import com.ireland.ager.account.service.AccountServiceImpl;
+import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.product.dto.request.ProductRequest;
 import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
+import com.ireland.ager.product.dto.response.ProductThumbResponse;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
+import com.ireland.ager.product.entity.Url;
+import com.ireland.ager.product.exception.*;
 import com.ireland.ager.product.repository.ProductRepository;
 import com.ireland.ager.product.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +33,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
@@ -138,14 +142,13 @@ public class ProductServiceImpl {
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
-        //REMARK 악취가 난다..... 해결 완료
+
         Account accountById = accountService.findAccountById(productById.getAccount().getAccountId());
         Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountById, updateFileImageUrlList);
         productRepository.save(toProductUpdate);
         return ProductResponse.toProductResponse(toProductUpdate);
     }
 
-    //FIXME 상품 삭제시 S3저장소에 이미지도 삭제하기 해결 완료
     public void deleteProductById(Long productId, String accessToken) {
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {

@@ -1,6 +1,7 @@
 package com.ireland.ager.account.entity;
 
 import com.ireland.ager.board.entity.Board;
+import com.ireland.ager.board.entity.Comment;
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.review.entity.Review;
@@ -45,5 +46,8 @@ public class Account extends BaseEntity implements Serializable {
     @OneToMany(mappedBy = "accountId", cascade = CascadeType.ALL)
     private List<Board> boards = new ArrayList<>();
 //    private Set<Board> boards = new HashSet<>();
+
+    @OneToMany(mappedBy = "accountId", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 
 }
