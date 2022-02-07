@@ -35,7 +35,7 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Bean
     public LettuceConnectionFactory lettuceConnectionFactory() {
         LettuceClientConfiguration lettuceClientConfiguration = LettuceClientConfiguration.builder()
-                .commandTimeout(Duration.ofMinutes(1))
+                .commandTimeout(Duration.ZERO)
                 .shutdownTimeout(Duration.ZERO)
                 .build();
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
@@ -45,6 +45,8 @@ public class RedisConfig extends CachingConfigurerSupport {
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> template = new RedisTemplate<>();
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new StringRedisSerializer());
         template.setConnectionFactory(lettuceConnectionFactory());
         return template;
     }
@@ -56,7 +58,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .RedisCacheManagerBuilder
                 .fromConnectionFactory(lettuceConnectionFactory());
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofHours(timeout));
+                .entryTtl(Duration.ofMinutes(timeout)); //10분마다 캐싱 삭제
         builder.cacheDefaults(configuration);
         return builder.build();
     }
