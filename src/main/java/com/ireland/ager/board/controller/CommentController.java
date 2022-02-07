@@ -45,7 +45,7 @@ public class CommentController {
                                                                        @PathVariable(value = "commentId") Long commentId) throws IOException {
 
         String[] splitToken = accessToken.split(" ");
-        CommentResponse commentResponse = commentService.updateComment(splitToken[1], boardId, commentId, commentRequest);
+        CommentResponse commentResponse = commentService.updateComment(splitToken[1],commentId, commentRequest);
         return new ResponseEntity<>(responseService.getSingleResult(commentResponse), HttpStatus.OK);
     }
 

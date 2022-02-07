@@ -35,14 +35,13 @@ public class CommentServiceImpl {
         return CommentResponse.toCommentResponse(newComment);
     }
 
-    public CommentResponse updateComment(String accessToken, Long boardId, Long commentId, CommentRequest commentRequest) {
-        Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    public CommentResponse updateComment(String accessToken,Long commentId, CommentRequest commentRequest) {
         Comment presentComment = commentRepository.findById(commentId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
         if(!account.equals(presentComment.getAccountId())) {
             throw new UnAuthorizedAccessException();
         }
-        Comment updateComment = commentRepository.save(CommentRequest.toComment(commentRequest, board, account));
+        Comment updateComment = commentRepository.save(CommentRequest.toComment(commentRequest, presentComment.getBoardId(), account));
         return CommentResponse.toCommentResponse(updateComment);
     }
 
