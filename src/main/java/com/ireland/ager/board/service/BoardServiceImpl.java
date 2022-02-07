@@ -45,7 +45,6 @@ public class BoardServiceImpl {
             throw new UnAuthorizedAccessException();
         }
         boardRepository.deleteById(board.getBoardId());
-
     }
 
     public BoardResponse findPostById(String accessToken, Long boardId) {
