@@ -41,11 +41,6 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
                 if(!(PatternMatchUtils.simpleMatch("/api/product/"+pathVariable,requestUrl) || PatternMatchUtils.simpleMatch(excludeList,requestUrl)))
                     authService.isValidToken(token);
             }
-            else if(pathVariables.containsKey("boardId") && request.getMethod().equals("GET")) {
-                pathVariable=pathVariables.get("boardId");
-                if(!(PatternMatchUtils.simpleMatch("/api/board/"+pathVariable,requestUrl) || PatternMatchUtils.simpleMatch(excludeList,requestUrl)))
-                    authService.isValidToken(token);
-            }
         }
         else if(!PatternMatchUtils.simpleMatch(excludeList,requestUrl)) {
             authService.isValidToken(token);
