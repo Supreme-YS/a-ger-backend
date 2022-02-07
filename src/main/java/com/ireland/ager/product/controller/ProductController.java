@@ -49,6 +49,7 @@ public class ProductController {
              * @Description : 상품 하나의 정보를 불러온다
              */
             @PathVariable Long productId) {
+        productService.addViewCntToRedis(productId);
         return new ResponseEntity<>(responseService.getSingleResult(ProductResponse.toProductResponse
                 (productService.findProductById(productId))), HttpStatus.OK);
     }

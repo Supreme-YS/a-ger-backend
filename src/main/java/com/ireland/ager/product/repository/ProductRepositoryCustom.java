@@ -6,7 +6,10 @@ import com.ireland.ager.product.entity.Product;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
+import java.util.Set;
+
 public interface ProductRepositoryCustom {
+    void addViewCntFromRedis(Long productId,Long addCnt);
     Product addViewCnt(Long productId);
     Slice<ProductThumbResponse> findAllProductPageableOrderByCreatedAtDesc(Category category,String keyword,Pageable pageable);
 }
