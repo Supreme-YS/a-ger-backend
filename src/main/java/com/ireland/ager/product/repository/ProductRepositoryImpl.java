@@ -16,8 +16,11 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 //static으로 Q-type 생성
+import javax.persistence.EntityManager;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import static com.ireland.ager.product.entity.QProduct.product;
 
@@ -25,6 +28,16 @@ import static com.ireland.ager.product.entity.QProduct.product;
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
+
+    @Override
+    public void addViewCntFromRedis(Long productId,Long addCnt) {
+        queryFactory
+                .update(product)
+                .set(product.productViewCnt,addCnt)
+                .where(product.productId.eq(productId))
+                .execute();
+    }
 
     @Override
     public Product addViewCnt(Long productId) {

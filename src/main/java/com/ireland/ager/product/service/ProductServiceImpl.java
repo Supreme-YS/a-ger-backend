@@ -18,14 +18,23 @@ import com.ireland.ager.product.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 import java.util.*;
 
 @Service
@@ -43,6 +52,7 @@ public class ProductServiceImpl {
     @Value("${cloud.aws.s3.bucket.name}") // 프로퍼티에서 cloud.aws.s3.bucket에 대한 정보를 불러옴
     public String bucket;
     private final AmazonS3Client amazonS3Client;
+    private final RedisTemplate redisTemplate;
 
     public Slice<ProductThumbResponse> findProductAllByCreatedAtDesc(Category category, String keyword, Pageable pageable) {
         return productRepository.findAllProductPageableOrderByCreatedAtDesc(category,keyword,pageable);
@@ -60,11 +70,39 @@ public class ProductServiceImpl {
         return ProductResponse.toProductResponse(product);
     }
 
-    //FIXME 캐시 적용 하는 곳,,
-    //@Cacheable(value = "product")
+    //FIX 캐시 적용 하는 곳,,
+    @Cacheable(value = "product")
     public Product findProductById(Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         return productRepository.addViewCnt(productId);
+    }
+    //HINT 여기에 productViewCnt가 조회될때마다 cacheput으로 바뀐다.
+    public void addViewCntToRedis(Long productId) {
+        String key = "productViewCnt::"+productId;
+        //hint 캐시에 값이 없으면 레포지토리에서 조회 있으면 값을 증가시킨다.
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        if(valueOperations.get(key)==null)
+            valueOperations.set(
+                    key,
+                    String.valueOf(productRepository.findProductViewCnt(productId)),
+                    Duration.ofMinutes(2));
+        else
+            valueOperations.increment(key);
+        log.info("value:{}",valueOperations.get(key));
+    }
+
+    //hint 스케줄러로 쌓인 조회수 캐시들 제거 3분마다 실행
+    @Scheduled(cron = "0 0/3 * * * ?")
+    public void deleteViewCntCacheFromRedis() {
+        Set<String> redisKeys = redisTemplate.keys("productViewCnt*");
+        Iterator<String> it = redisKeys.iterator();
+        while (it.hasNext()) {
+            String data = it.next();
+            Long productId = Long.parseLong(data.split("::")[1]);
+            Long viewCnt = Long.parseLong((String) redisTemplate.opsForValue().get(data));
+            productRepository.addViewCntFromRedis(productId,viewCnt);
+            redisTemplate.delete(data);
+            redisTemplate.delete("product::"+productId);
+        }
     }
 
     public ProductResponse updateProductById(Long productId,

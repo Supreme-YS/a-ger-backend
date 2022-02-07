@@ -13,4 +13,6 @@ import java.util.List;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long>, ProductRepositoryCustom {
+    @Query(value = "select p.productViewCnt from Product as p where p.productId = :productId")
+    Long findProductViewCnt(Long productId);
 }
