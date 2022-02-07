@@ -45,7 +45,6 @@ public class CommentController {
                                                                        @PathVariable(value = "commentId") Long commentId) throws IOException {
 
         String[] splitToken = accessToken.split(" ");
-        Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
         CommentResponse commentResponse = commentService.updateComment(splitToken[1], boardId, commentId, commentRequest);
         return new ResponseEntity<>(responseService.getSingleResult(commentResponse), HttpStatus.OK);
     }
@@ -55,8 +54,7 @@ public class CommentController {
                                                       @PathVariable(value = "boardId") Long boardId,
                                                       @PathVariable(value = "commentId") Long commentId) throws IOException {
         String[] splitToken = accessToken.split(" ");
-
-        commentService.deleteComment(splitToken[1], boardId, commentId);
+        commentService.deleteComment(splitToken[1],commentId);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);
     }
 

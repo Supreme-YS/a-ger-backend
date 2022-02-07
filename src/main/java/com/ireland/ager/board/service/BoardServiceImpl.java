@@ -8,7 +8,11 @@ import com.ireland.ager.board.dto.response.BoardResponse;
 import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.main.exception.NotFoundException;
+import com.ireland.ager.product.dto.response.ProductThumbResponse;
+import com.ireland.ager.product.entity.Category;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -56,5 +60,9 @@ public class BoardServiceImpl {
         }
         board.addViewCnt(board);
         return BoardResponse.toBoardResponse(board);
+    }
+
+    public Slice<BoardResponse> findBoardAllByCreatedAtDesc(String keyword, Pageable pageable) {
+        return boardRepository.findAllBoardPageableOrderByCreatedAtDesc(keyword,pageable);
     }
 }

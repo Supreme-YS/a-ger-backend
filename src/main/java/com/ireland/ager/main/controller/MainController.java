@@ -1,5 +1,7 @@
 package com.ireland.ager.main.controller;
 
+import com.ireland.ager.board.dto.response.BoardResponse;
+import com.ireland.ager.board.service.BoardServiceImpl;
 import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.SliceResult;
 import com.ireland.ager.main.common.service.ResponseService;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class MainController {
 
     private final ProductServiceImpl productService;
+    private final BoardServiceImpl boardService;
     private final ResponseService responseService;
 
     @GetMapping("/api/product/search")
@@ -34,5 +37,12 @@ public class MainController {
             ,Pageable pageable) {
         return new ResponseEntity<>(responseService.getSliceResult(
                 productService.findProductAllByCreatedAtDesc(category,keyword,pageable)), HttpStatus.OK);
+    }
+    @GetMapping("/api/board/search")
+    public ResponseEntity<SliceResult<BoardResponse>> searchAllProducts(
+            @RequestParam(value = "keyword",required = false) String keyword
+            ,Pageable pageable) {
+        return new ResponseEntity<>(responseService.getSliceResult(
+                boardService.findBoardAllByCreatedAtDesc(keyword,pageable)), HttpStatus.OK);
     }
 }
