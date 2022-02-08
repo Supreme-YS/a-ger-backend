@@ -3,7 +3,6 @@ package com.ireland.ager.product.repository;
 import com.ireland.ager.product.dto.response.ProductThumbResponse;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.QProduct;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -11,16 +10,16 @@ import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
-import org.springframework.security.core.parameters.P;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
-//static으로 Q-type 생성
+
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import static com.ireland.ager.product.entity.QProduct.product;
 

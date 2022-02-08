@@ -33,21 +33,21 @@ public class Board extends BaseEntity {
     // 조회수
     private Long boardViewCnt;
 
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "board", orphanRemoval = true)
+    private List<BoardUrl> urlList = new ArrayList<>();
+
     @JsonIgnore
     @OneToMany(mappedBy = "boardId", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<Comment>();
 
-    // @Setter 대신에 무분별한 setter사용 방지를 위해 @Builder 패턴을 사용한다.
-//    @Builder
-//    public Board(String title, String content, int viewCnt) {
-//        this.title = title;
-//        this.content = content;
-//        this.viewCnt = viewCnt;
-//    }
-
     public void addAccount(Account account) {
         this.accountId = account;
         this.accountId.getBoards().add(this);
+    }
+
+    public void addUrl(BoardUrl url) {
+        this.getUrlList().add(url);
+        url.setBoard(this);
     }
 
     public void addViewCnt(Board addBoard) {

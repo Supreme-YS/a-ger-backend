@@ -31,7 +31,6 @@ public class Product extends BaseEntity implements Serializable {
     private String productDetail;
     private Long productViewCnt;
 
-
     @Enumerated(EnumType.STRING)
     private Category category;
 

@@ -8,15 +8,17 @@ import com.ireland.ager.board.dto.response.BoardResponse;
 import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.main.exception.NotFoundException;
-import com.ireland.ager.product.dto.response.ProductThumbResponse;
-import com.ireland.ager.product.entity.Category;
+import com.ireland.ager.product.exception.InvaildUploadException;
+import com.ireland.ager.product.service.UploadServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +26,17 @@ import java.io.IOException;
 public class BoardServiceImpl {
     private final BoardRepository boardRepository;
     private final AccountServiceImpl accountService;
-
+    private final UploadServiceImpl uploadService;
     public BoardResponse createPost(String accessToken,
-                                    BoardRequest boardRequest) throws IOException {
+                                    BoardRequest boardRequest,
+                                    List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
-        Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account));
+
+        // 썸네일
+        // String thumbNailUrl= uploadService.makeThumbNail(multipartFile.get(0));
+
+        List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
+        Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account, uploadImagesUrl));
         return BoardResponse.toBoardResponse(newPost);
     }
 
@@ -64,5 +72,10 @@ public class BoardServiceImpl {
 
     public Slice<BoardResponse> findBoardAllByCreatedAtDesc(String keyword, Pageable pageable) {
         return boardRepository.findAllBoardPageableOrderByCreatedAtDesc(keyword,pageable);
+    }
+
+    public void validateFileExists(List<MultipartFile> file) {
+        if (file.isEmpty())
+            throw new InvaildUploadException();
     }
 }
