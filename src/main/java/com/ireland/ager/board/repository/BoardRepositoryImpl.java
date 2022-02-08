@@ -2,9 +2,6 @@ package com.ireland.ager.board.repository;
 
 import com.ireland.ager.board.dto.response.BoardResponse;
 import com.ireland.ager.board.entity.Board;
-import com.ireland.ager.product.dto.response.ProductThumbResponse;
-import com.ireland.ager.product.entity.Category;
-import com.ireland.ager.product.entity.Product;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -48,6 +45,25 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             hasNext=true;
         }
         return new SliceImpl<>(content,pageable,hasNext);
+    }
+
+    @Override
+    public void addViewCntFromRedis(Long boardId, Long addCnt) {
+        queryFactory
+                .update(board)
+                .set(board.boardViewCnt,addCnt)
+                .where(board.boardId.eq(boardId))
+                .execute();
+    }
+
+    @Override
+    public Board addViewCnt(Long boardId) {
+        queryFactory
+                .update(board)
+                .set(board.boardViewCnt,board.boardViewCnt.add(1))
+                .where(board.boardId.eq(boardId))
+                .execute();
+        return queryFactory.selectFrom(board).where(board.boardId.eq(boardId)).fetchOne();
     }
 
     private BooleanExpression keywordContains(String keyword) {

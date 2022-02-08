@@ -37,6 +37,7 @@ public class BoardController {
         String[] splitToken = accessToken.split(" ");
         Account account = accountService.findAccountByAccessToken(splitToken[1]);
         Board board = boardService.findPostById(boardId);
+        boardService.addViewCntToRedis(boardId);
         return new ResponseEntity<>(responseService.getSingleResult(BoardResponse.toBoardResponse(board, account)), HttpStatus.OK);
     }
 
