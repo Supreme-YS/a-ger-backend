@@ -2,6 +2,7 @@ package com.ireland.ager.board.dto.response;
 
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.board.entity.Board;
+import com.ireland.ager.board.entity.BoardUrl;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,9 +18,11 @@ public class BoardResponse {
     String title;
     String content;
     Long boardViewCnt;
+    List<BoardUrl> urlList;
     LocalDateTime createAt;
     LocalDateTime updateAt;
-    boolean isOwner = true;
+    String thumbNailUrl;
+    boolean isOwner;
 
     public static BoardResponse toBoardResponse(Board board) {
         return BoardResponse.builder()
@@ -28,6 +31,8 @@ public class BoardResponse {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .boardViewCnt(board.getBoardViewCnt())
+                .urlList(board.getUrlList())
+                .thumbNailUrl(board.getThumbNailUrl())
                 .createAt(board.getCreatedAt())
                 .updateAt(board.getUpdatedAt())
                 .isOwner(true)
@@ -41,6 +46,8 @@ public class BoardResponse {
                 .title(board.getTitle())
                 .content(board.getContent())
                 .boardViewCnt(board.getBoardViewCnt())
+                .urlList(board.getUrlList())
+                .thumbNailUrl(board.getThumbNailUrl())
                 .createAt(board.getCreatedAt())
                 .updateAt(board.getUpdatedAt())
                 .isOwner(false)
