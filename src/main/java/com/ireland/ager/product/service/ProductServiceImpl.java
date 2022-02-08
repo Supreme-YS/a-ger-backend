@@ -80,7 +80,7 @@ public class ProductServiceImpl {
             valueOperations.set(
                     key,
                     String.valueOf(productRepository.findProductViewCnt(productId)),
-                    Duration.ofMinutes(2));
+                    Duration.ofMinutes(5));
         else
             valueOperations.increment(key);
         log.info("value:{}",valueOperations.get(key));
