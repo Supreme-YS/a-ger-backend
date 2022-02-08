@@ -2,15 +2,12 @@ package com.ireland.ager.product.service;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.SdkClientException;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.Upload;
+import com.ireland.ager.board.entity.BoardUrl;
 import com.ireland.ager.product.entity.Url;
 import com.ireland.ager.product.exception.InvaildFileExtensionException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -63,6 +63,23 @@ public class UploadServiceImpl {
             log.info("삭제될 파일의 이름은 : {}",url.getUrl().split("/")[3]);
         }
     }
+
+    public void deleteBoard(List<BoardUrl> currentFileImageUrlList, String thumbNailUrl) throws AmazonServiceException {
+        try {
+            amazonS3Client.deleteObject(bucket, thumbNailUrl.split("/")[3]);
+            log.info("삭제될 파일의 이름은 : {}",thumbNailUrl.split("/")[3]);
+        }
+        catch (AmazonServiceException e){
+            e.printStackTrace();
+        }
+        for (BoardUrl url : currentFileImageUrlList) {
+
+            amazonS3Client.deleteObject(bucket, url.getUrl().split("/")[3]);
+            log.info("삭제될 파일의 이름은 : {}",url.getUrl().split("/")[3]);
+        }
+    }
+
+
 
     public List<String> uploadImages(List<MultipartFile> uploadFiles) throws IOException {
         /*
