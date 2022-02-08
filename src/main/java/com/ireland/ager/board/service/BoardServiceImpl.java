@@ -6,6 +6,7 @@ import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.board.dto.request.BoardRequest;
 import com.ireland.ager.board.dto.response.BoardResponse;
 import com.ireland.ager.board.entity.Board;
+import com.ireland.ager.board.entity.BoardUrl;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.product.exception.InvaildUploadException;
@@ -18,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -27,27 +30,54 @@ public class BoardServiceImpl {
     private final BoardRepository boardRepository;
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
+
     public BoardResponse createPost(String accessToken,
                                     BoardRequest boardRequest,
                                     List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
 
-        // 썸네일
-        // String thumbNailUrl= uploadService.makeThumbNail(multipartFile.get(0));
+        String thumbNailUrl = uploadService.makeThumbNail(multipartFile.get(0));
 
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account, uploadImagesUrl));
+        Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account, uploadImagesUrl, thumbNailUrl));
         return BoardResponse.toBoardResponse(newPost);
     }
 
-    public BoardResponse updatePost(String accessToken, Long boardId, BoardRequest boardRequest) throws IOException {
+    public BoardResponse updatePost(String accessToken,
+                                    Long boardId,
+                                    BoardRequest boardRequest,
+                                    List<MultipartFile> multipartFile) throws IOException {
         Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
         if (!(account.equals(board.getAccountId()))) {
             throw new UnAuthorizedAccessException();
         }
-        Board updatedPost = boardRepository.save(BoardRequest.toBoardUpdate(boardRequest, board));
-        return BoardResponse.toBoardResponse(updatedPost);
+        validateFileExists(multipartFile);
+        List<BoardUrl> currentFileImageUrlList = board.getUrlList();
+        String currentFileThumbnailUrl = board.getThumbNailUrl();
+        uploadService.deleteBoard(currentFileImageUrlList, currentFileThumbnailUrl);
+
+        for (Iterator<BoardUrl> it = board.getUrlList().iterator(); it.hasNext(); ) {
+            BoardUrl url = it.next();
+            url.setBoard(null);
+            it.remove();
+        }
+        for (BoardUrl url : board.getUrlList()) {
+            url.setBoard(null);
+        }
+        MultipartFile firstImage = multipartFile.get(0);
+        List<String> updateFileImageUrlList = new ArrayList<>();
+        try {
+            updateFileImageUrlList = uploadService.uploadImages(multipartFile);
+            board.setThumbNailUrl(uploadService.makeThumbNail(firstImage));
+        } catch (IllegalStateException | IOException e) {
+            e.printStackTrace();
+        }
+
+        Account accountById = accountService.findAccountById(board.getAccountId().getAccountId());
+        Board toBoardUpdate = boardRequest.toBoardUpdate(board, accountById, updateFileImageUrlList);
+        boardRepository.save(toBoardUpdate);
+        return BoardResponse.toBoardResponse(toBoardUpdate);
     }
 
     public void deletePost(String accessToken, Long boardId) throws IOException {
@@ -71,7 +101,7 @@ public class BoardServiceImpl {
     }
 
     public Slice<BoardResponse> findBoardAllByCreatedAtDesc(String keyword, Pageable pageable) {
-        return boardRepository.findAllBoardPageableOrderByCreatedAtDesc(keyword,pageable);
+        return boardRepository.findAllBoardPageableOrderByCreatedAtDesc(keyword, pageable);
     }
 
     public void validateFileExists(List<MultipartFile> file) {

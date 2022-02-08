@@ -33,6 +33,8 @@ public class Board extends BaseEntity {
     // 조회수
     private Long boardViewCnt;
 
+    private String thumbNailUrl;
+
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "board", orphanRemoval = true)
     private List<BoardUrl> urlList = new ArrayList<>();
 

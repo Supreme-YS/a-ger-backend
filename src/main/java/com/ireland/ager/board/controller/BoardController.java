@@ -49,9 +49,10 @@ public class BoardController {
     @PatchMapping("/{boardId}")
     public ResponseEntity<SingleResult<BoardResponse>> updatePost(@RequestHeader("Authorization") String accessToken,
                                                                   @RequestPart(value = "board") BoardRequest boardRequest,
+                                                                  @RequestPart(value = "file") List<MultipartFile> multipartFile,
                                                                   @PathVariable(value = "boardId") Long boardId) throws IOException {
         String[] splitToken = accessToken.split(" ");
-        BoardResponse boardResponse = boardService.updatePost(splitToken[1], boardId, boardRequest);
+        BoardResponse boardResponse = boardService.updatePost(splitToken[1], boardId, boardRequest, multipartFile);
         return new ResponseEntity<>(responseService.getSingleResult(boardResponse), HttpStatus.OK);
     }
 

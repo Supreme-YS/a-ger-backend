@@ -18,13 +18,10 @@ import com.ireland.ager.product.repository.UrlRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.redis.connection.RedisConnection;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -33,11 +30,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.*;
 
@@ -123,8 +115,7 @@ public class ProductServiceImpl {
         List<Url> currentFileImageUrlList = productById.getUrlList();
         String currentFileThumbnailUrl = productById.getThumbNailUrl();
         uploadService.delete(currentFileImageUrlList, currentFileThumbnailUrl);
-        //여기서부터 연관 관계 삭제 하고 추가하는 과정 거친다.
-        // product에 orphanremoval = true로 줘서 url의 pk가 null이 되면 delete되게 설정했다.
+
         for(Iterator<Url> it = productById.getUrlList().iterator() ; it.hasNext() ; )
         {
             Url url = it.next();

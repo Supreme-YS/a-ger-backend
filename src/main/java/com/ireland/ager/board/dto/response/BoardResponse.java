@@ -21,6 +21,7 @@ public class BoardResponse {
     List<BoardUrl> urlList;
     LocalDateTime createAt;
     LocalDateTime updateAt;
+    String thumbNailUrl;
     boolean isOwner;
 
     public static BoardResponse toBoardResponse(Board board) {
@@ -31,6 +32,7 @@ public class BoardResponse {
                 .content(board.getContent())
                 .boardViewCnt(board.getBoardViewCnt())
                 .urlList(board.getUrlList())
+                .thumbNailUrl(board.getThumbNailUrl())
                 .createAt(board.getCreatedAt())
                 .updateAt(board.getUpdatedAt())
                 .isOwner(true)
@@ -45,6 +47,7 @@ public class BoardResponse {
                 .content(board.getContent())
                 .boardViewCnt(board.getBoardViewCnt())
                 .urlList(board.getUrlList())
+                .thumbNailUrl(board.getThumbNailUrl())
                 .createAt(board.getCreatedAt())
                 .updateAt(board.getUpdatedAt())
                 .isOwner(false)
