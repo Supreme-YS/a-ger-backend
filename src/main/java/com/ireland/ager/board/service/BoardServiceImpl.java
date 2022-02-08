@@ -86,6 +86,7 @@ public class BoardServiceImpl {
         if (!(account.equals(board.getAccountId()))) {
             throw new UnAuthorizedAccessException();
         }
+        uploadService.deleteBoard(board.getUrlList(), board.getThumbNailUrl());
         boardRepository.deleteById(board.getBoardId());
     }
 
