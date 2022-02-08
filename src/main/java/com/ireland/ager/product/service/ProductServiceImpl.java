@@ -71,6 +71,7 @@ public class ProductServiceImpl {
     public Product findProductById(Long productId) {
         return productRepository.addViewCnt(productId);
     }
+
     //HINT 여기에 productViewCnt가 조회될때마다 cacheput으로 바뀐다.
     public void addViewCntToRedis(Long productId) {
         String key = "productViewCnt::"+productId;

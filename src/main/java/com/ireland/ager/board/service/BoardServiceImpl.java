@@ -17,14 +17,18 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -97,8 +101,37 @@ public class BoardServiceImpl {
 
     @Cacheable(value = "board")
     public Board findPostById(Long boardId) {
-        log.info("boardCache");
-        return boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+        return boardRepository.addViewCnt(boardId);
+    }
+
+    //HINT 여기에 productViewCnt가 조회될때마다 cacheput으로 바뀐다.
+    public void addViewCntToRedis(Long boardId) {
+        String key = "boardViewCnt::"+boardId;
+        //hint 캐시에 값이 없으면 레포지토리에서 조회 있으면 값을 증가시킨다.
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        if(valueOperations.get(key)==null)
+            valueOperations.set(
+                    key,
+                    String.valueOf(boardRepository.findBoardViewCnt(boardId)),
+                    Duration.ofMinutes(5));
+        else
+            valueOperations.increment(key);
+        log.info("value:{}",valueOperations.get(key));
+    }
+
+    //hint 스케줄러로 쌓인 조회수 캐시들 제거 3분마다 실행
+    @Scheduled(cron = "0 0/3 * * * ?")
+    public void deleteViewCntCacheFromRedis() {
+        Set<String> redisKeys = redisTemplate.keys("boardViewCnt*");
+        Iterator<String> it = redisKeys.iterator();
+        while (it.hasNext()) {
+            String data = it.next();
+            Long boardId = Long.parseLong(data.split("::")[1]);
+            Long viewCnt = Long.parseLong((String) redisTemplate.opsForValue().get(data));
+            boardRepository.addViewCntFromRedis(boardId,viewCnt);
+            redisTemplate.delete(data);
+            redisTemplate.delete("board::"+boardId);
+        }
     }
 
     public Slice<BoardResponse> findBoardAllByCreatedAtDesc(String keyword, Pageable pageable) {

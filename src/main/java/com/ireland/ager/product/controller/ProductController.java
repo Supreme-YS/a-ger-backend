@@ -50,6 +50,7 @@ public class ProductController {
              */
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long productId) {
+        String[] splitToken = accessToken.split(" ");
         productService.addViewCntToRedis(productId);
         return new ResponseEntity<>(responseService.getSingleResult(ProductResponse.toProductResponse
                 (productService.findProductById(productId))), HttpStatus.OK);
