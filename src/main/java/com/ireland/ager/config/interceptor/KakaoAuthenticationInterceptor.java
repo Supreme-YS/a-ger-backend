@@ -7,11 +7,9 @@ import org.apache.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 @Component
 @Slf4j
@@ -19,9 +17,9 @@ import java.util.Map;
 public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
     private final AuthServiceImpl authService;
     private static final String[] excludeList= {
-            "/api/account/login-url/**"
-            ,"/api/account/login/**"
-            ,"/api/token/**"
+            "/api/account/login-url"
+            ,"/api/account/login"
+            ,"/api/account/token/**"
             ,"/api/review/list/**"
             ,"/api/product/search"
             ,"/api/board/search"
@@ -34,6 +32,7 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
         String requestUrl = request.getRequestURI();
         log.info("URL:{}",requestUrl);
         if(!PatternMatchUtils.simpleMatch(excludeList,requestUrl)) {
+
             authService.isValidToken(token);
         }
         return HandlerInterceptor.super.preHandle(request, response, handler);
