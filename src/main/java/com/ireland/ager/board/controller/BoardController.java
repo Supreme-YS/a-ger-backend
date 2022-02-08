@@ -1,7 +1,10 @@
 package com.ireland.ager.board.controller;
 
+import com.ireland.ager.account.entity.Account;
+import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.board.dto.request.BoardRequest;
 import com.ireland.ager.board.dto.response.BoardResponse;
+import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.service.BoardServiceImpl;
 import com.ireland.ager.main.common.CommonResult;
 import com.ireland.ager.main.common.SingleResult;
@@ -25,14 +28,16 @@ public class BoardController {
 
     private final ResponseService responseService;
     private final BoardServiceImpl boardService;
+    private final AccountServiceImpl accountService;
 
     @GetMapping("/{boardId}")
     public ResponseEntity<SingleResult<BoardResponse>> findBoardById(@PathVariable Long boardId,
                                                                      @RequestHeader("Authorization") String accessToken) {
 
         String[] splitToken = accessToken.split(" ");
-        BoardResponse boardResponse = boardService.findPostById(splitToken[1], boardId);
-        return new ResponseEntity<>(responseService.getSingleResult(boardResponse), HttpStatus.OK);
+        Account account = accountService.findAccountByAccessToken(splitToken[1]);
+        Board board = boardService.findPostById(boardId);
+        return new ResponseEntity<>(responseService.getSingleResult(BoardResponse.toBoardResponse(board, account)), HttpStatus.OK);
     }
 
     @PostMapping
