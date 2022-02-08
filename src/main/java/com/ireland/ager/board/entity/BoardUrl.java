@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import java.io.Serializable;
 
 @Entity
 @Getter
@@ -17,7 +18,7 @@ import javax.persistence.ManyToOne;
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicUpdate
-public class BoardUrl {
+public class BoardUrl implements Serializable {
 
     @Id
     @GeneratedValue

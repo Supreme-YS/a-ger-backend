@@ -12,8 +12,11 @@ import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.product.exception.InvaildUploadException;
 import com.ireland.ager.product.service.UploadServiceImpl;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,10 +29,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class BoardServiceImpl {
     private final BoardRepository boardRepository;
     private final AccountServiceImpl accountService;
     private final UploadServiceImpl uploadService;
+    private final RedisTemplate redisTemplate;
 
     public BoardResponse createPost(String accessToken,
                                     BoardRequest boardRequest,
@@ -90,9 +95,15 @@ public class BoardServiceImpl {
         boardRepository.deleteById(board.getBoardId());
     }
 
+    @Cacheable(value = "board")
+    public Board findPost(Long boardId) {
+        log.info("boardCache");
+        return boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+    }
+
     public BoardResponse findPostById(String accessToken, Long boardId) {
         Account account = accountService.findAccountByAccessToken(accessToken);
-        Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+        Board board = findPost(boardId);
         if (!(account.equals(board.getAccountId()))) {
             board.addViewCnt(board);
             return BoardResponse.toOtherBoard(board);
