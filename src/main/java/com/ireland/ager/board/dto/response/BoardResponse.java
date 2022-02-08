@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 public class BoardResponse {
     Long boardId;
-    Account accountId;
     String title;
     String content;
     Long boardViewCnt;
@@ -24,10 +23,9 @@ public class BoardResponse {
     String thumbNailUrl;
     boolean isOwner;
 
-    public static BoardResponse toBoardResponse(Board board) {
+    public static BoardResponse toBoardResponse(Board board, Account account) {
         return BoardResponse.builder()
                 .boardId(board.getBoardId())
-                .accountId(board.getAccountId())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .boardViewCnt(board.getBoardViewCnt())
@@ -35,14 +33,13 @@ public class BoardResponse {
                 .thumbNailUrl(board.getThumbNailUrl())
                 .createAt(board.getCreatedAt())
                 .updateAt(board.getUpdatedAt())
-                .isOwner(true)
+                .isOwner(board.getAccountId().equals(account))
                 .build();
     }
 
     public static BoardResponse toOtherBoard(Board board) {
         return BoardResponse.builder()
                 .boardId(board.getBoardId())
-                .accountId(board.getAccountId())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .boardViewCnt(board.getBoardViewCnt())
@@ -57,7 +54,7 @@ public class BoardResponse {
     public static List<BoardResponse> toBoardListResponse(List<Board> boardList) {
         List<BoardResponse> boardResponseList = new ArrayList<>();
         for (Board board : boardList) {
-            BoardResponse boardResponse = BoardResponse.toBoardResponse(board);
+            BoardResponse boardResponse = BoardResponse.toBoardResponse(board, board.getAccountId());
             boardResponseList.add(boardResponse);
         }
         return boardResponseList;

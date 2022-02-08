@@ -45,7 +45,7 @@ public class BoardServiceImpl {
 
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
         Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account, uploadImagesUrl, thumbNailUrl));
-        return BoardResponse.toBoardResponse(newPost);
+        return BoardResponse.toBoardResponse(newPost, account);
     }
 
     public BoardResponse updatePost(String accessToken,
@@ -82,7 +82,7 @@ public class BoardServiceImpl {
         Account accountById = accountService.findAccountById(board.getAccountId().getAccountId());
         Board toBoardUpdate = boardRequest.toBoardUpdate(board, accountById, updateFileImageUrlList);
         boardRepository.save(toBoardUpdate);
-        return BoardResponse.toBoardResponse(toBoardUpdate);
+        return BoardResponse.toBoardResponse(toBoardUpdate, accountById);
     }
 
     public void deletePost(String accessToken, Long boardId) throws IOException {
@@ -96,20 +96,9 @@ public class BoardServiceImpl {
     }
 
     @Cacheable(value = "board")
-    public Board findPost(Long boardId) {
+    public Board findPostById(Long boardId) {
         log.info("boardCache");
         return boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
-    }
-
-    public BoardResponse findPostById(String accessToken, Long boardId) {
-        Account account = accountService.findAccountByAccessToken(accessToken);
-        Board board = findPost(boardId);
-        if (!(account.equals(board.getAccountId()))) {
-            board.addViewCnt(board);
-            return BoardResponse.toOtherBoard(board);
-        }
-        board.addViewCnt(board);
-        return BoardResponse.toBoardResponse(board);
     }
 
     public Slice<BoardResponse> findBoardAllByCreatedAtDesc(String keyword, Pageable pageable) {
