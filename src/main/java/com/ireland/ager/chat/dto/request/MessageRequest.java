@@ -21,6 +21,7 @@ public class MessageRequest implements Serializable {
         return Message.builder()
                 .message(messageDto.getMessage())
                 .senderId(messageDto.getSenderId())
+                .messageRoom(messageRoom)
                 .build();
     }
 }

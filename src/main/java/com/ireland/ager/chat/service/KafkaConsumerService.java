@@ -2,18 +2,14 @@ package com.ireland.ager.chat.service;
 
 import com.ireland.ager.chat.config.KafkaConstants;
 import com.ireland.ager.chat.dto.request.MessageRequest;
-import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.repository.MessageRepository;
-import com.ireland.ager.chat.repository.MessageRoomRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Slf4j
 @Service

@@ -21,6 +21,7 @@ public class Message extends BaseEntity implements Serializable {
     private Long messageId;
     private Long senderId;
     private String message;
+
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "room_id")

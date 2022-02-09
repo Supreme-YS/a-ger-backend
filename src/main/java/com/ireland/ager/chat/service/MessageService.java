@@ -33,10 +33,6 @@ public class MessageService {
     private final MessageRoomRepository messageRoomRepository;
     private final AccountServiceImpl accountService;
     private final ProductServiceImpl productService;
-    public MessageRoom insertMessage(Long roomId, Message message) {
-        MessageRoom messageRoom = messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
-        return messageRoomRepository.save(messageRoom);
-    }
     public MessageRoom findByRoomId(Long roomId) {
         return messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
     }
