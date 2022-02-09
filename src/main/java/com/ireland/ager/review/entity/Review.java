@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Builder
 public class Review extends BaseEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewId;
     private String comment;
     private String title;

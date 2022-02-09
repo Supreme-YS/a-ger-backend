@@ -16,7 +16,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Trade {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long tradeId;
 
     @ManyToOne

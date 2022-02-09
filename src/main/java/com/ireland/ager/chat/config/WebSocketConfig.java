@@ -1,4 +1,4 @@
-package com.ireland.ager.chat;
+package com.ireland.ager.chat.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -14,22 +14,24 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws")
+        registry.addEndpoint("/chat") //엔드포인트로 핸드쉐이크하여 커넥션 얻는다.
                 .setAllowedOriginPatterns("*")
                 .withSockJS();
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        /*
-        * Subscriber
-        * /sub/comm/room/{roomId}
-        * */
-        registry.enableSimpleBroker("/sub");
-        /*
-         * Publisher
-         * /pub/comm/message/
-         * */
-        registry.setApplicationDestinationPrefixes("/pub");
+//        /*
+//        * Subscriber
+//        * /sub/room/{roomId}
+//        * */
+//        registry.enableSimpleBroker("/sub");
+//        /*
+//         * Publisher
+//         * /pub/message/
+//         * */
+//        registry.setApplicationDestinationPrefixes("/pub");
+        registry.setApplicationDestinationPrefixes("/kafka");
+        registry.enableSimpleBroker("/topic/");
     }
 }
