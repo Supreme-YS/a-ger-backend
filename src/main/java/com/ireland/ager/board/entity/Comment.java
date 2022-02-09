@@ -17,7 +17,7 @@ import java.io.Serializable;
 public class Comment extends BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)

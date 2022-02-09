@@ -58,6 +58,5 @@ public class BoardResponse {
             boardResponseList.add(boardResponse);
         }
         return boardResponseList;
-
     }
 }
