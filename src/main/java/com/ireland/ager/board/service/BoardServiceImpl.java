@@ -5,6 +5,7 @@ import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.board.dto.request.BoardRequest;
 import com.ireland.ager.board.dto.response.BoardResponse;
+import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.entity.BoardUrl;
 import com.ireland.ager.board.repository.BoardRepository;
@@ -134,7 +135,7 @@ public class BoardServiceImpl {
         }
     }
 
-    public Slice<BoardResponse> findBoardAllByCreatedAtDesc(String keyword, Pageable pageable) {
+    public Slice<BoardSummaryResponse> findBoardAllByCreatedAtDesc(String keyword, Pageable pageable) {
         return boardRepository.findAllBoardPageableOrderByCreatedAtDesc(keyword, pageable);
     }
 

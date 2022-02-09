@@ -1,6 +1,7 @@
 package com.ireland.ager.board.repository;
 
 import com.ireland.ager.board.dto.response.BoardResponse;
+import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.entity.Board;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ireland.ager.board.entity.QBoard.board;
+import static com.ireland.ager.board.entity.QComment.comment;
 
 @Repository
 @RequiredArgsConstructor
@@ -27,7 +29,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<BoardResponse> findAllBoardPageableOrderByCreatedAtDesc(String keyword, Pageable pageable) {
+    public Slice<BoardSummaryResponse> findAllBoardPageableOrderByCreatedAtDesc(String keyword, Pageable pageable) {
         JPAQuery<Board> boardJPAQuery= queryFactory
                 .selectFrom(board)
                 .where(keywordContains(keyword))
@@ -37,7 +39,15 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             PathBuilder pathBuilder = new PathBuilder(board.getType(),board.getMetadata());
             boardJPAQuery.orderBy(new OrderSpecifier(o.isAscending()? Order.ASC: Order.DESC,pathBuilder.get(o.getProperty())));
         }
-        List<BoardResponse> content=new ArrayList<>(BoardResponse.toBoardListResponse(boardJPAQuery.fetch()));
+        List<Board> fetch = boardJPAQuery.fetch();
+        List<BoardSummaryResponse> content=new ArrayList<>();
+        for(Board board : fetch) {
+            Long countComment=queryFactory
+                    .selectFrom(comment)
+                    .where(comment.boardId.boardId.eq(board.getBoardId()))
+                    .fetchCount();
+            content.add(BoardSummaryResponse.toBoardSummaryResponse(board,countComment));
+        }
         boolean hasNext =false;
         //마지막 페이지는 사이즈가 항상 작다.
         if(content.size() > pageable.getPageSize()) {
