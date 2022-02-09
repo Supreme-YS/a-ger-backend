@@ -16,11 +16,9 @@ public class MessageSummaryResponse {
     Long roomId;
     String accountNickname;
     String accountThumbnail;
-    String message;
     public static MessageSummaryResponse toMessageSummaryResponse(MessageRoom messageRoom,Account account) {
         return MessageSummaryResponse.builder()
                 .roomId(messageRoom.getRoomId())
-                .message(messageRoom.getLatestMessage())
                 .accountNickname(account.getProfileNickname())
                 .accountThumbnail(account.getProfileImageUrl())
                 .build();

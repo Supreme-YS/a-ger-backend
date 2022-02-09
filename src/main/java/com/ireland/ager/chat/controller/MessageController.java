@@ -2,32 +2,32 @@ package com.ireland.ager.chat.controller;
 
 import com.ireland.ager.chat.dto.request.MessageRequest;
 import com.ireland.ager.chat.entity.Message;
-import com.ireland.ager.chat.entity.MessageRoom;
-import com.ireland.ager.chat.entity.MessageType;
-import com.ireland.ager.chat.service.MessageService;
+import com.ireland.ager.chat.service.KafkaProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+
+@Slf4j
+@CrossOrigin
 @RestController
+@RequestMapping(value = "/kafka")
 @RequiredArgsConstructor
 public class MessageController {
-    private final MessageService messageService;
+    private final KafkaProductService kafkaProductService;
+    //producer 부분
+    @PostMapping(value = "/publish")
+    public void sendMessage(@RequestBody MessageRequest message) {
+        kafkaProductService.sendMessage(message);
+    }
 
-    @MessageMapping("/message/{roomId}")
-    @SendTo("/sub/comm/room/{roomId}")
-    public Message message(
-            @DestinationVariable Long roomId,
-            MessageRequest messageDto) {
-        Message message=messageDto.toMessage(messageDto);
-        if(MessageType.ENTER.equals(message.getMessageType())) {
-            message.setMessage(message.getSenderId()+"이 입장했습니다.");
-        }
-        MessageRoom messageRoom = messageService.insertMessage(roomId, message);
+    //여기서 프론트엔드로 메시지를 전송합니다.
+    @MessageMapping("/sendMessage")
+    @SendTo("/topic/group")
+    public Message broadcastGroupMessage(@Payload Message message) {
         return message;
     }
 }

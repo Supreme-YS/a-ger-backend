@@ -50,7 +50,7 @@ public class MessageRoomController {
         RoomCreateResponse roomCreateResponse = messageService.insertRoom(productId, splitToken[1]);
         return new ResponseEntity<>(responseService.getSingleResult(roomCreateResponse), HttpStatus.CREATED);
     }
-    //TODO: 내 채팅방 조회 기능. list
+    //TODO: 내 채팅방 조회 기능. Slice
     @GetMapping
     public ResponseEntity<SliceResult<MessageSummaryResponse>> searchAllRoomList(
             @RequestHeader("Authorization") String accessToken

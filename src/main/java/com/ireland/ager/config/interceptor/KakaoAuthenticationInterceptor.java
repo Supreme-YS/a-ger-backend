@@ -25,6 +25,9 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
             ,"/api/board/search"
             ,"/favicon.ico/**"
             ,"/favicon.ico"
+            ,"/kafka/*"
+            ,"/kafka/**"
+            ,"/socket.io/*"
     };
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -32,7 +35,7 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
         String requestUrl = request.getRequestURI();
         log.info("URL:{}",requestUrl);
         if(!PatternMatchUtils.simpleMatch(excludeList,requestUrl)) {
-
+            log.info("Not Match");
             authService.isValidToken(token);
         }
         return HandlerInterceptor.super.preHandle(request, response, handler);

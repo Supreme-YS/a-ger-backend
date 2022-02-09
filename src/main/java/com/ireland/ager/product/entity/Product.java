@@ -21,7 +21,7 @@ import java.util.List;
 @DynamicUpdate
 public class Product extends BaseEntity implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
     private String productName;

@@ -29,7 +29,7 @@ import java.util.*;
 public class Account extends BaseEntity implements Serializable {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long accountId;
     String accountEmail;
     String profileNickname;
