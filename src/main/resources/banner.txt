@@ -1,4 +1,4 @@
-${AnsiColor.BLUE}
+
 
  █████╗        ██████╗ ███████╗██████╗
 ██╔══██╗      ██╔════╝ ██╔════╝██╔══██╗
@@ -9,4 +9,4 @@ ${AnsiColor.BLUE}
 
 
 
-${AnsiColor.BRIGHT_GREEN} spring-boot.version:  ${AnsiColor.RED} ${spring-boot.version}
+spring-boot.version:   ${spring-boot.version}
