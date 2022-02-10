@@ -3,6 +3,7 @@
     <!-- Console --> <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder> <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{10} - %msg%n</pattern> </encoder>
 </appender>
+
     <!-- Logstash -->
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>3.38.221.216:5000</destination>
