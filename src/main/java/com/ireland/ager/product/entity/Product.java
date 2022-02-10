@@ -39,7 +39,7 @@ public class Product extends BaseEntity implements Serializable {
 
     private String thumbNailUrl;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "productId", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "productId", orphanRemoval = true)
     private List<Url> urlList = new ArrayList<>();
 
     @JsonIgnore
@@ -60,6 +60,7 @@ public class Product extends BaseEntity implements Serializable {
         this.getUrlList().add(url);
         url.setProductId(this);
     }
+
     public void deleteUrl(Url url) {
         url.setProductId(null);
         this.getUrlList().remove(url);

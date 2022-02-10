@@ -10,21 +10,15 @@ import com.ireland.ager.product.dto.request.ProductUpdateRequest;
 import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import com.ireland.ager.product.service.UploadServiceImpl;
-import com.ireland.ager.trade.service.TradeServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.imageio.ImageIO;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.List;
 
@@ -86,7 +80,7 @@ public class ProductController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long productId,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
-            @RequestPart(value = "product") @Valid ProductUpdateRequest productUpdateRequest,BindingResult bindingResult) throws IOException {
+            @RequestPart(value = "product") @Valid ProductUpdateRequest productUpdateRequest, BindingResult bindingResult) throws IOException {
         productService.validateUploadForm(bindingResult);
         String[] splitToken = accessToken.split(" ");
         ProductResponse productResponse = productService.updateProductById(productId, splitToken[1], multipartFile, productUpdateRequest);
