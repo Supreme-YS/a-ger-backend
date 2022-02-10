@@ -21,8 +21,6 @@ public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
             ,"/api/account/login"
             ,"/api/account/token/**"
             ,"/api/review/list/**"
-            ,"/api/product/search"
-            ,"/api/board/search"
             ,"/favicon.ico/**"
             ,"/favicon.ico"
             ,"/kafka/*"
