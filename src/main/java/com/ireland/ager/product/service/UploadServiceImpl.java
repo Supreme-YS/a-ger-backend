@@ -82,8 +82,6 @@ public class UploadServiceImpl {
             @content: 이미지 파일들을 s3에 업로드하고 url을 return
         */
         log.info("업로드 파일의 갯수 : {}", uploadFiles.size());
-        //첫번쨰 장을 썸네일 로 만든다.
-        MultipartFile thumbFile=uploadFiles.get(0);
         List<String> uploadUrl = new ArrayList<>();
         for (MultipartFile uploadFile : uploadFiles) {
             log.info("파일 확인용 : {}: ",uploadFile.getOriginalFilename());
@@ -113,17 +111,20 @@ public class UploadServiceImpl {
     }
 
     public String makeThumbNail(MultipartFile multipartFile) throws IOException {
-        String origName=multipartFile.getOriginalFilename();
+        String origName = multipartFile.getOriginalFilename();
         final String ext = origName.substring(origName.lastIndexOf('.'));
-        final String saveFileName = "Thumbnail_"+getUuid() + ext;
-        BufferedImage image = ImageIO.read(multipartFile.getInputStream());
-        double getWidth = image.getWidth();
-        double getHeight = image.getHeight();
-        double resizeRatio = getWidth / getHeight;
-        int mediumHeight = 100;
-        int mediumWidth = (int) (resizeRatio * mediumHeight);
-        BufferedImage thumbnail_medium = Thumbnails.of(image).size(mediumWidth,mediumHeight).asBufferedImage();
-       return uploadThumbNailToS3(thumbnail_medium,saveFileName,ext);
+        if(ext.equals(".jpg") || ext.equals(".png")||ext.equals(".jpeg")) {
+            final String saveFileName = "Thumbnail_" + getUuid() + ext;
+            BufferedImage image = ImageIO.read(multipartFile.getInputStream());
+            double getWidth = image.getWidth();
+            double getHeight = image.getHeight();
+            double resizeRatio = getWidth / getHeight;
+            int mediumHeight = 100;
+            int mediumWidth = (int) (resizeRatio * mediumHeight);
+            BufferedImage thumbnail_medium = Thumbnails.of(image).size(mediumWidth, mediumHeight).asBufferedImage();
+            return uploadThumbNailToS3(thumbnail_medium, saveFileName, ext);
+        }
+        else throw new InvaildFileExtensionException();
     }
     public String uploadThumbNailToS3(BufferedImage image,String Filename,String ext)
             throws IllegalStateException, IOException {
