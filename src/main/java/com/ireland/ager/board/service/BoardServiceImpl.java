@@ -49,7 +49,7 @@ public class BoardServiceImpl {
         String thumbNailUrl = uploadService.makeThumbNail(multipartFile.get(0));
 
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account, uploadImagesUrl, thumbNailUrl));
+        Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account, uploadImagesUrl));
         return BoardResponse.toBoardResponse(newPost, account);
     }
 
@@ -64,8 +64,7 @@ public class BoardServiceImpl {
         }
         validateFileExists(multipartFile);
         List<BoardUrl> currentFileImageUrlList = board.getUrlList();
-        String currentFileThumbnailUrl = board.getThumbNailUrl();
-        uploadService.deleteBoard(currentFileImageUrlList, currentFileThumbnailUrl);
+        uploadService.deleteBoard(currentFileImageUrlList);
 
         for (Iterator<BoardUrl> it = board.getUrlList().iterator(); it.hasNext(); ) {
             BoardUrl url = it.next();
@@ -75,17 +74,15 @@ public class BoardServiceImpl {
         for (BoardUrl url : board.getUrlList()) {
             url.setBoard(null);
         }
-        MultipartFile firstImage = multipartFile.get(0);
         List<String> updateFileImageUrlList = new ArrayList<>();
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
-            board.setThumbNailUrl(uploadService.makeThumbNail(firstImage));
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
 
         Account accountById = accountService.findAccountById(board.getAccountId().getAccountId());
-        Board toBoardUpdate = boardRequest.toBoardUpdate(board, accountById, updateFileImageUrlList);
+        Board toBoardUpdate = boardRequest.toBoardUpdate(board, updateFileImageUrlList);
         boardRepository.save(toBoardUpdate);
         return BoardResponse.toBoardResponse(toBoardUpdate, accountById);
     }
@@ -96,7 +93,7 @@ public class BoardServiceImpl {
         if (!(account.equals(board.getAccountId()))) {
             throw new UnAuthorizedAccessException();
         }
-        uploadService.deleteBoard(board.getUrlList(), board.getThumbNailUrl());
+        uploadService.deleteBoard(board.getUrlList());
         boardRepository.deleteById(board.getBoardId());
     }
 

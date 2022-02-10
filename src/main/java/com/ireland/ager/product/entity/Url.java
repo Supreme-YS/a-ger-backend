@@ -22,7 +22,7 @@ public class Url implements Serializable {
 
     @ManyToOne
     @JsonIgnore
-    private Product product;
+    private Product productId;
 
     private String url;
 

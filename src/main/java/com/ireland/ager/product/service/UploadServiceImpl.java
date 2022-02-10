@@ -64,14 +64,7 @@ public class UploadServiceImpl {
         }
     }
 
-    public void deleteBoard(List<BoardUrl> currentFileImageUrlList, String thumbNailUrl) throws AmazonServiceException {
-        try {
-            amazonS3Client.deleteObject(bucket, thumbNailUrl.split("/")[3]);
-            log.info("삭제될 파일의 이름은 : {}",thumbNailUrl.split("/")[3]);
-        }
-        catch (AmazonServiceException e){
-            e.printStackTrace();
-        }
+    public void deleteBoard(List<BoardUrl> currentFileImageUrlList) throws AmazonServiceException {
         for (BoardUrl url : currentFileImageUrlList) {
 
             amazonS3Client.deleteObject(bucket, url.getUrl().split("/")[3]);

@@ -13,7 +13,7 @@ public class BoardRequest {
     String title;
     String content;
 
-    public static Board toBoard(BoardRequest boardRequest, Account account, List<String> uploadImgUrl, String thumbNailUrl) {
+    public static Board toBoard(BoardRequest boardRequest, Account account, List<String> uploadImgUrl) {
         Board board = new Board();
 
         for (String str : uploadImgUrl) {
@@ -24,12 +24,11 @@ public class BoardRequest {
         board.addAccount(account);
         board.setTitle(boardRequest.getTitle());
         board.setContent(boardRequest.getContent());
-        board.setThumbNailUrl(thumbNailUrl);
         board.setBoardViewCnt(0L);
         return board;
     }
 
-    public Board toBoardUpdate(Board board, Account account,
+    public Board toBoardUpdate(Board board,
                                List<String> uploadImageUrl) {
         for (String str : uploadImageUrl) {
             BoardUrl url = new BoardUrl();
