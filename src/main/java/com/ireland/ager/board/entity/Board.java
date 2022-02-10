@@ -23,6 +23,7 @@ public class Board extends BaseEntity implements Serializable {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "account_id")
     private Account accountId;
 
     @Column(length = 100, nullable = false)

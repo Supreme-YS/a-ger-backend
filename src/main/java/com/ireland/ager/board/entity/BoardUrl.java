@@ -23,6 +23,7 @@ public class BoardUrl implements Serializable {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "board_id")
     private Board board;
 
     private String url;
