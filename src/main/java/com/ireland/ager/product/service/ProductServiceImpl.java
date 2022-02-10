@@ -120,11 +120,11 @@ public class ProductServiceImpl {
         for(Iterator<Url> it = productById.getUrlList().iterator() ; it.hasNext() ; )
         {
             Url url = it.next();
-            url.setProduct(null);
+            url.setProductId(null);
             it.remove();
         }
         for(Url url : productById.getUrlList()) {
-            url.setProduct(null);
+            url.setProductId(null);
         }
         MultipartFile firstImage = multipartFile.get(0);
         List<String> updateFileImageUrlList = new ArrayList<>();
