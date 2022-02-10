@@ -10,6 +10,8 @@ import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class AccountServiceImpl {
     private final AccountRepository accountRepository;
-
+    private final RedisTemplate redisTemplate;
     // REMARK 카카오 이메일이 디비에 있는지 확인하는 로직만 에러 처리 안하도록 한다.
     public Account findAccountByAccountEmail(String accountEmail) {
         return accountRepository.findAccountByAccountEmail(accountEmail).orElse(null);
@@ -66,6 +68,9 @@ public class AccountServiceImpl {
             // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 False
             throw new UnAuthorizedAccessException();
         }
+        //HINT: redis 최근 검색어도 함께 추가
+        String key="search::"+accountId;
+        redisTemplate.delete(key);
         accountRepository.deleteById(accountId);
     }
 
