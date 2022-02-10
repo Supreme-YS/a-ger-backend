@@ -67,6 +67,7 @@ dependencies {
 	implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws-autoconfigure', version: '2.2.1.RELEASE'
 	//썸네일 의존성
 	implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.8'
+	implementation 'net.logstash.logback:logstash-logback-encoder:6.6'
 
 
 }
