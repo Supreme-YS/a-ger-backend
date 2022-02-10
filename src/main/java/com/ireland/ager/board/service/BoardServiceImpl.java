@@ -102,10 +102,9 @@ public class BoardServiceImpl {
         return boardRepository.addViewCnt(boardId);
     }
 
-    //HINT 여기에 productViewCnt가 조회될때마다 cacheput으로 바뀐다.
     public void addViewCntToRedis(Long boardId) {
         String key = "boardViewCnt::"+boardId;
-        //hint 캐시에 값이 없으면 레포지토리에서 조회 있으면 값을 증가시킨다.
+
         ValueOperations valueOperations = redisTemplate.opsForValue();
         if(valueOperations.get(key)==null)
             valueOperations.set(

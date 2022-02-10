@@ -1,6 +1,5 @@
 package com.ireland.ager.board.repository;
 
-import com.ireland.ager.board.dto.response.BoardResponse;
 import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.entity.Board;
 import com.querydsl.core.types.Order;
@@ -30,38 +29,38 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
 
     @Override
     public Slice<BoardSummaryResponse> findAllBoardPageableOrderByCreatedAtDesc(String keyword, Pageable pageable) {
-        JPAQuery<Board> boardJPAQuery= queryFactory
+        JPAQuery<Board> boardJPAQuery = queryFactory
                 .selectFrom(board)
                 .where(keywordContains(keyword))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize()+1); //limit보다 한 개 더 들고온다.
-        for(Sort.Order o: pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(board.getType(),board.getMetadata());
-            boardJPAQuery.orderBy(new OrderSpecifier(o.isAscending()? Order.ASC: Order.DESC,pathBuilder.get(o.getProperty())));
+                .limit(pageable.getPageSize() + 1); //limit보다 한 개 더 들고온다.
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(board.getType(), board.getMetadata());
+            boardJPAQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));
         }
         List<Board> fetch = boardJPAQuery.fetch();
-        List<BoardSummaryResponse> content=new ArrayList<>();
-        for(Board board : fetch) {
-            Long countComment=queryFactory
+        List<BoardSummaryResponse> content = new ArrayList<>();
+        for (Board board : fetch) {
+            Long countComment = queryFactory
                     .selectFrom(comment)
                     .where(comment.boardId.boardId.eq(board.getBoardId()))
                     .fetchCount();
-            content.add(BoardSummaryResponse.toBoardSummaryResponse(board,countComment));
+            content.add(BoardSummaryResponse.toBoardSummaryResponse(board, countComment));
         }
-        boolean hasNext =false;
+        boolean hasNext = false;
         //마지막 페이지는 사이즈가 항상 작다.
-        if(content.size() > pageable.getPageSize()) {
+        if (content.size() > pageable.getPageSize()) {
             content.remove(pageable.getPageSize());
-            hasNext=true;
+            hasNext = true;
         }
-        return new SliceImpl<>(content,pageable,hasNext);
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
     @Override
     public void addViewCntFromRedis(Long boardId, Long addCnt) {
         queryFactory
                 .update(board)
-                .set(board.boardViewCnt,addCnt)
+                .set(board.boardViewCnt, addCnt)
                 .where(board.boardId.eq(boardId))
                 .execute();
     }
@@ -70,7 +69,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     public Board addViewCnt(Long boardId) {
         queryFactory
                 .update(board)
-                .set(board.boardViewCnt,board.boardViewCnt.add(1))
+                .set(board.boardViewCnt, board.boardViewCnt.add(1))
                 .where(board.boardId.eq(boardId))
                 .execute();
         return queryFactory.selectFrom(board).where(board.boardId.eq(boardId)).fetchOne();

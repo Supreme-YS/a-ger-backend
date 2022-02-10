@@ -3,14 +3,12 @@ package com.ireland.ager.board.controller;
 
 import com.ireland.ager.board.dto.request.CommentRequest;
 import com.ireland.ager.board.dto.response.CommentResponse;
-import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.board.service.BoardServiceImpl;
 import com.ireland.ager.board.service.CommentServiceImpl;
 import com.ireland.ager.main.common.CommonResult;
 import com.ireland.ager.main.common.SingleResult;
 import com.ireland.ager.main.common.service.ResponseService;
-import com.ireland.ager.main.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +43,7 @@ public class CommentController {
                                                                        @PathVariable(value = "commentId") Long commentId) throws IOException {
 
         String[] splitToken = accessToken.split(" ");
-        CommentResponse commentResponse = commentService.updateComment(splitToken[1],commentId, commentRequest);
+        CommentResponse commentResponse = commentService.updateComment(splitToken[1], commentId, commentRequest);
         return new ResponseEntity<>(responseService.getSingleResult(commentResponse), HttpStatus.OK);
     }
 
@@ -54,8 +52,7 @@ public class CommentController {
                                                       @PathVariable(value = "boardId") Long boardId,
                                                       @PathVariable(value = "commentId") Long commentId) throws IOException {
         String[] splitToken = accessToken.split(" ");
-        commentService.deleteComment(splitToken[1],commentId);
+        commentService.deleteComment(splitToken[1], commentId);
         return new ResponseEntity<>(responseService.getSuccessResult(), HttpStatus.OK);
     }
-
 }
