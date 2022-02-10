@@ -30,6 +30,9 @@ public class RedisService {
         Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
         String key = "search::"+accountByAccessToken.getAccountId();
         ListOperations listOperations = redisTemplate.opsForList();
+        for(Object pastKeyword:listOperations.range(key,0,listOperations.size(key))) {
+            if(String.valueOf(pastKeyword).equals(keyword)) return;
+        }
         if(listOperations.size(key)<5) {
             listOperations.rightPush(key,keyword);
         }
