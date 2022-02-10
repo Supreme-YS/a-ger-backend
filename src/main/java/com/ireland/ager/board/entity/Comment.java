@@ -21,10 +21,12 @@ public class Comment extends BaseEntity implements Serializable {
     private Long commentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
     private Board boardId;
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "account_id")
     private Account accountId;
 
     private String commentContent;

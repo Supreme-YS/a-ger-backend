@@ -28,6 +28,7 @@ public class Review extends BaseEntity {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
     private Account sellerId;
 
     public void addAccount(Account account) {

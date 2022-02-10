@@ -22,6 +22,7 @@ public class Url implements Serializable {
 
     @ManyToOne
     @JsonIgnore
+    @JoinColumn(name = "product_id")
     private Product productId;
 
     private String url;
