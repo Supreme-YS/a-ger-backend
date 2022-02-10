@@ -1,7 +1,5 @@
 package com.ireland.ager.main.common;
 
-import com.ireland.ager.product.exception.InvaildProductCategoryException;
-import com.ireland.ager.product.exception.InvaildProductDetailException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -29,9 +27,6 @@ public enum CommonResponse {
     InvaildProductStatus(-3050,"상품 상태값이 없습니다."),
     DuplicateReview(-4000,"이미 리뷰를 작성하셨습니다.");
 
-
-
-
-    int code;
-    String msg;
+    private final int code;
+    private final String msg;
 }

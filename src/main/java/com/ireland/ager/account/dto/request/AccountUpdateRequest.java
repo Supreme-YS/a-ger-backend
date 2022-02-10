@@ -1,13 +1,10 @@
 package com.ireland.ager.account.dto.request;
 
 import com.ireland.ager.account.entity.Account;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
-@Getter
-@Setter
+@Data
 @ToString
 public class AccountUpdateRequest {
 

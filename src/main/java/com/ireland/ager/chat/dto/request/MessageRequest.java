@@ -6,7 +6,7 @@ import lombok.*;
 
 import java.io.Serializable;
 
-@Getter
+@Data
 @ToString
 @Builder
 //HINT 아래 두개를 추가해주니 오류가 안난다.

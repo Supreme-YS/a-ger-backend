@@ -2,14 +2,12 @@ package com.ireland.ager.account.dto.response;
 
 import com.ireland.ager.account.entity.Account;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
+@Data
 @ToString
 @Builder
 public class AccountResponse {
