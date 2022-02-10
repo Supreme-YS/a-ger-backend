@@ -1,17 +1,15 @@
 package com.ireland.ager.chat.service;
 
 import com.ireland.ager.account.entity.Account;
+import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.account.service.AccountServiceImpl;
-import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.chat.dto.response.MessageDetailsResponse;
 import com.ireland.ager.chat.dto.response.MessageSummaryResponse;
 import com.ireland.ager.chat.dto.response.RoomCreateResponse;
-import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
+import com.ireland.ager.chat.exception.UnAuthorizedChatException;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
 import com.ireland.ager.main.exception.NotFoundException;
-import com.ireland.ager.account.exception.UnAuthorizedAccessException;
-import com.ireland.ager.chat.exception.UnAuthorizedChatException;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +19,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
