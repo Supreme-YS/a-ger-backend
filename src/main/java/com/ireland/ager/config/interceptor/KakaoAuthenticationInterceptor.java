@@ -16,23 +16,24 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class KakaoAuthenticationInterceptor implements HandlerInterceptor {
     private final AuthServiceImpl authService;
-    private static final String[] excludeList= {
+    private static final String[] excludeList = {
             "/api/account/login-url"
-            ,"/api/account/login"
-            ,"/api/account/token/**"
-            ,"/api/review/list/**"
-            ,"/favicon.ico/**"
-            ,"/favicon.ico"
-            ,"/kafka/*"
-            ,"/kafka/**"
-            ,"/socket.io/*"
+            , "/api/account/login"
+            , "/api/account/token/**"
+            , "/api/review/list/**"
+            , "/favicon.ico/**"
+            , "/favicon.ico"
+            , "/kafka/*"
+            , "/kafka/**"
+            , "/socket.io/*"
     };
+
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
         String requestUrl = request.getRequestURI();
-        log.info("URL:{}",requestUrl);
-        if(!PatternMatchUtils.simpleMatch(excludeList,requestUrl)) {
+        log.info("URL:{}", requestUrl);
+        if (!PatternMatchUtils.simpleMatch(excludeList, requestUrl)) {
             log.info("Not Match");
             authService.isValidToken(token);
         }

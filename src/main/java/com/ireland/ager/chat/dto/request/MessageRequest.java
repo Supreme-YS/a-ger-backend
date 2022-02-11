@@ -11,7 +11,6 @@ import java.io.Serializable;
 
 @Data
 @Builder
-//HINT 아래 두개를 추가해주니 오류가 안난다.
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageRequest implements Serializable {

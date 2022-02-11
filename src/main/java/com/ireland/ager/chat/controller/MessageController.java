@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MessageController {
     private final KafkaProductService kafkaProductService;
+
     //producer 부분
     @PostMapping(value = "/publish")
     public void sendMessage(@RequestBody MessageRequest message) {

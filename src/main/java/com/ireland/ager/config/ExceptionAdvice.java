@@ -18,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.util.InvalidPropertiesFormatException;
-
 @RestControllerAdvice
 @RequiredArgsConstructor
 public class ExceptionAdvice {
@@ -78,43 +76,51 @@ public class ExceptionAdvice {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.NOTFOUNDTOKEN);
         return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
     }
+
     @ExceptionHandler(UnAuthorizedChatException.class)
     public ResponseEntity<CommonResult> unAuthorizedChatException(UnAuthorizedChatException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.UNAUTHORIZEDCHAT);
         return new ResponseEntity<>(commonResult, HttpStatus.UNAUTHORIZED);
     }
+
     @ExceptionHandler(InvaildFormException.class)
     public ResponseEntity<CommonResult> invaildFormException(InvaildFormException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildForm);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvaildProductTitleException.class)
-    public ResponseEntity<CommonResult> invaildProductTitleException(InvaildProductTitleException e){
+    public ResponseEntity<CommonResult> invaildProductTitleException(InvaildProductTitleException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductTitle);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvaildProductPriceException.class)
-    public ResponseEntity<CommonResult> invaildProductPriceException(InvaildProductPriceException e){
+    public ResponseEntity<CommonResult> invaildProductPriceException(InvaildProductPriceException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductPrice);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvaildProductDetailException.class)
-    public ResponseEntity<CommonResult> invaildProductDetailException(InvaildProductDetailException e){
+    public ResponseEntity<CommonResult> invaildProductDetailException(InvaildProductDetailException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductDetail);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvaildProductCategoryException.class)
-    public ResponseEntity<CommonResult> InvaildProductCategoryException(InvaildProductCategoryException e){
+    public ResponseEntity<CommonResult> InvaildProductCategoryException(InvaildProductCategoryException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductCategory);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(InvaildProductStatusException.class)
-    public ResponseEntity<CommonResult> InvaildProductStatusException(InvaildProductStatusException e){
+    public ResponseEntity<CommonResult> InvaildProductStatusException(InvaildProductStatusException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductStatus);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
+
     @ExceptionHandler(DuplicateReviewException.class)
-    public ResponseEntity<CommonResult> DuplicateReviewException(DuplicateReviewException e){
+    public ResponseEntity<CommonResult> DuplicateReviewException(DuplicateReviewException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.DuplicateReview);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
