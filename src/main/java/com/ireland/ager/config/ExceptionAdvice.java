@@ -4,6 +4,8 @@ import com.ireland.ager.account.exception.ExpiredAccessTokenException;
 import com.ireland.ager.account.exception.NotFoundTokenException;
 import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.account.exception.UnAuthorizedTokenException;
+import com.ireland.ager.board.exception.InvalidBoardDetailException;
+import com.ireland.ager.board.exception.InvalidBoardTitleException;
 import com.ireland.ager.chat.exception.UnAuthorizedChatException;
 import com.ireland.ager.main.common.CommonResponse;
 import com.ireland.ager.main.common.CommonResult;
@@ -122,6 +124,16 @@ public class ExceptionAdvice {
     @ExceptionHandler(DuplicateReviewException.class)
     public ResponseEntity<CommonResult> DuplicateReviewException(DuplicateReviewException e) {
         CommonResult commonResult = responseService.getFailResult(CommonResponse.DuplicateReview);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(InvalidBoardTitleException.class)
+    public ResponseEntity<CommonResult> InvalidBoardTitleException(InvalidBoardTitleException e) {
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDBOARDTITLE);
+        return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(InvalidBoardDetailException.class)
+    public ResponseEntity<CommonResult> InvalidBoardTitleException(InvalidBoardDetailException e) {
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDBOARDDETAIL);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 }
