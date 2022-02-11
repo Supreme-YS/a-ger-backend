@@ -2,17 +2,14 @@ package com.ireland.ager.product.dto.response;
 
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.product.entity.ProductStatus;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
 public class ProductThumbResponse {
     String productName;
