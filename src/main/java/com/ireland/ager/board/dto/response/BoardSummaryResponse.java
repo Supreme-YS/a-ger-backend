@@ -1,13 +1,10 @@
 package com.ireland.ager.board.dto.response;
 
-import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.board.entity.Board;
 import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Data
 @Builder

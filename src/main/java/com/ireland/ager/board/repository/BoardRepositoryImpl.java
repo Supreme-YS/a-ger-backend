@@ -2,8 +2,6 @@ package com.ireland.ager.board.repository;
 
 import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.entity.Board;
-import com.ireland.ager.product.dto.response.ProductThumbResponse;
-import com.ireland.ager.product.entity.Product;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;

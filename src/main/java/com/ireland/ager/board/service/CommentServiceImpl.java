@@ -34,23 +34,22 @@ public class CommentServiceImpl {
         return CommentResponse.toCommentResponse(newComment);
     }
 
-    public CommentResponse updateComment(String accessToken,Long commentId, CommentRequest commentRequest) {
+    public CommentResponse updateComment(String accessToken, Long commentId, CommentRequest commentRequest) {
         Comment presentComment = commentRepository.findById(commentId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
-        if(!account.equals(presentComment.getAccountId())) {
+        if (!account.equals(presentComment.getAccountId())) {
             throw new UnAuthorizedAccessException();
         }
         Comment updateComment = commentRepository.save(CommentRequest.toComment(commentRequest, presentComment.getBoardId(), account));
         return CommentResponse.toCommentResponse(updateComment);
     }
 
-    public void deleteComment(String accessToken,Long commentId) throws IOException {
+    public void deleteComment(String accessToken, Long commentId) throws IOException {
         Comment presentComment = commentRepository.findById(commentId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
-        if(!account.equals(presentComment.getAccountId())) {
+        if (!account.equals(presentComment.getAccountId())) {
             throw new UnAuthorizedAccessException();
         }
         commentRepository.deleteById(presentComment.getCommentId());
     }
-
 }
