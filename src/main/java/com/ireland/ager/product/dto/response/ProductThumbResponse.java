@@ -32,6 +32,7 @@ public class ProductThumbResponse {
                 .thumbNailUrl(product.getThumbNailUrl())
                 .build();
     }
+
     public static List<ProductThumbResponse> toProductListResponse(List<Product> productList) {
         List<ProductThumbResponse> productResponseList = new ArrayList<>();
         for (Product product : productList) {

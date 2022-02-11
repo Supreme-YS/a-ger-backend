@@ -59,12 +59,11 @@ public class ProductServiceImpl {
                                          ProductRequest productRequest,
                                          List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
-        //첫번째 이미지를 썸네일로 만들어서 업로드 해준다.
         String thumbNailUrl= uploadService.makeThumbNail(multipartFile.get(0));
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
         Product product = productRequest.toProduct(account, uploadImagesUrl,thumbNailUrl);
         productRepository.save(product);
-        return ProductResponse.toProductResponse(product);
+        return ProductResponse.toProductResponse(product,account);
     }
 
     @Cacheable(value = "product")
@@ -85,7 +84,7 @@ public class ProductServiceImpl {
         log.info("value:{}",valueOperations.get(key));
     }
 
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void deleteViewCntCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("productViewCnt*");
         Iterator<String> it = redisKeys.iterator();
@@ -103,10 +102,8 @@ public class ProductServiceImpl {
                                              String accessToken,
                                              List<MultipartFile> multipartFile,
                                              ProductUpdateRequest productUpdateRequest) throws IOException {
-        // 원래 정보를 꺼내온다.
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
-            // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             throw new UnAuthorizedTokenException();
         }
         validateFileExists(multipartFile);
@@ -135,26 +132,22 @@ public class ProductServiceImpl {
         Account accountById = accountService.findAccountById(productById.getAccount().getAccountId());
         Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountById, updateFileImageUrlList);
         productRepository.save(toProductUpdate);
-        return ProductResponse.toProductResponse(toProductUpdate);
+        return ProductResponse.toProductResponse(toProductUpdate,accountById);
     }
 
     public void deleteProductById(Long productId, String accessToken) {
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
-            // 수정하고자 하는 사람과 현재 토큰 주인이 다르면 False
             throw new UnAuthorizedTokenException();
         }
         uploadService.delete(productById.getUrlList(),productById.getThumbNailUrl());
         productRepository.deleteById(productId);
     }
 
-    //Todo 들어온 파일리스트가 널값이면 사진갯수 에러를 반환하는 메서드이다. 하지만 파일의 갯수가 없어도 사이즈가 1로 찍힌다.
-    // 파일 사이즈는 콘솔창에 업로드 파일의 갯수 찾아서 보면 확인 가능
     public void validateFileExists(List<MultipartFile> file) {
         if (file.isEmpty())
             throw new InvaildUploadException();
     }
-    //Todo 업로드시에 입렵 폼 값 검증
     public void validateUploadForm(BindingResult bindingResult){
         if(bindingResult.getErrorCount()>=3) throw new InvaildFormException();
         if(bindingResult.hasErrors()){

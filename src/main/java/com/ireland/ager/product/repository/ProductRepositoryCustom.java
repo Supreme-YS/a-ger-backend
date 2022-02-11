@@ -10,5 +10,6 @@ public interface ProductRepositoryCustom {
     void addViewCntFromRedis(Long productId, Long addCnt);
 
     Product addViewCnt(Long productId);
+
     Slice<ProductThumbResponse> findAllProductPageableOrderByCreatedAtDesc(Category category, String keyword, Pageable pageable);
 }

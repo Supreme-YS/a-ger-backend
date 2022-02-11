@@ -20,7 +20,7 @@ public class ProductUpdateRequest {
     @NotBlank(message = "3010")
     String productName;
     @NotBlank(message = "3020")
-    @Min(value = 0,message="3021")
+    @Min(value = 0, message = "3021")
     String productPrice;
     @NotBlank(message = "3030")
     String productDetail;
@@ -32,7 +32,7 @@ public class ProductUpdateRequest {
     public Product toProductUpdate(Product product, Account account,
                                    List<String> uploadImageUrl) {
         for (String str : uploadImageUrl) {
-            Url url=new Url();
+            Url url = new Url();
             url.setUrl(str);
             product.addUrl(url);
         }

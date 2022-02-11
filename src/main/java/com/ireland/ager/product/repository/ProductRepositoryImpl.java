@@ -27,13 +27,12 @@ import static com.ireland.ager.product.entity.QProduct.product;
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     @Override
-    public void addViewCntFromRedis(Long productId,Long addCnt) {
+    public void addViewCntFromRedis(Long productId, Long addCnt) {
         queryFactory
                 .update(product)
-                .set(product.productViewCnt,addCnt)
+                .set(product.productViewCnt, addCnt)
                 .where(product.productId.eq(productId))
                 .execute();
     }
@@ -42,35 +41,37 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
     public Product addViewCnt(Long productId) {
         queryFactory
                 .update(product)
-                .set(product.productViewCnt,product.productViewCnt.add(1))
+                .set(product.productViewCnt, product.productViewCnt.add(1))
                 .where(product.productId.eq(productId))
                 .execute();
         return queryFactory.selectFrom(product).where(product.productId.eq(productId)).fetchOne();
     }
 
     @Override
-    public Slice<ProductThumbResponse> findAllProductPageableOrderByCreatedAtDesc(Category category,String keyword ,Pageable pageable) {
-        JPAQuery<Product> productQuery= queryFactory
+    public Slice<ProductThumbResponse> findAllProductPageableOrderByCreatedAtDesc(Category category, String keyword, Pageable pageable) {
+        JPAQuery<Product> productQuery = queryFactory
                 .selectFrom(product)
-                .where(keywordContains(keyword),categoryEq(category))
+                .where(keywordContains(keyword), categoryEq(category))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize()+1); //limit보다 한 개 더 들고온다.
-        for(Sort.Order o: pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(product.getType(),product.getMetadata());
-            productQuery.orderBy(new OrderSpecifier(o.isAscending()? Order.ASC: Order.DESC,pathBuilder.get(o.getProperty())));
+                .limit(pageable.getPageSize() + 1); //limit보다 한 개 더 들고온다.
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(product.getType(), product.getMetadata());
+            productQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));
         }
-        List<ProductThumbResponse> content=new ArrayList<>(ProductThumbResponse.toProductListResponse(productQuery.fetch()));
-        boolean hasNext =false;
+        List<ProductThumbResponse> content = new ArrayList<>(ProductThumbResponse.toProductListResponse(productQuery.fetch()));
+        boolean hasNext = false;
         //마지막 페이지는 사이즈가 항상 작다.
-        if(content.size() > pageable.getPageSize()) {
+        if (content.size() > pageable.getPageSize()) {
             content.remove(pageable.getPageSize());
-            hasNext=true;
+            hasNext = true;
         }
-        return new SliceImpl<>(content,pageable,hasNext);
+        return new SliceImpl<>(content, pageable, hasNext);
     }
+
     private BooleanExpression categoryEq(Category category) {
         return ObjectUtils.isEmpty(category) ? null : product.category.eq(category);
     }
+
     private BooleanExpression keywordContains(String keyword) {
         return ObjectUtils.isEmpty(keyword) ? null : product.productName.contains(keyword);
     }

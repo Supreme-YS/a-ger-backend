@@ -117,7 +117,7 @@ public class BoardServiceImpl {
     }
 
     //hint 스케줄러로 쌓인 조회수 캐시들 제거 3분마다 실행
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void deleteViewCntCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("boardViewCnt*");
         Iterator<String> it = redisKeys.iterator();

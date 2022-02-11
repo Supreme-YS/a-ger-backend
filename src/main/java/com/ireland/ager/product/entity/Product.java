@@ -51,10 +51,6 @@ public class Product extends BaseEntity implements Serializable {
         this.setAccount(updateAccount);
     }
 
-    public void addViewCnt(Product addProduct) {
-        this.setProductViewCnt(addProduct.getProductViewCnt() + 1);
-    }
-
     public void addUrl(Url url) {
         this.getUrlList().add(url);
         url.setProductId(this);
