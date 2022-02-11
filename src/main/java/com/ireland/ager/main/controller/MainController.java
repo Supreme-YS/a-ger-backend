@@ -33,7 +33,6 @@ public class MainController {
             ,@RequestParam(value = "category",required = false)Category category
             ,@RequestParam(value = "keyword",required = false) String keyword
             ,Pageable pageable) {
-        log.info("productkeyword:{}",keyword);
         String[] splitToken = accessToken.split(" ");
         redisService.postKeyword(splitToken[1],keyword);
         return new ResponseEntity<>(responseService.getSliceResult(

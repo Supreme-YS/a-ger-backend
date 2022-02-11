@@ -1,6 +1,6 @@
 package com.ireland.ager.account.service;
 
-import com.ireland.ager.account.dto.response.AccountResponse;
+import com.ireland.ager.account.dto.response.MyAccountResponse;
 import com.ireland.ager.account.dto.response.KakaoResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.exception.ExpiredAccessTokenException;
@@ -54,7 +54,7 @@ public class AuthServiceImpl {
                 .append("&response_type=code")
                 .toString();
     }
-    public AccountResponse getKakaoLogin(String code) {
+    public MyAccountResponse getKakaoLogin(String code) {
         HashMap<String, String> kakaoTokens = getKakaoTokens(code);
         KakaoResponse kakaoResponse = getKakaoUserInfo(kakaoTokens.get("access_token"));
 
@@ -120,7 +120,7 @@ public class AuthServiceImpl {
         return userInfo.getBody();
     }
 
-    public AccountResponse updateTokenWithAccount(Long accountId, String accessToken, String refreshToken) {
+    public MyAccountResponse updateTokenWithAccount(Long accountId, String accessToken, String refreshToken) {
         Optional<Account> optionalExistAccount = accountRepository.findById(accountId);
         Account existAccount = optionalExistAccount.map(account -> {
             account.setAccessToken(accessToken);
@@ -129,7 +129,7 @@ public class AuthServiceImpl {
         }).orElseThrow(NotFoundException::new);
 
         accountRepository.save(existAccount);
-        return AccountResponse.toAccountResponse(existAccount);
+        return MyAccountResponse.toAccountResponse(existAccount);
     }
 
     public String updateAccessToken(Long accountId) {

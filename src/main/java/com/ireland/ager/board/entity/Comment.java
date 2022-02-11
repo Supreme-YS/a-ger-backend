@@ -33,6 +33,5 @@ public class Comment extends BaseEntity implements Serializable {
 
     public void addAccount(Account account) {
         this.accountId = account;
-        this.accountId.getComments().add(this);
     }
 }

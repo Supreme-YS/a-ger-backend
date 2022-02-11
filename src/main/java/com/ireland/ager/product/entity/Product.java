@@ -48,7 +48,6 @@ public class Product extends BaseEntity implements Serializable {
     private Account account;
 
     public void addAccount(Account updateAccount) {
-        updateAccount.getProducts().add(this);
         this.setAccount(updateAccount);
     }
 

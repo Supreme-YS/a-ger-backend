@@ -44,7 +44,6 @@ public class Board extends BaseEntity implements Serializable {
 
     public void addAccount(Account account) {
         this.accountId = account;
-        this.accountId.getBoards().add(this);
     }
 
     public void addUrl(BoardUrl url) {

@@ -33,6 +33,5 @@ public class Review extends BaseEntity {
 
     public void addAccount(Account account) {
         this.sellerId = account;
-        this.sellerId.getReviews().add(this);
     }
 }

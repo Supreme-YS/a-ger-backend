@@ -2,9 +2,9 @@ package com.ireland.ager.account.controller;
 
 
 import com.ireland.ager.account.dto.request.AccountUpdateRequest;
-import com.ireland.ager.account.dto.response.AccountAllResponse;
-import com.ireland.ager.account.dto.response.AccountResponse;
+import com.ireland.ager.account.dto.response.MyAccountResponse;
 import com.ireland.ager.account.dto.response.OtherAccountResponse;
+import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.main.common.CommonResult;
@@ -38,7 +38,7 @@ public class AccountController {
     }
 
     @GetMapping("/login")
-    public ResponseEntity<SingleResult<AccountResponse>> getTokenAndJoinOrLogin(@RequestParam("code") String code) {
+    public ResponseEntity<SingleResult<MyAccountResponse>> getTokenAndJoinOrLogin(@RequestParam("code") String code) {
         return new ResponseEntity<>(responseService.getSingleResult(authService.getKakaoLogin(code)), HttpStatus.CREATED);
     }
 
@@ -55,11 +55,11 @@ public class AccountController {
     }
 
     @GetMapping
-    public ResponseEntity<SingleResult<AccountAllResponse>> getMyAccount(@RequestHeader("Authorization") String accessToken) {
+    public ResponseEntity<SingleResult<MyAccountResponse>> getMyAccount(@RequestHeader("Authorization") String accessToken) {
         String[] splitToken = accessToken.split(" ");
-        AccountAllResponse accountAllResponse = accountService.findMyAccountByAccessToken(splitToken[1]);
+        MyAccountResponse myAccountResponse = accountService.findMyAccountByAccessToken(splitToken[1]);
         return new ResponseEntity<>(
-                responseService.getSingleResult(accountAllResponse), HttpStatus.OK);
+                responseService.getSingleResult(myAccountResponse), HttpStatus.OK);
     }
 
     @GetMapping("/{accountId}")
@@ -72,14 +72,14 @@ public class AccountController {
     }
 
     @PatchMapping("/{accountId}")
-    public ResponseEntity<SingleResult<AccountAllResponse>> updateAccount(
+    public ResponseEntity<SingleResult<MyAccountResponse>> updateAccount(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId,
             @RequestPart(value = "update") AccountUpdateRequest accountUpdateRequest,
             @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
         String[] spitToken = accessToken.split(" ");
-        AccountAllResponse accountAllResponse = accountService.updateAccount(spitToken[1], accountId, accountUpdateRequest, multipartFile);
-        return new ResponseEntity<>(responseService.getSingleResult(accountAllResponse), HttpStatus.OK);
+        MyAccountResponse myAccountResponse = accountService.updateAccount(spitToken[1], accountId, accountUpdateRequest, multipartFile);
+        return new ResponseEntity<>(responseService.getSingleResult(myAccountResponse), HttpStatus.OK);
     }
 
     @DeleteMapping("/{accountId}")

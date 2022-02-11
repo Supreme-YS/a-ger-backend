@@ -1,20 +1,16 @@
 package com.ireland.ager.account.dto.response;
 
-
 import com.ireland.ager.account.entity.Account;
-import com.ireland.ager.product.entity.Product;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
 @Data
 @ToString
 @Builder
-public class AccountAllResponse {
+public class MyAccountResponse {
     Long accountId;
     String accountEmail;
     String profileNickname;
@@ -22,11 +18,9 @@ public class AccountAllResponse {
     String profileImageUrl;
     String accessToken;
     LocalDateTime createdAt;
-    LocalDateTime updatedAt;
-    Set<Product> productList = new HashSet<>();
 
-    public static AccountAllResponse toAccountAllResponse(Account account) {
-        return AccountAllResponse.builder()
+    public static MyAccountResponse toAccountResponse(Account account) {
+        return MyAccountResponse.builder()
                 .accessToken(account.getAccessToken())
                 .profileNickname(account.getProfileNickname())
                 .userName(account.getUserName())
@@ -34,8 +28,6 @@ public class AccountAllResponse {
                 .profileImageUrl(account.getProfileImageUrl())
                 .accountId(account.getAccountId())
                 .createdAt(account.getCreatedAt())
-                .updatedAt(account.getUpdatedAt())
-                .productList(account.getProducts())
                 .build();
     }
 }

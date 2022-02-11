@@ -1,8 +1,7 @@
 package com.ireland.ager.account.service;
 
 import com.ireland.ager.account.dto.request.AccountUpdateRequest;
-import com.ireland.ager.account.dto.response.AccountAllResponse;
-import com.ireland.ager.account.dto.response.AccountResponse;
+import com.ireland.ager.account.dto.response.MyAccountResponse;
 import com.ireland.ager.account.dto.response.OtherAccountResponse;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.exception.UnAuthorizedAccessException;
@@ -39,26 +38,22 @@ public class AccountServiceImpl {
         return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }
 
-    public Account findAccountWithProductById(Long accountId) {
-        return accountRepository.findAccountWithProductByAccountId(accountId).orElseThrow(NotFoundException::new);
-    }
-
-    public AccountAllResponse findMyAccountByAccessToken(String accessToken) {
-        return AccountAllResponse.toAccountAllResponse(findAccountByAccessToken(accessToken));
+    public MyAccountResponse findMyAccountByAccessToken(String accessToken) {
+        return MyAccountResponse.toAccountResponse(findAccountByAccessToken(accessToken));
     }
 
     public OtherAccountResponse findOtherAccountByAccountId(Long accountId) {
-        return OtherAccountResponse.toOtherAccountResponse(findAccountWithProductById(accountId));
+        return OtherAccountResponse.toOtherAccountResponse(findAccountById(accountId));
     }
 
-    public AccountResponse insertAccount(Account newAccount) {
+    public MyAccountResponse insertAccount(Account newAccount) {
         accountRepository.save(newAccount);
-        return AccountResponse.toAccountResponse(newAccount);
+        return MyAccountResponse.toAccountResponse(newAccount);
     }
 
-    public AccountAllResponse updateAccount(String accessToken, Long accountId,
-                                            AccountUpdateRequest accountUpdateRequest,
-                                            MultipartFile multipartFile) throws IOException {
+    public MyAccountResponse updateAccount(String accessToken, Long accountId,
+                                           AccountUpdateRequest accountUpdateRequest,
+                                           MultipartFile multipartFile) throws IOException {
         Account optionalUpdateAccount = findAccountByAccessToken(accessToken);
         if (!(optionalUpdateAccount.getAccountId().equals(accountId))) {
             throw new UnAuthorizedAccessException();
@@ -70,7 +65,7 @@ public class AccountServiceImpl {
             updatedAccount.setProfileImageUrl(uploadImg);
         }
         accountRepository.save(updatedAccount);
-        return AccountAllResponse.toAccountAllResponse(updatedAccount);
+        return MyAccountResponse.toAccountResponse(updatedAccount);
     }
 
     public void deleteAccount(String accessToken, Long accountId) {
