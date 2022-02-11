@@ -45,9 +45,6 @@ public class BoardServiceImpl {
                                     BoardRequest boardRequest,
                                     List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
-
-        String thumbNailUrl = uploadService.makeThumbNail(multipartFile.get(0));
-
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
         Board newPost = boardRepository.save(BoardRequest.toBoard(boardRequest, account, uploadImagesUrl));
         return BoardResponse.toBoardResponse(newPost, account);
@@ -56,7 +53,7 @@ public class BoardServiceImpl {
     public BoardResponse updatePost(String accessToken,
                                     Long boardId,
                                     BoardRequest boardRequest,
-                                    List<MultipartFile> multipartFile) throws IOException {
+                                    List<MultipartFile> multipartFile) {
         Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
         if (!(account.equals(board.getAccountId()))) {
@@ -79,7 +76,7 @@ public class BoardServiceImpl {
         return BoardResponse.toBoardResponse(toBoardUpdate, accountById);
     }
 
-    public void deletePost(String accessToken, Long boardId) throws IOException {
+    public void deletePost(String accessToken, Long boardId) {
         Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
         Account account = accountService.findAccountByAccessToken(accessToken);
         if (!(account.equals(board.getAccountId()))) {
@@ -95,20 +92,18 @@ public class BoardServiceImpl {
     }
 
     public void addViewCntToRedis(Long boardId) {
-        String key = "boardViewCnt::"+boardId;
+        String key = "boardViewCnt::" + boardId;
 
         ValueOperations valueOperations = redisTemplate.opsForValue();
-        if(valueOperations.get(key)==null)
+        if (valueOperations.get(key) == null)
             valueOperations.set(
                     key,
                     String.valueOf(boardRepository.findBoardViewCnt(boardId)),
                     Duration.ofMinutes(5));
         else
             valueOperations.increment(key);
-        log.info("value:{}",valueOperations.get(key));
     }
 
-    //hint 스케줄러로 쌓인 조회수 캐시들 제거 3분마다 실행
     @Scheduled(cron = "0 0/1 * * * ?")
     public void deleteViewCntCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("boardViewCnt*");
@@ -117,9 +112,9 @@ public class BoardServiceImpl {
             String data = it.next();
             Long boardId = Long.parseLong(data.split("::")[1]);
             Long viewCnt = Long.parseLong((String) redisTemplate.opsForValue().get(data));
-            boardRepository.addViewCntFromRedis(boardId,viewCnt);
+            boardRepository.addViewCntFromRedis(boardId, viewCnt);
             redisTemplate.delete(data);
-            redisTemplate.delete("board::"+boardId);
+            redisTemplate.delete("board::" + boardId);
         }
     }
 

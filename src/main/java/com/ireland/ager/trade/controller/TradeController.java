@@ -17,16 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/trade")
 public class TradeController {
     private final TradeServiceImpl tradeService;
-    private final AuthServiceImpl authService;
-
     private final ResponseService responseService;
 
     @PostMapping("/{roomId}")
     public ResponseEntity<CommonResult> setStatus(
-            /**
-             * @Method : setStatus
-             * @Description : 상품 아이디를 기준으로 상품 상태를 변경한다.
-             */
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long roomId,
             @RequestParam String status) {
