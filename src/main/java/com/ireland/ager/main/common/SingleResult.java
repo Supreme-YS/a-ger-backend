@@ -1,10 +1,8 @@
 package com.ireland.ager.main.common;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class SingleResult<T> extends CommonResult {
     private T data;
 }

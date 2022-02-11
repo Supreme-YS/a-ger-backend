@@ -34,18 +34,10 @@ public class UploadServiceImpl {
     @Value("${cloud.aws.s3.bucket.url}")
     private String defaultUrl;
 
-    @Value("${cloud.aws.s3.bucket.name}") // 프로퍼티에서 cloud.aws.s3.bucket에 대한 정보를 불러옴
+    @Value("${cloud.aws.s3.bucket.name}")
     public String bucket;
 
     private final AmazonS3Client amazonS3Client;
-
-    /**
-     * @param currentFileImageUrlList
-     * @Method Name : deleteS3file
-     * @작성자 : Potter
-     * @Method 설명 : s3의 파일을 삭제 (버킷명, 삭제하고 싶은 폴더나 파일명 ex) test/test.png
-     * currentFileImageUrlList은 다운로드용 url입니다 삭제하고 싶은 파일 명을 입력값으로 넣어줘야합니다.
-     */
 
     public void delete(List<Url> currentFileImageUrlList, String thumbNailUrl) throws AmazonServiceException {
         try {

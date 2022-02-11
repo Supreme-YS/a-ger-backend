@@ -1,11 +1,9 @@
 package com.ireland.ager.main.common;
 
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 public class CommonResult {
 
     private boolean success;

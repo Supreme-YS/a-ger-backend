@@ -16,6 +16,7 @@ public class ResponseService {
         setSuccessResult(result);
         return result;
     }
+
     //복수건 결과 처리 메소드
     public <T> ListResult<T> getListResult(List<T> list) {
         ListResult<T> result = new ListResult<>();
@@ -38,11 +39,13 @@ public class ResponseService {
         setSuccessResult(result);
         return result;
     }
+
     public CommonResult getFailResult(CommonResponse commonResponse) {
         CommonResult result = new CommonResult();
         setFailResult(commonResponse, result);
         return result;
     }
+
     private void setFailResult(CommonResponse commonResponse, CommonResult result) {
         result.setSuccess(false);
         result.setMsg(commonResponse.getMsg());

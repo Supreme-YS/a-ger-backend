@@ -1,12 +1,10 @@
 package com.ireland.ager.main.common;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class ListResult<T> extends CommonResult {
     private List<T> data;
 }

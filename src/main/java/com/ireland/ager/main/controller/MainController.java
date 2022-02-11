@@ -26,15 +26,15 @@ public class MainController {
     private final BoardServiceImpl boardService;
     private final ResponseService responseService;
     private final RedisService redisService;
-  
+
     @GetMapping("/api/product/search")
     public ResponseEntity<SliceResult<ProductThumbResponse>> searchAllProducts(
             @RequestHeader("Authorization") String accessToken
-            ,@RequestParam(value = "category",required = false)Category category
-            ,@RequestParam(value = "keyword",required = false) String keyword
-            ,Pageable pageable) {
+            , @RequestParam(value = "category", required = false) Category category
+            , @RequestParam(value = "keyword", required = false) String keyword
+            , Pageable pageable) {
         String[] splitToken = accessToken.split(" ");
-        redisService.postKeyword(splitToken[1],keyword);
+        redisService.postKeyword(splitToken[1], keyword);
         return new ResponseEntity<>(responseService.getSliceResult(
                 productService.findProductAllByCreatedAtDesc(category, keyword, pageable)), HttpStatus.OK);
     }
@@ -42,17 +42,17 @@ public class MainController {
     @GetMapping("/api/board/search")
     public ResponseEntity<SliceResult<BoardSummaryResponse>> searchAllBoards(
             @RequestHeader("Authorization") String accessToken
-            ,@RequestParam(value = "keyword",required = false) String keyword
-            ,Pageable pageable) {
+            , @RequestParam(value = "keyword", required = false) String keyword
+            , Pageable pageable) {
         return new ResponseEntity<>(responseService.getSliceResult(
                 boardService.findBoardAllByCreatedAtDesc(keyword, pageable)), HttpStatus.OK);
     }
-  
+
     @GetMapping("/api/keyword")
     public ResponseEntity<ListResult<String>> searchAccountKeywords(
             @RequestHeader("Authorization") String accessToken) {
         String[] splitToken = accessToken.split(" ");
         return new ResponseEntity<>(responseService.getListResult(
-                redisService.getSearchList(splitToken[1])),HttpStatus.OK);
+                redisService.getSearchList(splitToken[1])), HttpStatus.OK);
     }
 }
