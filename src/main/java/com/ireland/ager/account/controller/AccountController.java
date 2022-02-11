@@ -17,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @RestController
 @Slf4j
 @RequiredArgsConstructor
@@ -74,7 +76,7 @@ public class AccountController {
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId,
             @RequestBody AccountUpdateRequest accountUpdateRequest,
-            @RequestPart(value = "file") MultipartFile multipartFile) {
+            @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
         String[] spitToken = accessToken.split(" ");
         AccountAllResponse accountAllResponse = accountService.updateAccount(spitToken[1], accountId, accountUpdateRequest, multipartFile);
         return new ResponseEntity<>(responseService.getSingleResult(accountAllResponse), HttpStatus.OK);

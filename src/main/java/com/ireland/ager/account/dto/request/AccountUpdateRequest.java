@@ -12,7 +12,6 @@ public class AccountUpdateRequest {
 
     public Account toAccount(Account updateAccount) {
         updateAccount.setProfileNickname(this.profileNickname);
-        updateAccount.setProfileImageUrl(this.profileImageUrl);
         return updateAccount;
     }
 }

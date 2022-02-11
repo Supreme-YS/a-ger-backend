@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -54,17 +56,17 @@ public class AccountServiceImpl {
     }
 
     public AccountAllResponse updateAccount(String accessToken, Long accountId,
-                                            AccountUpdateRequest accountUpdateRequest, MultipartFile multipartFile) {
+                                            AccountUpdateRequest accountUpdateRequest, MultipartFile multipartFile) throws IOException {
         Account optionalUpdateAccount = findAccountByAccessToken(accessToken);
         if (!(optionalUpdateAccount.getAccountId().equals(accountId))) {
             throw new UnAuthorizedAccessException();
         }
+        Account updatedAccount = accountUpdateRequest.toAccount(optionalUpdateAccount);
 
         if (!(multipartFile.isEmpty())) {
-            String s = uploadService.updateProfileImg(multipartFile);
-            Account updatedAccount = accountUpdateRequest.toAccount(optionalUpdateAccount);
+            String uploadImg = uploadService.uploadImg(multipartFile);
+            updatedAccount.setProfileImageUrl(uploadImg);
         }
-
 
         accountRepository.save(updatedAccount);
         return AccountAllResponse.toAccountAllResponse(updatedAccount);
