@@ -65,15 +65,7 @@ public class BoardServiceImpl {
         validateFileExists(multipartFile);
         List<BoardUrl> currentFileImageUrlList = board.getUrlList();
         uploadService.deleteBoard(currentFileImageUrlList);
-
-        for (Iterator<BoardUrl> it = board.getUrlList().iterator(); it.hasNext(); ) {
-            BoardUrl url = it.next();
-            url.setBoard(null);
-            it.remove();
-        }
-        for (BoardUrl url : board.getUrlList()) {
-            url.setBoard(null);
-        }
+        board.deleteUrl();
         List<String> updateFileImageUrlList = new ArrayList<>();
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);

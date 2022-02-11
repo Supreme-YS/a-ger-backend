@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Entity
@@ -56,8 +57,11 @@ public class Product extends BaseEntity implements Serializable {
         url.setProductId(this);
     }
 
-    public void deleteUrl(Url url) {
-        url.setProductId(null);
-        this.getUrlList().remove(url);
+    public void deleteUrl() {
+        for(Iterator<Url> it = this.getUrlList().iterator() ; it.hasNext() ; ) {
+            Url url = it.next();
+            url.setProductId(null);
+            it.remove();
+        }
     }
 }

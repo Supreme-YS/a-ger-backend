@@ -110,16 +110,7 @@ public class ProductServiceImpl {
         List<Url> currentFileImageUrlList = productById.getUrlList();
         String currentFileThumbnailUrl = productById.getThumbNailUrl();
         uploadService.delete(currentFileImageUrlList, currentFileThumbnailUrl);
-
-        for(Iterator<Url> it = productById.getUrlList().iterator() ; it.hasNext() ; )
-        {
-            Url url = it.next();
-            url.setProductId(null);
-            it.remove();
-        }
-        for(Url url : productById.getUrlList()) {
-            url.setProductId(null);
-        }
+        productById.deleteUrl();
         MultipartFile firstImage = multipartFile.get(0);
         List<String> updateFileImageUrlList = new ArrayList<>();
         try {
