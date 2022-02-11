@@ -2,7 +2,8 @@ package com.ireland.ager.review.dto.response;
 
 
 import com.ireland.ager.review.entity.Review;
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class ReviewResponse {
     String sellerNickname;
     int stars;
     LocalDateTime createdAt;
+
     public static ReviewResponse toReviewResponse(Review review) {
         return ReviewResponse.builder()
                 .buyerName(review.getBuyerNickname())

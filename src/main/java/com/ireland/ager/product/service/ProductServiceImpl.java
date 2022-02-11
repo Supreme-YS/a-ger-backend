@@ -52,18 +52,18 @@ public class ProductServiceImpl {
     private final RedisTemplate redisTemplate;
 
     public Slice<ProductThumbResponse> findProductAllByCreatedAtDesc(Category category, String keyword, Pageable pageable) {
-        return productRepository.findAllProductPageableOrderByCreatedAtDesc(category,keyword,pageable);
+        return productRepository.findAllProductPageableOrderByCreatedAtDesc(category, keyword, pageable);
     }
 
     public ProductResponse createProduct(String accessToken,
                                          ProductRequest productRequest,
                                          List<MultipartFile> multipartFile) throws IOException {
         Account account = accountService.findAccountByAccessToken(accessToken);
-        String thumbNailUrl= uploadService.makeThumbNail(multipartFile.get(0));
+        String thumbNailUrl = uploadService.makeThumbNail(multipartFile.get(0));
         List<String> uploadImagesUrl = uploadService.uploadImages(multipartFile);
-        Product product = productRequest.toProduct(account, uploadImagesUrl,thumbNailUrl);
+        Product product = productRequest.toProduct(account, uploadImagesUrl, thumbNailUrl);
         productRepository.save(product);
-        return ProductResponse.toProductResponse(product,account);
+        return ProductResponse.toProductResponse(product, account);
     }
 
     @Cacheable(value = "product")
@@ -72,16 +72,16 @@ public class ProductServiceImpl {
     }
 
     public void addViewCntToRedis(Long productId) {
-        String key = "productViewCnt::"+productId;
+        String key = "productViewCnt::" + productId;
         ValueOperations valueOperations = redisTemplate.opsForValue();
-        if(valueOperations.get(key)==null)
+        if (valueOperations.get(key) == null)
             valueOperations.set(
                     key,
                     String.valueOf(productRepository.findProductViewCnt(productId)),
                     Duration.ofMinutes(5));
         else
             valueOperations.increment(key);
-        log.info("value:{}",valueOperations.get(key));
+        log.info("value:{}", valueOperations.get(key));
     }
 
     @Scheduled(cron = "0 0/1 * * * ?")
@@ -92,9 +92,9 @@ public class ProductServiceImpl {
             String data = it.next();
             Long productId = Long.parseLong(data.split("::")[1]);
             Long viewCnt = Long.parseLong((String) redisTemplate.opsForValue().get(data));
-            productRepository.addViewCntFromRedis(productId,viewCnt);
+            productRepository.addViewCntFromRedis(productId, viewCnt);
             redisTemplate.delete(data);
-            redisTemplate.delete("product::"+productId);
+            redisTemplate.delete("product::" + productId);
         }
     }
 
@@ -123,7 +123,7 @@ public class ProductServiceImpl {
         Account accountById = accountService.findAccountById(productById.getAccount().getAccountId());
         Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountById, updateFileImageUrlList);
         productRepository.save(toProductUpdate);
-        return ProductResponse.toProductResponse(toProductUpdate,accountById);
+        return ProductResponse.toProductResponse(toProductUpdate, accountById);
     }
 
     public void deleteProductById(Long productId, String accessToken) {
@@ -131,7 +131,7 @@ public class ProductServiceImpl {
         if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
             throw new UnAuthorizedTokenException();
         }
-        uploadService.delete(productById.getUrlList(),productById.getThumbNailUrl());
+        uploadService.delete(productById.getUrlList(), productById.getThumbNailUrl());
         productRepository.deleteById(productId);
     }
 
@@ -139,19 +139,24 @@ public class ProductServiceImpl {
         if (file.isEmpty())
             throw new InvaildUploadException();
     }
-    public void validateUploadForm(BindingResult bindingResult){
-        if(bindingResult.getErrorCount()>=3) throw new InvaildFormException();
-        if(bindingResult.hasErrors()){
+
+    public void validateUploadForm(BindingResult bindingResult) {
+        if (bindingResult.getErrorCount() >= 3) throw new InvaildFormException();
+        if (bindingResult.hasErrors()) {
             bindingResult.getAllErrors().forEach(objectError -> {
-                String errorCode=objectError.getDefaultMessage();
-                switch (Objects.requireNonNull(errorCode)){
-                    case "3010" :  throw new InvaildProductTitleException();
-                    case "3020" :
-                    case "3021" :
+                String errorCode = objectError.getDefaultMessage();
+                switch (Objects.requireNonNull(errorCode)) {
+                    case "3010":
+                        throw new InvaildProductTitleException();
+                    case "3020":
+                    case "3021":
                         throw new InvaildProductPriceException();
-                    case "3030" :  throw new InvaildProductDetailException();
-                    case "3040" :  throw new InvaildProductCategoryException();
-                    case "3050" :  throw new InvaildProductStatusException();
+                    case "3030":
+                        throw new InvaildProductDetailException();
+                    case "3040":
+                        throw new InvaildProductCategoryException();
+                    case "3050":
+                        throw new InvaildProductStatusException();
                 }
             });
         }

@@ -1,7 +1,5 @@
 package com.ireland.ager.review.repository;
 
-import com.ireland.ager.product.dto.response.ProductThumbResponse;
-import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.review.dto.response.ReviewResponse;
 import com.ireland.ager.review.entity.Review;
 import com.querydsl.core.types.Order;
@@ -23,15 +21,16 @@ import static com.ireland.ager.review.entity.QReview.review;
 
 @Repository
 @RequiredArgsConstructor
-public class ReviewRepositoryImpl implements ReviewRepositoryCustom{
+public class ReviewRepositoryImpl implements ReviewRepositoryCustom {
     private final JPAQueryFactory queryFactory;
+
     @Override
     public Slice<ReviewResponse> findReviewsByAccountId(Long accountId, Pageable pageable) {
         JPAQuery<Review> reviewQuery = queryFactory
                 .selectFrom(review)
                 .where(review.sellerId.accountId.eq(accountId))
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize() + 1); //limit보다 한 개 더 들고온다.
+                .limit(pageable.getPageSize() + 1);
         for (Sort.Order o : pageable.getSort()) {
             PathBuilder pathBuilder = new PathBuilder(review.getType(), review.getMetadata());
             reviewQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));

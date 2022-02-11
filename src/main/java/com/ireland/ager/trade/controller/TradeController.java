@@ -20,6 +20,7 @@ public class TradeController {
     private final AuthServiceImpl authService;
 
     private final ResponseService responseService;
+
     @PostMapping("/{roomId}")
     public ResponseEntity<CommonResult> setStatus(
             /**

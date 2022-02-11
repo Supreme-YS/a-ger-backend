@@ -58,7 +58,7 @@ public class Product extends BaseEntity implements Serializable {
     }
 
     public void deleteUrl() {
-        for(Iterator<Url> it = this.getUrlList().iterator() ; it.hasNext() ; ) {
+        for (Iterator<Url> it = this.getUrlList().iterator(); it.hasNext(); ) {
             Url url = it.next();
             url.setProductId(null);
             it.remove();

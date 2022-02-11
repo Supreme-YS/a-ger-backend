@@ -8,7 +8,7 @@ public enum ProductStatus {
     RESERVATION("예약중"),
     COMPLETE("판매완료");
 
-    private String description;
+    private final String description;
 
     ProductStatus(String description) {
         this.description = description;

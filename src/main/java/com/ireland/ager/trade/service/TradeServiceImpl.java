@@ -34,7 +34,7 @@ public class TradeServiceImpl {
             throw new UnAuthorizedAccessException();
         }
         product.setStatus(ProductStatus.valueOf(updateStatus));
-        if(product.getStatus().equals(ProductStatus.COMPLETE)){
+        if (product.getStatus().equals(ProductStatus.COMPLETE)) {
             messageRoom.setReviewStatus(ReviewStatus.SALE);
             messageRoomRepository.save(messageRoom);
         }

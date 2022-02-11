@@ -24,7 +24,7 @@ public class ProductResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     String thumbNailUrl;
-    boolean isOwner= true;
+    boolean isOwner = true;
     List<Url> urlList;
 
     public static ProductResponse toProductResponse(Product product, Account account) {
