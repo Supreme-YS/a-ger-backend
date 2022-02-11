@@ -8,8 +8,7 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 @Builder
 @EqualsAndHashCode(of = "tradeId", callSuper = false)
 @NoArgsConstructor
@@ -29,7 +28,7 @@ public class Trade {
     @JoinColumn(name = "buyer_id")
     private Account buyerId;
 
-    public static Trade toTrade(Product product,Account buyerId) {
+    public static Trade toTrade(Product product, Account buyerId) {
         return Trade.builder()
                 .product(product)
                 .buyerId(buyerId)
