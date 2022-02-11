@@ -32,6 +32,15 @@ public class InfoController {
         return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findSellsByAccountId(accountId, pageable)), HttpStatus.CREATED);
     }
 
+    @GetMapping("/buys")
+    public ResponseEntity<SliceResult<ProductThumbResponse>> findBuysByAccountId(
+            @RequestHeader("Authorization") String accessToken
+            , @PathVariable Long accountId
+            , Pageable pageable) {
+        String[] splitToken = accessToken.split(" ");
+        return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findBuysByACcountId(accountId, pageable)), HttpStatus.CREATED);
+    }
+
     @GetMapping("/reviews")
     public ResponseEntity<SliceResult<ReviewResponse>> findReviewsByAccountId(
             @RequestHeader("Authorization") String accessToken

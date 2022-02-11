@@ -10,6 +10,8 @@ import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.ProductStatus;
 import com.ireland.ager.product.repository.ProductRepository;
+import com.ireland.ager.trade.entity.Trade;
+import com.ireland.ager.trade.repository.TradeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ public class TradeServiceImpl {
     private final ProductRepository productRepository;
     private final AccountServiceImpl accountService;
     private final MessageRoomRepository messageRoomRepository;
+    private final TradeRepository tradeRepository;
 
     public void isUpdated(Long roomId,
                           String accessToken,
@@ -38,6 +41,9 @@ public class TradeServiceImpl {
             messageRoom.setReviewStatus(ReviewStatus.SALE);
             messageRoomRepository.save(messageRoom);
         }
-        productRepository.save(product);
+        tradeRepository.save(
+                Trade.toTrade(
+                        productRepository.save(product)
+                        , messageRoom.getBuyerId()));
     }
 }

@@ -6,6 +6,7 @@ import com.ireland.ager.product.dto.response.ProductThumbResponse;
 import com.ireland.ager.product.repository.ProductRepository;
 import com.ireland.ager.review.dto.response.ReviewResponse;
 import com.ireland.ager.review.repository.ReviewRepository;
+import com.ireland.ager.trade.repository.TradeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -21,15 +22,23 @@ public class AccountInfoServiceImpl {
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final BoardRepository boardRepository;
+    private final TradeRepository tradeRepository;
+
     public Slice<ProductThumbResponse> findSellsByAccountId(Long accountId, Pageable pageable) {
-        return productRepository.findSellProductsByAccountId(accountId,pageable);
+        return productRepository.findSellProductsByAccountId(accountId, pageable);
+    }
+
+    public Slice<ProductThumbResponse> findBuysByACcountId(Long accountId, Pageable pageable) {
+        return tradeRepository.findBuyProductsByAccountId(accountId, pageable);
     }
 
     public Slice<ReviewResponse> findReviewsByAccountId(Long accountId, Pageable pageable) {
-        return reviewRepository.findReviewsByAccountId(accountId,pageable);
+        return reviewRepository.findReviewsByAccountId(accountId, pageable);
     }
 
     public Slice<BoardSummaryResponse> findBoardsByAccountId(Long accountId, Pageable pageable) {
-        return boardRepository.findBoardsByAccountId(accountId,pageable);
+        return boardRepository.findBoardsByAccountId(accountId, pageable);
     }
+
+
 }
