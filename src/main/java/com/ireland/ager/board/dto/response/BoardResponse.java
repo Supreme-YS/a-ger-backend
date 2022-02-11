@@ -34,26 +34,4 @@ public class BoardResponse {
                 .isOwner(board.getAccountId().equals(account))
                 .build();
     }
-
-    public static BoardResponse toOtherBoard(Board board) {
-        return BoardResponse.builder()
-                .boardId(board.getBoardId())
-                .title(board.getTitle())
-                .content(board.getContent())
-                .boardViewCnt(board.getBoardViewCnt())
-                .urlList(board.getUrlList())
-                .createAt(board.getCreatedAt())
-                .updateAt(board.getUpdatedAt())
-                .isOwner(false)
-                .build();
-    }
-
-    public static List<BoardResponse> toBoardListResponse(List<Board> boardList) {
-        List<BoardResponse> boardResponseList = new ArrayList<>();
-        for (Board board : boardList) {
-            BoardResponse boardResponse = BoardResponse.toBoardResponse(board, board.getAccountId());
-            boardResponseList.add(boardResponse);
-        }
-        return boardResponseList;
-    }
 }
