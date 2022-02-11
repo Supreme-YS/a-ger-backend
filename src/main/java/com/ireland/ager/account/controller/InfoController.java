@@ -38,7 +38,7 @@ public class InfoController {
             , @PathVariable Long accountId
             , Pageable pageable) {
         String[] splitToken = accessToken.split(" ");
-        return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findBuysByACcountId(accountId, pageable)), HttpStatus.CREATED);
+        return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findBuysByACcountId(splitToken[1],accountId, pageable)), HttpStatus.CREATED);
     }
 
     @GetMapping("/reviews")

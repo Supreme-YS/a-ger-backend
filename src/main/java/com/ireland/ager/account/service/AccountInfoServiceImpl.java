@@ -1,5 +1,7 @@
 package com.ireland.ager.account.service;
 
+import com.ireland.ager.account.entity.Account;
+import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.product.dto.response.ProductThumbResponse;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class AccountInfoServiceImpl {
+    private final AccountServiceImpl accountService;
     private final ProductRepository productRepository;
     private final ReviewRepository reviewRepository;
     private final BoardRepository boardRepository;
@@ -28,7 +31,11 @@ public class AccountInfoServiceImpl {
         return productRepository.findSellProductsByAccountId(accountId, pageable);
     }
 
-    public Slice<ProductThumbResponse> findBuysByACcountId(Long accountId, Pageable pageable) {
+    public Slice<ProductThumbResponse> findBuysByACcountId(String accessToken, Long accountId, Pageable pageable) {
+        Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
+        if(!accountByAccessToken.getAccountId().equals(accountId)) {
+            throw new UnAuthorizedAccessException();
+        }
         return tradeRepository.findBuyProductsByAccountId(accountId, pageable);
     }
 
