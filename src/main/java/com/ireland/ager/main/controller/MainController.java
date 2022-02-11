@@ -2,6 +2,7 @@ package com.ireland.ager.main.controller;
 
 import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.service.BoardServiceImpl;
+import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.SliceResult;
 import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.main.service.RedisService;
@@ -33,6 +34,7 @@ public class MainController {
             ,@RequestParam(value = "category",required = false)Category category
             ,@RequestParam(value = "keyword",required = false) String keyword
             ,Pageable pageable) {
+        log.info("productkeyword:{}",keyword);
         String[] splitToken = accessToken.split(" ");
         redisService.postKeyword(splitToken[1],keyword);
         return new ResponseEntity<>(responseService.getSliceResult(

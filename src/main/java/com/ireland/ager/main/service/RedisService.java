@@ -25,7 +25,6 @@ public class RedisService {
         return listOperations.range(key, 0, listOperations.size(key));
     }
     public void postKeyword(String accessToken,String keyword) {
-        log.info("keyword:{}",keyword);
         if(keyword==null) return;
         Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
         String key = "search::"+accountByAccessToken.getAccountId();
