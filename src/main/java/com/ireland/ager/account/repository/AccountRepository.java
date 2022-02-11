@@ -14,7 +14,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Optional<Account> findAccountByAccountEmail(String accountEmail);
 
-    @EntityGraph("Account.withProductAndUrl")
-    Optional<Account> findAccountWithProductByAccountId(Long accountId);
 
 }

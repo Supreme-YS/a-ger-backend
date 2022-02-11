@@ -10,8 +10,8 @@ import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.entity.BoardUrl;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.main.exception.NotFoundException;
+import com.ireland.ager.main.service.UploadServiceImpl;
 import com.ireland.ager.product.exception.InvaildUploadException;
-import com.ireland.ager.product.service.UploadServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -65,15 +65,7 @@ public class BoardServiceImpl {
         validateFileExists(multipartFile);
         List<BoardUrl> currentFileImageUrlList = board.getUrlList();
         uploadService.deleteBoard(currentFileImageUrlList);
-
-        for (Iterator<BoardUrl> it = board.getUrlList().iterator(); it.hasNext(); ) {
-            BoardUrl url = it.next();
-            url.setBoard(null);
-            it.remove();
-        }
-        for (BoardUrl url : board.getUrlList()) {
-            url.setBoard(null);
-        }
+        board.deleteUrl();
         List<String> updateFileImageUrlList = new ArrayList<>();
         try {
             updateFileImageUrlList = uploadService.uploadImages(multipartFile);
@@ -117,7 +109,7 @@ public class BoardServiceImpl {
     }
 
     //hint 스케줄러로 쌓인 조회수 캐시들 제거 3분마다 실행
-    @Scheduled(cron = "0 0/3 * * * ?")
+    @Scheduled(cron = "0 0/1 * * * ?")
     public void deleteViewCntCacheFromRedis() {
         Set<String> redisKeys = redisTemplate.keys("boardViewCnt*");
         Iterator<String> it = redisKeys.iterator();

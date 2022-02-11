@@ -1,5 +1,6 @@
 package com.ireland.ager.product.dto.response;
 
+import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.entity.Product;
 import com.ireland.ager.product.entity.ProductStatus;
@@ -26,9 +27,10 @@ public class ProductResponse {
     LocalDateTime createdAt;
     LocalDateTime updatedAt;
     String thumbNailUrl;
+    boolean isOwner= true;
     List<Url> urlList;
 
-    public static ProductResponse toProductResponse(Product product) {
+    public static ProductResponse toProductResponse(Product product, Account account) {
         return ProductResponse.builder()
                 .productId(product.getProductId())
                 .productName(product.getProductName())
@@ -40,17 +42,8 @@ public class ProductResponse {
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .thumbNailUrl(product.getThumbNailUrl())
+                .isOwner(product.getAccount().equals(account))
                 .urlList(product.getUrlList())
                 .build();
-    }
-
-
-    public static List<ProductResponse> toProductListResponse(List<Product> productList) {
-        List<ProductResponse> productResponseList = new ArrayList<>();
-        for (Product product : productList) {
-            ProductResponse productResponse = ProductResponse.toProductResponse(product);
-            productResponseList.add(productResponse);
-        }
-        return productResponseList;
     }
 }

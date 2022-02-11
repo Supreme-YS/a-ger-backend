@@ -1,19 +1,21 @@
 package com.ireland.ager.account.service;
 
 import com.ireland.ager.account.dto.request.AccountUpdateRequest;
-import com.ireland.ager.account.dto.response.AccountAllResponse;
-import com.ireland.ager.account.dto.response.AccountResponse;
+import com.ireland.ager.account.dto.response.MyAccountResponse;
 import com.ireland.ager.account.dto.response.OtherAccountResponse;
 import com.ireland.ager.account.entity.Account;
+import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.account.repository.AccountRepository;
 import com.ireland.ager.main.exception.NotFoundException;
-import com.ireland.ager.account.exception.UnAuthorizedAccessException;
+import com.ireland.ager.main.service.UploadServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @Service
 @Slf4j
@@ -22,7 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountServiceImpl {
     private final AccountRepository accountRepository;
     private final RedisTemplate redisTemplate;
-    // REMARK 카카오 이메일이 디비에 있는지 확인하는 로직만 에러 처리 안하도록 한다.
+    private final UploadServiceImpl uploadService;
+
     public Account findAccountByAccountEmail(String accountEmail) {
         return accountRepository.findAccountByAccountEmail(accountEmail).orElse(null);
     }
@@ -34,32 +37,35 @@ public class AccountServiceImpl {
     public Account findAccountByAccessToken(String accessToken) {
         return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }
-    //TODO redis cache 적용
-    public Account findAccountWithProductById(Long accountId) {
-        return accountRepository.findAccountWithProductByAccountId(accountId).orElseThrow(NotFoundException::new);
-    }
-    public AccountAllResponse findMyAccountByAccessToken(String accessToken) {
-        return AccountAllResponse.toAccountAllResponse(findAccountByAccessToken(accessToken));
+
+    public MyAccountResponse findMyAccountByAccessToken(String accessToken) {
+        return MyAccountResponse.toAccountResponse(findAccountByAccessToken(accessToken));
     }
 
     public OtherAccountResponse findOtherAccountByAccountId(Long accountId) {
-        return OtherAccountResponse.toOtherAccountResponse(findAccountWithProductById(accountId));
-    }
-    public AccountResponse insertAccount(Account newAccount) {
-        accountRepository.save(newAccount);
-        return AccountResponse.toAccountResponse(newAccount);
+        return OtherAccountResponse.toOtherAccountResponse(findAccountById(accountId));
     }
 
-    public AccountAllResponse updateAccount(String accessToken, Long accountId,
-                                            AccountUpdateRequest accountUpdateRequest) {
+    public MyAccountResponse insertAccount(Account newAccount) {
+        accountRepository.save(newAccount);
+        return MyAccountResponse.toAccountResponse(newAccount);
+    }
+
+    public MyAccountResponse updateAccount(String accessToken, Long accountId,
+                                           AccountUpdateRequest accountUpdateRequest,
+                                           MultipartFile multipartFile) throws IOException {
         Account optionalUpdateAccount = findAccountByAccessToken(accessToken);
         if (!(optionalUpdateAccount.getAccountId().equals(accountId))) {
-            // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 에러 처리
             throw new UnAuthorizedAccessException();
         }
         Account updatedAccount = accountUpdateRequest.toAccount(optionalUpdateAccount);
+
+        if (!(multipartFile.isEmpty())) {
+            String uploadImg = uploadService.uploadImg(multipartFile);
+            updatedAccount.setProfileImageUrl(uploadImg);
+        }
         accountRepository.save(updatedAccount);
-        return AccountAllResponse.toAccountAllResponse(updatedAccount);
+        return MyAccountResponse.toAccountResponse(updatedAccount);
     }
 
     public void deleteAccount(String accessToken, Long accountId) {
@@ -69,10 +75,9 @@ public class AccountServiceImpl {
             throw new UnAuthorizedAccessException();
         }
         //HINT: redis 최근 검색어도 함께 추가
-        String key="search::"+accountId;
+        String key = "search::" + accountId;
         redisTemplate.delete(key);
         accountRepository.deleteById(accountId);
     }
-
 }
 

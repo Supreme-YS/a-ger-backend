@@ -1,32 +1,21 @@
 package com.ireland.ager.review.dto.response;
 
 
-import com.ireland.ager.account.dto.response.AccountResponse;
-import com.ireland.ager.account.entity.Account;
-import com.ireland.ager.chat.entity.MessageRoom;
-import com.ireland.ager.product.dto.response.ProductResponse;
-import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.review.dto.request.ReviewRequest;
 import com.ireland.ager.review.entity.Review;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Builder
 public class ReviewResponse {
-    String buyerName;
     Long buyerId;
+    String buyerName;
     String comment;
-    String sellerNickname;
     Long sellerId;
+    String sellerNickname;
     int stars;
     LocalDateTime createdAt;
     public static ReviewResponse toReviewResponse(Review review) {

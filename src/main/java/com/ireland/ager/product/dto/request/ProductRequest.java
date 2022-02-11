@@ -17,7 +17,7 @@ public class ProductRequest {
     @NotBlank(message = "3010")
     String productName;
     @NotBlank(message = "3020")
-    @Min(value = 0,message="3021")
+    @Min(value = 0, message = "3021")
     String productPrice;
     @NotBlank(message = "3030")
     String productDetail;
@@ -25,14 +25,13 @@ public class ProductRequest {
     String category;
 
     public Product toProduct(Account account,
-                             List<String> uploadImageUrl,String thumbNailUrl) {
+                             List<String> uploadImageUrl, String thumbNailUrl) {
         Product product = new Product();
         for (String str : uploadImageUrl) {
-            Url url =new Url();
+            Url url = new Url();
             url.setUrl(str);
             product.addUrl(url);
         }
-        //FIXME Optional Account 반환 문제 해결해야한다.
         product.addAccount(account);
         product.setProductDetail(this.productDetail);
         product.setProductPrice(productPrice);

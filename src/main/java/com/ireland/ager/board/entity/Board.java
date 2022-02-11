@@ -3,11 +3,13 @@ package com.ireland.ager.board.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
+import com.ireland.ager.product.entity.Url;
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Entity
@@ -44,15 +46,17 @@ public class Board extends BaseEntity implements Serializable {
 
     public void addAccount(Account account) {
         this.accountId = account;
-        this.accountId.getBoards().add(this);
     }
 
     public void addUrl(BoardUrl url) {
         this.getUrlList().add(url);
         url.setBoard(this);
     }
-
-    public void addViewCnt(Board addBoard) {
-        this.setBoardViewCnt(addBoard.getBoardViewCnt() + 1);
+    public void deleteUrl() {
+        for(Iterator<BoardUrl> it = this.getUrlList().iterator(); it.hasNext() ; ) {
+            BoardUrl url = it.next();
+            url.setBoard(null);
+            it.remove();
+        }
     }
 }

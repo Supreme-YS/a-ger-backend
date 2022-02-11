@@ -2,6 +2,8 @@ package com.ireland.ager.board.repository;
 
 import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.entity.Board;
+import com.ireland.ager.product.dto.response.ProductThumbResponse;
+import com.ireland.ager.product.entity.Product;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -39,6 +41,35 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
             boardJPAQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));
         }
         List<Board> fetch = boardJPAQuery.fetch();
+        List<BoardSummaryResponse> content = new ArrayList<>();
+        for (Board board : fetch) {
+            Long countComment = queryFactory
+                    .selectFrom(comment)
+                    .where(comment.boardId.boardId.eq(board.getBoardId()))
+                    .fetchCount();
+            content.add(BoardSummaryResponse.toBoardSummaryResponse(board, countComment));
+        }
+        boolean hasNext = false;
+        //마지막 페이지는 사이즈가 항상 작다.
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    @Override
+    public Slice<BoardSummaryResponse> findBoardsByAccountId(Long accountId, Pageable pageable) {
+        JPAQuery<Board> boardQuery = queryFactory
+                .selectFrom(board)
+                .where(board.accountId.accountId.eq(accountId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1); //limit보다 한 개 더 들고온다.
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(board.getType(), board.getMetadata());
+            boardQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));
+        }
+        List<Board> fetch = boardQuery.fetch();
         List<BoardSummaryResponse> content = new ArrayList<>();
         for (Board board : fetch) {
             Long countComment = queryFactory
