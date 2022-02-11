@@ -22,17 +22,17 @@ public enum CommonResponse {
     NOTFOUND(-2000, "존재 하지 않는 데이터입니다."),
     INVALIDUPLOAD(-2100, "사진 파일이 없습니다."),
 
-    InvaildProductTitle(-3010, "상품 제목을 입력해주세요"),
-    InvaildProductPrice(-3020, "상품 가격을 확인해주세요.(공백X,판매가격 0원 이상)"),
-    InvaildProductDetail(-3030, "상품 설명을 입력해주세요"),
-    InvaildProductCategory(-3040, "카테고리값이 없습니다."),
-    InvaildProductStatus(-3050, "상품 상태값이 없습니다."),
-    InvaildForm(-3060, "입력값이 하나도 없습니다."),
+    INVALIDPRODUCTTITLE(-3010, "상품 제목을 입력해주세요"),
+    INVALIDPRODUCTPRICE(-3020, "상품 가격을 확인해주세요.(공백X,판매가격 0원 이상)"),
+    INVALIDPRODUCTDETAIL(-3030, "상품 설명을 입력해주세요"),
+    INVALIDPRODUCTCATEGORY(-3040, "카테고리값이 없습니다."),
+    INVALIDPRODUCTSTATUS(-3050, "상품 상태값이 없습니다."),
+    INVALIDFORM(-3060, "입력값이 하나도 없습니다."),
     INVALIDDATA(-3100, "입력 값이 잘못되었습니다."),
     INVALIDFILEEXTENSION(-3200, "확장자가 잘못되었습니다."),
     INVALIDBOARDTITLE(-3110,"게시글 제목이 없습니다."),
     INVALIDBOARDDETAIL(-3130,"내용이 없습니다."),
-    DuplicateReview(-4000, "이미 리뷰를 작성하셨습니다.");
+    DUPLICATEREVIEW(-4000, "이미 리뷰를 작성하셨습니다.");
 
     private final int code;
     private final String msg;

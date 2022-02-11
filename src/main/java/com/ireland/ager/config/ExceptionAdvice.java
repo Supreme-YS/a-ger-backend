@@ -87,43 +87,43 @@ public class ExceptionAdvice {
 
     @ExceptionHandler(InvaildFormException.class)
     public ResponseEntity<CommonResult> invaildFormException(InvaildFormException e) {
-        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildForm);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDFORM);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvaildProductTitleException.class)
     public ResponseEntity<CommonResult> invaildProductTitleException(InvaildProductTitleException e) {
-        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductTitle);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDPRODUCTTITLE);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvaildProductPriceException.class)
     public ResponseEntity<CommonResult> invaildProductPriceException(InvaildProductPriceException e) {
-        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductPrice);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDPRODUCTPRICE);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvaildProductDetailException.class)
     public ResponseEntity<CommonResult> invaildProductDetailException(InvaildProductDetailException e) {
-        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductDetail);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDPRODUCTDETAIL);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvaildProductCategoryException.class)
     public ResponseEntity<CommonResult> InvaildProductCategoryException(InvaildProductCategoryException e) {
-        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductCategory);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDPRODUCTCATEGORY);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvaildProductStatusException.class)
     public ResponseEntity<CommonResult> InvaildProductStatusException(InvaildProductStatusException e) {
-        CommonResult commonResult = responseService.getFailResult(CommonResponse.InvaildProductStatus);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.INVALIDPRODUCTSTATUS);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(DuplicateReviewException.class)
     public ResponseEntity<CommonResult> DuplicateReviewException(DuplicateReviewException e) {
-        CommonResult commonResult = responseService.getFailResult(CommonResponse.DuplicateReview);
+        CommonResult commonResult = responseService.getFailResult(CommonResponse.DUPLICATEREVIEW);
         return new ResponseEntity<>(commonResult, HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(InvalidBoardTitleException.class)
