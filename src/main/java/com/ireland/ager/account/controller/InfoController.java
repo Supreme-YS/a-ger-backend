@@ -30,8 +30,6 @@ import java.io.IOException;
 @RequestMapping("/api/account/{accountId}")
 @CrossOrigin(value = {"*"}, maxAge = 6000)
 public class InfoController {
-    private final AccountServiceImpl accountService;
-    private final AuthServiceImpl authService;
     private final ResponseService responseService;
     private final AccountInfoServiceImpl accountInfoService;
 
@@ -43,5 +41,15 @@ public class InfoController {
             ) {
         String[] splitToken = accessToken.split(" ");
         return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findSellsByAccountId(accountId,pageable)) , HttpStatus.CREATED);
+    }
+
+    @GetMapping("/reviews")
+    public ResponseEntity<SliceResult<ReviewResponse>> findReviewsByAccountId(
+            @RequestHeader("Authorization") String accessToken
+            , @PathVariable Long accountId
+            , Pageable pageable
+    ) {
+        String[] splitToken = accessToken.split(" ");
+        return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findReviewsByAccountId(accountId,pageable)) , HttpStatus.CREATED);
     }
 }
