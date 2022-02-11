@@ -6,6 +6,7 @@ import com.ireland.ager.account.dto.response.OtherAccountResponse;
 import com.ireland.ager.account.service.AccountInfoServiceImpl;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
+import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.main.common.CommonResult;
 import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.SingleResult;
@@ -51,5 +52,15 @@ public class InfoController {
     ) {
         String[] splitToken = accessToken.split(" ");
         return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findReviewsByAccountId(accountId,pageable)) , HttpStatus.CREATED);
+    }
+
+    @GetMapping("/boards")
+    public ResponseEntity<SliceResult<BoardSummaryResponse>> findBoardsByAccountId(
+            @RequestHeader("Authorization") String accessToken
+            , @PathVariable Long accountId
+            , Pageable pageable
+    ) {
+        String[] splitToken = accessToken.split(" ");
+        return new ResponseEntity<>(responseService.getSliceResult(accountInfoService.findBoardsByAccountId(accountId,pageable)) , HttpStatus.CREATED);
     }
 }
