@@ -1,4 +1,4 @@
-package com.ireland.ager.product.service;
+package com.ireland.ager.main.service;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3Client;

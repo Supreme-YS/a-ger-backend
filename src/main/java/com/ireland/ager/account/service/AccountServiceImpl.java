@@ -8,7 +8,7 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.account.repository.AccountRepository;
 import com.ireland.ager.main.exception.NotFoundException;
-import com.ireland.ager.product.service.UploadServiceImpl;
+import com.ireland.ager.main.service.UploadServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
