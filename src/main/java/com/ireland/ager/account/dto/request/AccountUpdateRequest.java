@@ -7,16 +7,12 @@ import lombok.ToString;
 @Data
 @ToString
 public class AccountUpdateRequest {
-
-    String accountEmail;
-    String profileNickname;
-    String userName;
-    String profileImageUrl;
+    //가변값
+    private String profileNickname;
 
     public Account toAccount(Account updateAccount) {
-        updateAccount.setAccountEmail(this.accountEmail);
         updateAccount.setProfileNickname(this.profileNickname);
-        updateAccount.setUserName(this.userName);
+        updateAccount.setProfileImageUrl(this.profileImageUrl);
         return updateAccount;
     }
 }

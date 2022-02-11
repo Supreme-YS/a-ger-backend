@@ -15,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Slf4j
@@ -72,9 +73,10 @@ public class AccountController {
     public ResponseEntity<SingleResult<AccountAllResponse>> updateAccount(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId,
-            @RequestBody AccountUpdateRequest accountUpdateRequest) {
+            @RequestBody AccountUpdateRequest accountUpdateRequest,
+            @RequestPart(value = "file") MultipartFile multipartFile) {
         String[] spitToken = accessToken.split(" ");
-        AccountAllResponse accountAllResponse = accountService.updateAccount(spitToken[1], accountId, accountUpdateRequest);
+        AccountAllResponse accountAllResponse = accountService.updateAccount(spitToken[1], accountId, accountUpdateRequest, multipartFile);
         return new ResponseEntity<>(responseService.getSingleResult(accountAllResponse), HttpStatus.OK);
     }
 

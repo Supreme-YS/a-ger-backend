@@ -5,15 +5,16 @@ import com.ireland.ager.account.dto.response.AccountAllResponse;
 import com.ireland.ager.account.dto.response.AccountResponse;
 import com.ireland.ager.account.dto.response.OtherAccountResponse;
 import com.ireland.ager.account.entity.Account;
+import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.account.repository.AccountRepository;
 import com.ireland.ager.main.exception.NotFoundException;
-import com.ireland.ager.account.exception.UnAuthorizedAccessException;
+import com.ireland.ager.product.service.UploadServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Slf4j
@@ -22,6 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class AccountServiceImpl {
     private final AccountRepository accountRepository;
     private final RedisTemplate redisTemplate;
+
+    private final UploadServiceImpl uploadService;
     // REMARK 카카오 이메일이 디비에 있는지 확인하는 로직만 에러 처리 안하도록 한다.
     public Account findAccountByAccountEmail(String accountEmail) {
         return accountRepository.findAccountByAccountEmail(accountEmail).orElse(null);
@@ -51,13 +54,18 @@ public class AccountServiceImpl {
     }
 
     public AccountAllResponse updateAccount(String accessToken, Long accountId,
-                                            AccountUpdateRequest accountUpdateRequest) {
+                                            AccountUpdateRequest accountUpdateRequest, MultipartFile multipartFile) {
         Account optionalUpdateAccount = findAccountByAccessToken(accessToken);
         if (!(optionalUpdateAccount.getAccountId().equals(accountId))) {
-            // 삭제하고자 하는 사람과 현재 토큰 주인이 다르면 에러 처리
             throw new UnAuthorizedAccessException();
         }
-        Account updatedAccount = accountUpdateRequest.toAccount(optionalUpdateAccount);
+
+        if (!(multipartFile.isEmpty())) {
+            String s = uploadService.updateProfileImg(multipartFile);
+            Account updatedAccount = accountUpdateRequest.toAccount(optionalUpdateAccount);
+        }
+
+
         accountRepository.save(updatedAccount);
         return AccountAllResponse.toAccountAllResponse(updatedAccount);
     }
