@@ -14,6 +14,5 @@ import java.util.Optional;
 public interface MessageRoomRepository extends JpaRepository<MessageRoom, Long>, MessageRoomRepositoryCustom {
     Optional<MessageRoom> findMessageRoomByProductAndBuyerId(Product product,Account buyerId);
 
-    @EntityGraph(attributePaths = {"messages"})
-    Optional<MessageRoom> findMessageRoomWithMessageByRoomId(Long roomId);
+    Optional<MessageRoom> findMessageRoomByRoomId(Long roomId);
 }

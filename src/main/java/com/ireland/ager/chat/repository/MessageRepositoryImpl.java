@@ -18,27 +18,26 @@ import static com.ireland.ager.chat.entity.QMessage.message1;
 
 @Repository
 @RequiredArgsConstructor
-public class MessageRepositoryImpl implements MessageRepositoryCustom{
+public class MessageRepositoryImpl implements MessageRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
     public Slice<Message> findMessagesByMessageRequestOrderByCreatedAtDesc(Long messageRoomId, Pageable pageable) {
-        List<Message> messageList= queryFactory
+        List<Message> messageList = queryFactory
                 .selectFrom(message1)
                 //HINT 같은 룸 아이디만 가지고 온다. 여기서 많은 조회가 발생할거 같다.
                 .where(message1.messageRoom.roomId.eq(messageRoomId))
-                .orderBy(message1.createdAt.desc()) //가장 최근 대화순으로 정렬
+                .orderBy(message1.createdAt.desc())
                 .offset(pageable.getOffset())
-                .limit(pageable.getPageSize()+1) //limit보다 한 개 더 들고온다.
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
 
-        //HINT 여기서 message를 response에 맞게 변환
-        boolean hasNext =false;
+        boolean hasNext = false;
         //마지막 페이지는 사이즈가 항상 작다.
-        if(messageList.size() > pageable.getPageSize()) {
+        if (messageList.size() > pageable.getPageSize()) {
             messageList.remove(pageable.getPageSize());
-            hasNext=true;
+            hasNext = true;
         }
-        return new SliceImpl<>(messageList,pageable,hasNext);
+        return new SliceImpl<>(messageList, pageable, hasNext);
     }
 }
