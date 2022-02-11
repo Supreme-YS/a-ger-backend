@@ -23,15 +23,21 @@ public class MessageRoomController {
     private final AuthServiceImpl authService;
     private final ResponseService responseService;
 
-    /* 방 입장시 지금까지 나눈 정보가 필요하기 때문에 MessageRoom 정보가 필요하다.
-     */
+    @GetMapping
+    public ResponseEntity<SliceResult<MessageSummaryResponse>> searchAllRoomList(
+            @RequestHeader("Authorization") String accessToken
+            , Pageable pageable) {
+        String[] splitToken = accessToken.split(" ");
+        return new ResponseEntity<>(responseService.getSliceResult(
+                messageService.findRoomByAccessToken(splitToken[1], pageable)), HttpStatus.OK);
+    }
+
     @GetMapping("/{roomId}")
     public ResponseEntity<SingleResult<MessageDetailsResponse>> roomEnter(
             @PathVariable Long roomId,
             @RequestHeader("Authorization") String accessToken
     ) {
         String[] splitToken = accessToken.split(" ");
-        //TODO buyer, seller인지 체크하는 로직 필요
         MessageDetailsResponse messageRoom = messageService.roomEnterByAccessToken(splitToken[1], roomId);
         return new ResponseEntity<>(responseService.getSingleResult(messageRoom), HttpStatus.OK);
     }
@@ -44,16 +50,6 @@ public class MessageRoomController {
         String[] splitToken = accessToken.split(" ");
         RoomCreateResponse roomCreateResponse = messageService.insertRoom(productId, splitToken[1]);
         return new ResponseEntity<>(responseService.getSingleResult(roomCreateResponse), HttpStatus.CREATED);
-    }
-
-    //TODO: 내 채팅방 조회 기능. Slice
-    @GetMapping
-    public ResponseEntity<SliceResult<MessageSummaryResponse>> searchAllRoomList(
-            @RequestHeader("Authorization") String accessToken
-            , Pageable pageable) {
-        String[] splitToken = accessToken.split(" ");
-        return new ResponseEntity<>(responseService.getSliceResult(
-                messageService.findRoomByAccessToken(splitToken[1], pageable)), HttpStatus.OK);
     }
 
     @DeleteMapping("/{roomId}")

@@ -42,11 +42,24 @@ public class MessageRoom extends BaseEntity implements Serializable {
     @Enumerated(EnumType.STRING)
     private ReviewStatus reviewStatus=ReviewStatus.NOTSALE;
 
-    private int roomStatus=3;
+    @Enumerated(EnumType.STRING)
+    private RoomStatus roomStatus=RoomStatus.FULL;
+
     public void toCreateMessageRoom(Product product,Account buyerId) {
         this.setBuyerId(buyerId);
         this.setSellerId(product.getAccount());
         this.setProduct(product);
     }
-
+    public void updateRoomStatus(Account account) {
+        if(this.getRoomStatus().equals(RoomStatus.EMPTY)) return;
+        if(this.getRoomStatus().equals(RoomStatus.FULL)) {
+            this.setRoomStatus((this.getSellerId().equals(account)? RoomStatus.SELLEROUT:RoomStatus.BUYEROUT));
+        }
+        else if(this.getRoomStatus().equals(RoomStatus.SELLEROUT) && this.getBuyerId().equals(account)) {
+            this.setRoomStatus(RoomStatus.EMPTY);
+        }
+        else if(this.getRoomStatus().equals(RoomStatus.BUYEROUT) && this.getSellerId().equals(account)) { //buyerout
+            this.setRoomStatus(RoomStatus.EMPTY);
+        }
+    }
 }
