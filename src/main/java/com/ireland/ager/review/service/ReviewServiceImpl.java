@@ -32,11 +32,10 @@ public class ReviewServiceImpl {
     private final AccountRepository accountRepository;
     public ReviewResponse postReview(Long roomId, ReviewRequest reviewRequest, String accessToken) {
         MessageRoom messageRoom=messageRoomRepository.findById(roomId).orElseThrow(NotFoundException::new);
-        Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken); //구매자Account
-        if (!Objects.equals(accountByAccessToken.getAccountId(), messageRoom.getBuyerId().getAccountId())) {
+        Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
+        if (!accountByAccessToken.getAccountId().equals(messageRoom.getBuyerId().getAccountId())) {
             throw new UnAuthorizedAccessException();
         }
-        log.info("상태 확인 :",messageRoom.getReviewStatus());
         if(messageRoom.getReviewStatus().equals(ReviewStatus.SALE)){
             Review review=ReviewRequest.toReview(reviewRequest,messageRoom.getSellerId(),messageRoom.getProduct(),accountByAccessToken);
             messageRoom.setReviewStatus(ReviewStatus.POST);
@@ -48,9 +47,8 @@ public class ReviewServiceImpl {
     }
 
     public List<ReviewResponse> findReviewList(Long accountId) {
-        Optional<Account> account=accountRepository.findById(accountId);
+        Account account=accountRepository.findById(accountId).orElseThrow(NotFoundException::new);
         List<Review> reviewList=reviewRepository.findAllBySellerId(account);
-
         return ReviewResponse.toReviewResponse(reviewList);
     }
 }

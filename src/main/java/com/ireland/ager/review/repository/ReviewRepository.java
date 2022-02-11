@@ -10,5 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface ReviewRepository extends JpaRepository<Review, Long>, ReviewRepositoryCustom {
-    List<Review> findAllBySellerId(Optional<Account> accountId);
+    List<Review> findAllBySellerId(Account accountId);
 }
