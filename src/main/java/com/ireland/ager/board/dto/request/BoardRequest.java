@@ -5,12 +5,16 @@ import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.entity.BoardUrl;
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
 public class BoardRequest {
 
+    @NotBlank(message = "3110")
     String title;
+
+    @NotBlank(message = "3130")
     String content;
 
     public static Board toBoard(BoardRequest boardRequest, Account account, List<String> uploadImgUrl) {

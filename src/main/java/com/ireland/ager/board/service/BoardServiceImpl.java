@@ -8,6 +8,8 @@ import com.ireland.ager.board.dto.response.BoardResponse;
 import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.entity.Board;
 import com.ireland.ager.board.entity.BoardUrl;
+import com.ireland.ager.board.exception.InvalidBoardDetailException;
+import com.ireland.ager.board.exception.InvalidBoardTitleException;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.main.service.UploadServiceImpl;
@@ -21,15 +23,13 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -125,5 +125,19 @@ public class BoardServiceImpl {
     public void validateFileExists(List<MultipartFile> file) {
         if (file.isEmpty())
             throw new InvaildUploadException();
+    }
+
+    public void validateUploadForm(BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            bindingResult.getAllErrors().forEach(objectError -> {
+                String errorCode = objectError.getDefaultMessage();
+                switch (Objects.requireNonNull(errorCode)) {
+                    case "3110":
+                        throw new InvalidBoardTitleException();
+                    case "3130":
+                        throw new InvalidBoardDetailException();
+                }
+            });
+        }
     }
 }
