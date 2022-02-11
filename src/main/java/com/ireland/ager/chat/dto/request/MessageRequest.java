@@ -2,12 +2,14 @@ package com.ireland.ager.chat.dto.request;
 
 import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
 @Data
-@ToString
 @Builder
 //HINT 아래 두개를 추가해주니 오류가 안난다.
 @NoArgsConstructor
