@@ -12,4 +12,6 @@ public interface ProductRepositoryCustom {
     Product addViewCnt(Long productId);
 
     Slice<ProductThumbResponse> findAllProductPageableOrderByCreatedAtDesc(Category category, String keyword, Pageable pageable);
+
+    Slice<ProductThumbResponse> findSellProductsByAccountId(Long accountId, Pageable pageable);
 }

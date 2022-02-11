@@ -17,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.ObjectUtils;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +51,27 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
         JPAQuery<Product> productQuery = queryFactory
                 .selectFrom(product)
                 .where(keywordContains(keyword), categoryEq(category))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1); //limit보다 한 개 더 들고온다.
+        for (Sort.Order o : pageable.getSort()) {
+            PathBuilder pathBuilder = new PathBuilder(product.getType(), product.getMetadata());
+            productQuery.orderBy(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC, pathBuilder.get(o.getProperty())));
+        }
+        List<ProductThumbResponse> content = new ArrayList<>(ProductThumbResponse.toProductListResponse(productQuery.fetch()));
+        boolean hasNext = false;
+        //마지막 페이지는 사이즈가 항상 작다.
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
+
+    @Override
+    public Slice<ProductThumbResponse> findSellProductsByAccountId(Long accountId, Pageable pageable) {
+        JPAQuery<Product> productQuery = queryFactory
+                .selectFrom(product)
+                .where(product.account.accountId.eq(accountId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1); //limit보다 한 개 더 들고온다.
         for (Sort.Order o : pageable.getSort()) {
