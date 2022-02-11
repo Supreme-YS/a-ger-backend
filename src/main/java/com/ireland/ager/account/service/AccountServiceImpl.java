@@ -25,9 +25,8 @@ import java.io.IOException;
 public class AccountServiceImpl {
     private final AccountRepository accountRepository;
     private final RedisTemplate redisTemplate;
-
     private final UploadServiceImpl uploadService;
-    // REMARK 카카오 이메일이 디비에 있는지 확인하는 로직만 에러 처리 안하도록 한다.
+
     public Account findAccountByAccountEmail(String accountEmail) {
         return accountRepository.findAccountByAccountEmail(accountEmail).orElse(null);
     }
@@ -39,10 +38,11 @@ public class AccountServiceImpl {
     public Account findAccountByAccessToken(String accessToken) {
         return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }
-    //TODO redis cache 적용
+
     public Account findAccountWithProductById(Long accountId) {
         return accountRepository.findAccountWithProductByAccountId(accountId).orElseThrow(NotFoundException::new);
     }
+
     public AccountAllResponse findMyAccountByAccessToken(String accessToken) {
         return AccountAllResponse.toAccountAllResponse(findAccountByAccessToken(accessToken));
     }
@@ -50,13 +50,15 @@ public class AccountServiceImpl {
     public OtherAccountResponse findOtherAccountByAccountId(Long accountId) {
         return OtherAccountResponse.toOtherAccountResponse(findAccountWithProductById(accountId));
     }
+
     public AccountResponse insertAccount(Account newAccount) {
         accountRepository.save(newAccount);
         return AccountResponse.toAccountResponse(newAccount);
     }
 
     public AccountAllResponse updateAccount(String accessToken, Long accountId,
-                                            AccountUpdateRequest accountUpdateRequest, MultipartFile multipartFile) throws IOException {
+                                            AccountUpdateRequest accountUpdateRequest,
+                                            MultipartFile multipartFile) throws IOException {
         Account optionalUpdateAccount = findAccountByAccessToken(accessToken);
         if (!(optionalUpdateAccount.getAccountId().equals(accountId))) {
             throw new UnAuthorizedAccessException();
@@ -67,7 +69,6 @@ public class AccountServiceImpl {
             String uploadImg = uploadService.uploadImg(multipartFile);
             updatedAccount.setProfileImageUrl(uploadImg);
         }
-
         accountRepository.save(updatedAccount);
         return AccountAllResponse.toAccountAllResponse(updatedAccount);
     }
@@ -79,10 +80,9 @@ public class AccountServiceImpl {
             throw new UnAuthorizedAccessException();
         }
         //HINT: redis 최근 검색어도 함께 추가
-        String key="search::"+accountId;
+        String key = "search::" + accountId;
         redisTemplate.delete(key);
         accountRepository.deleteById(accountId);
     }
-
 }
 

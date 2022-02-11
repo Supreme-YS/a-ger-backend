@@ -80,7 +80,7 @@ public class UploadServiceImpl {
         String origName = multipartFile.getOriginalFilename();
         final String ext = origName.substring(origName.lastIndexOf('.'));
         if (ext.equals(".jpg") || ext.equals(".png") || ext.equals(".jpeg")) {
-            final String saveFileName = "profileImg_" + getUuid() + ext;
+            final String saveFileName = getUuid() + ext;
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
             return uploadImgToS3(image, saveFileName, ext);
         } else throw new InvaildFileExtensionException();
@@ -113,7 +113,7 @@ public class UploadServiceImpl {
         String origName = multipartFile.getOriginalFilename();
         final String ext = origName.substring(origName.lastIndexOf('.'));
         if (ext.equals(".jpg") || ext.equals(".png") || ext.equals(".jpeg")) {
-            final String saveFileName = "Thumbnail_" + getUuid() + ext;
+            final String saveFileName = getUuid() + ext;
             BufferedImage image = ImageIO.read(multipartFile.getInputStream());
             double getWidth = image.getWidth();
             double getHeight = image.getHeight();

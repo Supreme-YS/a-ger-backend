@@ -75,7 +75,7 @@ public class AccountController {
     public ResponseEntity<SingleResult<AccountAllResponse>> updateAccount(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId,
-            @RequestBody AccountUpdateRequest accountUpdateRequest,
+            @RequestPart(value = "update") AccountUpdateRequest accountUpdateRequest,
             @RequestPart(value = "file") MultipartFile multipartFile) throws IOException {
         String[] spitToken = accessToken.split(" ");
         AccountAllResponse accountAllResponse = accountService.updateAccount(spitToken[1], accountId, accountUpdateRequest, multipartFile);
