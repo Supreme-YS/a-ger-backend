@@ -1,16 +1,14 @@
 package com.ireland.ager.account.entity;
 
-import com.ireland.ager.board.entity.Board;
-import com.ireland.ager.board.entity.Comment;
 import com.ireland.ager.config.BaseEntity;
-import com.ireland.ager.product.entity.Product;
-import com.ireland.ager.review.entity.Review;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.*;
 
 @Entity
 @Getter

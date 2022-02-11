@@ -4,7 +4,6 @@ import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.repository.BoardRepository;
 import com.ireland.ager.product.dto.response.ProductThumbResponse;
 import com.ireland.ager.product.repository.ProductRepository;
-import com.ireland.ager.product.service.ProductServiceImpl;
 import com.ireland.ager.review.dto.response.ReviewResponse;
 import com.ireland.ager.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @Slf4j

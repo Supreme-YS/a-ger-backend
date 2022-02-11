@@ -8,7 +8,8 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Data
+@Getter
+@Setter
 @Builder
 @EqualsAndHashCode(of = "tradeId", callSuper = false)
 @NoArgsConstructor

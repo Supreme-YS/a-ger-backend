@@ -1,10 +1,8 @@
 package com.ireland.ager.account.controller;
 
-
 import com.ireland.ager.account.dto.request.AccountUpdateRequest;
 import com.ireland.ager.account.dto.response.MyAccountResponse;
 import com.ireland.ager.account.dto.response.OtherAccountResponse;
-import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.service.AccountServiceImpl;
 import com.ireland.ager.account.service.AuthServiceImpl;
 import com.ireland.ager.main.common.CommonResult;
