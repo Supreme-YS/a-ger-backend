@@ -2,10 +2,10 @@ package com.ireland.ager.main.controller;
 
 import com.ireland.ager.board.dto.response.BoardSummaryResponse;
 import com.ireland.ager.board.service.BoardServiceImpl;
+import com.ireland.ager.main.common.ListResult;
 import com.ireland.ager.main.common.SliceResult;
 import com.ireland.ager.main.common.service.ResponseService;
 import com.ireland.ager.main.service.RedisService;
-import com.ireland.ager.product.dto.response.ProductResponse;
 import com.ireland.ager.product.dto.response.ProductThumbResponse;
 import com.ireland.ager.product.entity.Category;
 import com.ireland.ager.product.service.ProductServiceImpl;
