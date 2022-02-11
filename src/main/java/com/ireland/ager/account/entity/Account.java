@@ -37,6 +37,7 @@ public class Account extends BaseEntity implements Serializable {
     String profileImageUrl;
     String accessToken;
     String refreshToken;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     Set<Product> products = new HashSet<>();
 
