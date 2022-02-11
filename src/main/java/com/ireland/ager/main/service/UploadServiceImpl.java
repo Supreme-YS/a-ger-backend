@@ -61,11 +61,18 @@ public class UploadServiceImpl {
 
     public List<String> uploadImages(List<MultipartFile> uploadFiles) throws IOException {
         log.info("업로드 파일의 갯수 : {}", uploadFiles.size());
+
         List<String> uploadUrl = new ArrayList<>();
-        for (MultipartFile uploadFile : uploadFiles) {
-            uploadUrl.add(uploadImg(uploadFile));
+
+        if (!(uploadFiles.size() == 1)) {
+            for (MultipartFile uploadFile : uploadFiles) {
+                uploadUrl.add(uploadImg(uploadFile));
+            }
+            return uploadUrl;
         }
-        return uploadUrl;
+        else {
+            return uploadUrl;
+        }
     }
 
     public String uploadImg(MultipartFile multipartFile) throws IOException {

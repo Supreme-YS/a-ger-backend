@@ -45,8 +45,8 @@ public class BoardController {
 
     @PostMapping
     public ResponseEntity<SingleResult<BoardResponse>> createPost(@RequestHeader("Authorization") String accessToken,
-                                                                  @RequestPart(value = "board") @Valid BoardRequest boardRequest,
                                                                   @RequestPart(value = "file") List<MultipartFile> multipartFile,
+                                                                  @RequestPart(value = "board") @Valid BoardRequest boardRequest,
                                                                   BindingResult bindingResult) throws IOException {
 
         boardService.validateUploadForm(bindingResult);
