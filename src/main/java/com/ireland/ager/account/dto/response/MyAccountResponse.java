@@ -3,12 +3,10 @@ package com.ireland.ager.account.dto.response;
 import com.ireland.ager.account.entity.Account;
 import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
 import java.time.LocalDateTime;
 
 @Data
-@ToString
 @Builder
 public class MyAccountResponse {
     Long accountId;
