@@ -10,6 +10,7 @@ import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.main.service.UploadServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,10 +31,7 @@ public class AccountServiceImpl {
         return accountRepository.findAccountByAccountEmail(accountEmail).orElse(null);
     }
 
-    public Account findAccountById(Long accountId) {
-        return accountRepository.findById(accountId).orElseThrow(NotFoundException::new);
-    }
-
+    @Cacheable("account")
     public Account findAccountByAccessToken(String accessToken) {
         return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }

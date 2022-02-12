@@ -26,7 +26,7 @@ public class MyAccountResponse {
                 .accountEmail(account.getAccountEmail())
                 .profileImageUrl(account.getProfileImageUrl())
                 .accountId(account.getAccountId())
-                .avgStar(Math.round(account.getAvgStar()*100)/100.0)
+                .avgStar(account.getAvgStar())
                 .createdAt(account.getCreatedAt())
                 .build();
     }

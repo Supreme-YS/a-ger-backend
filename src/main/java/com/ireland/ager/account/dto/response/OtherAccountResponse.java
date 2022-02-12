@@ -24,7 +24,7 @@ public class OtherAccountResponse {
                 .profileImageUrl(account.getProfileImageUrl())
                 .accountId(account.getAccountId())
                 .createdAt(account.getCreatedAt())
-                .avgStar(Math.round(account.getAvgStar()*100)/100.0)
+                .avgStar(account.getAvgStar())
                 .build();
     }
 }
