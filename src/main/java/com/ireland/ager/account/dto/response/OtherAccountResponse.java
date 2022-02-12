@@ -14,6 +14,7 @@ public class OtherAccountResponse {
     String accountEmail;
     String profileNickname;
     String profileImageUrl;
+    Double avgStar;
     LocalDateTime createdAt;
 
     public static OtherAccountResponse toOtherAccountResponse(Account account) {
@@ -23,6 +24,7 @@ public class OtherAccountResponse {
                 .profileImageUrl(account.getProfileImageUrl())
                 .accountId(account.getAccountId())
                 .createdAt(account.getCreatedAt())
+                .avgStar(Math.round(account.getAvgStar()*100)/100.0)
                 .build();
     }
 }

@@ -38,14 +38,6 @@ public class AccountServiceImpl {
         return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }
 
-    public MyAccountResponse findMyAccountByAccessToken(String accessToken) {
-        return MyAccountResponse.toAccountResponse(findAccountByAccessToken(accessToken));
-    }
-
-    public OtherAccountResponse findOtherAccountByAccountId(Long accountId) {
-        return OtherAccountResponse.toOtherAccountResponse(findAccountById(accountId));
-    }
-
     public MyAccountResponse insertAccount(Account newAccount) {
         accountRepository.save(newAccount);
         return MyAccountResponse.toAccountResponse(newAccount);
