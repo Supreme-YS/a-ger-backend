@@ -17,14 +17,14 @@ public class BoardSummaryResponse {
     Long countComment;
     LocalDateTime createAt;
 
-    public static BoardSummaryResponse toBoardSummaryResponse(Board board,Long countComment) {
+    public static BoardSummaryResponse toBoardSummaryResponse(Board board) {
         return BoardSummaryResponse.builder()
                 .boardId(board.getBoardId())
                 .accountName(board.getAccountId().getUserName())
                 .title(board.getTitle())
                 .content(board.getContent())
                 .boardViewCnt(board.getBoardViewCnt())
-                .countComment(countComment)
+                .countComment(board.getTotalCommentCount())
                 .createAt(board.getCreatedAt())
                 .build();
     }

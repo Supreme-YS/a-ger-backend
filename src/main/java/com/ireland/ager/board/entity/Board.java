@@ -5,6 +5,7 @@ import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.config.BaseEntity;
 import com.ireland.ager.product.entity.Url;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -34,8 +35,10 @@ public class Board extends BaseEntity implements Serializable {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String content;
 
-    // 조회수
     private Long boardViewCnt;
+
+    @Formula("(select count(1) from comment c where c.board_id=board_id)")
+    private Long totalCommentCount;
 
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "board", orphanRemoval = true)
     private List<BoardUrl> urlList = new ArrayList<>();

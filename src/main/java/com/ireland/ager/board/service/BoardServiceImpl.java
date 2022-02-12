@@ -69,11 +69,9 @@ public class BoardServiceImpl {
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
-
-        Account accountById = accountService.findAccountById(board.getAccountId().getAccountId());
         Board toBoardUpdate = boardRequest.toBoardUpdate(board, updateFileImageUrlList);
         boardRepository.save(toBoardUpdate);
-        return BoardResponse.toBoardResponse(toBoardUpdate, accountById);
+        return BoardResponse.toBoardResponse(toBoardUpdate, account);
     }
 
     public void deletePost(String accessToken, Long boardId) {

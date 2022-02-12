@@ -55,7 +55,7 @@ public class AccountController {
     @GetMapping
     public ResponseEntity<SingleResult<MyAccountResponse>> getMyAccount(@RequestHeader("Authorization") String accessToken) {
         String[] splitToken = accessToken.split(" ");
-        MyAccountResponse myAccountResponse = accountService.findMyAccountByAccessToken(splitToken[1]);
+        MyAccountResponse myAccountResponse = MyAccountResponse.toAccountResponse(accountService.findAccountByAccessToken(splitToken[1]));
         return new ResponseEntity<>(
                 responseService.getSingleResult(myAccountResponse), HttpStatus.OK);
     }
@@ -64,7 +64,8 @@ public class AccountController {
     public ResponseEntity<SingleResult<OtherAccountResponse>> getOtherAccount(
             @RequestHeader("Authorization") String accessToken,
             @PathVariable Long accountId) {
-        OtherAccountResponse otherAccountByAccountId = accountService.findOtherAccountByAccountId(accountId);
+        String[] splitToken = accessToken.split(" ");
+        OtherAccountResponse otherAccountByAccountId =OtherAccountResponse.toOtherAccountResponse(accountService.findAccountByAccessToken(splitToken[1]));
         return new ResponseEntity<>(
                 responseService.getSingleResult(otherAccountByAccountId), HttpStatus.OK);
     }

@@ -15,6 +15,7 @@ public class MyAccountResponse {
     String userName;
     String profileImageUrl;
     String accessToken;
+    Double avgStar;
     LocalDateTime createdAt;
 
     public static MyAccountResponse toAccountResponse(Account account) {
@@ -25,6 +26,7 @@ public class MyAccountResponse {
                 .accountEmail(account.getAccountEmail())
                 .profileImageUrl(account.getProfileImageUrl())
                 .accountId(account.getAccountId())
+                .avgStar(account.getAvgStar())
                 .createdAt(account.getCreatedAt())
                 .build();
     }

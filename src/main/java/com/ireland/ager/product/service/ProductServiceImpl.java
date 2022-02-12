@@ -103,7 +103,8 @@ public class ProductServiceImpl {
                                              List<MultipartFile> multipartFile,
                                              ProductUpdateRequest productUpdateRequest) throws IOException {
         Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
-        if (!(productById.getAccount().getAccountId().equals(accountService.findAccountByAccessToken(accessToken).getAccountId()))) {
+        Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
+        if (!(productById.getAccount().equals(accountByAccessToken))) {
             throw new UnAuthorizedTokenException();
         }
         validateFileExists(multipartFile);
@@ -119,11 +120,9 @@ public class ProductServiceImpl {
         } catch (IllegalStateException | IOException e) {
             e.printStackTrace();
         }
-
-        Account accountById = accountService.findAccountById(productById.getAccount().getAccountId());
-        Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountById, updateFileImageUrlList);
+        Product toProductUpdate = productUpdateRequest.toProductUpdate(productById, accountByAccessToken, updateFileImageUrlList);
         productRepository.save(toProductUpdate);
-        return ProductResponse.toProductResponse(toProductUpdate, accountById);
+        return ProductResponse.toProductResponse(toProductUpdate, accountByAccessToken);
     }
 
     public void deleteProductById(Long productId, String accessToken) {

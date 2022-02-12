@@ -3,12 +3,15 @@ package com.ireland.ager.chat.service;
 import com.ireland.ager.account.entity.Account;
 import com.ireland.ager.account.exception.UnAuthorizedAccessException;
 import com.ireland.ager.account.service.AccountServiceImpl;
+import com.ireland.ager.chat.dto.request.MessageRequest;
 import com.ireland.ager.chat.dto.response.MessageDetailsResponse;
 import com.ireland.ager.chat.dto.response.MessageSummaryResponse;
 import com.ireland.ager.chat.dto.response.RoomCreateResponse;
+import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.entity.MessageRoom;
 import com.ireland.ager.chat.entity.RoomStatus;
 import com.ireland.ager.chat.exception.UnAuthorizedChatException;
+import com.ireland.ager.chat.repository.MessageRepository;
 import com.ireland.ager.chat.repository.MessageRoomRepository;
 import com.ireland.ager.main.exception.NotFoundException;
 import com.ireland.ager.product.entity.Product;
@@ -28,6 +31,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MessageService {
     private final MessageRoomRepository messageRoomRepository;
+    private final MessageRepository messageRepository;
     private final AccountServiceImpl accountService;
     private final ProductServiceImpl productService;
     public MessageRoom findByRoomId(Long roomId) {
@@ -61,7 +65,13 @@ public class MessageService {
         }
         MessageRoom insertMessageRoom = new MessageRoom();
         insertMessageRoom.toCreateMessageRoom(sellProduct,buyerAccount);
-        messageRoomRepository.save(insertMessageRoom);
+        MessageRoom savedRoom = messageRoomRepository.save(insertMessageRoom);
+        //웰컴 메시지
+        Message message = MessageRequest.toMessage(
+                new MessageRequest(
+                        savedRoom.getRoomId(), buyerAccount.getAccountId(), "상품을 구매하고 싶어요")
+                , savedRoom);
+        messageRepository.save(message);
         return RoomCreateResponse.toRoomCreateResponse(insertMessageRoom);
     }
     public MessageDetailsResponse roomEnterByAccessToken(String accessToken, Long roomId) {
