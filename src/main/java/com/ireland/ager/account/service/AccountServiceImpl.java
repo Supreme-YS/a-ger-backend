@@ -12,11 +12,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.Duration;
 
 @Service
 @Slf4j
@@ -33,7 +35,15 @@ public class AccountServiceImpl {
 
     @Cacheable("account")
     public Account findAccountByAccessToken(String accessToken) {
-        return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
+        Account account=accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
+        String key = "account::" + accessToken;
+        ValueOperations valueOperations = redisTemplate.opsForValue();
+        if (valueOperations.get(key) == null)
+            valueOperations.set(
+                    key,
+                    String.valueOf(accessToken),
+                    Duration.ofMinutes(1));
+        return account;
     }
 
     public MyAccountResponse insertAccount(Account newAccount) {
