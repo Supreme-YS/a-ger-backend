@@ -18,7 +18,7 @@ public class MessageRequest implements Serializable {
     private Long senderId;
     private String message;
 
-    public Message toMessage(MessageRequest messageDto, MessageRoom messageRoom) {
+    public static Message toMessage(MessageRequest messageDto, MessageRoom messageRoom) {
         return Message.builder()
                 .message(messageDto.getMessage())
                 .senderId(messageDto.getSenderId())

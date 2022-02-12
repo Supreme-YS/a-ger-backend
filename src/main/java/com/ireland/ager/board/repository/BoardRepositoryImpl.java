@@ -41,11 +41,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
         List<Board> fetch = boardJPAQuery.fetch();
         List<BoardSummaryResponse> content = new ArrayList<>();
         for (Board board : fetch) {
-            Long countComment = queryFactory
-                    .selectFrom(comment)
-                    .where(comment.boardId.boardId.eq(board.getBoardId()))
-                    .fetchCount();
-            content.add(BoardSummaryResponse.toBoardSummaryResponse(board, countComment));
+            content.add(BoardSummaryResponse.toBoardSummaryResponse(board));
         }
         boolean hasNext = false;
         //마지막 페이지는 사이즈가 항상 작다.
@@ -74,7 +70,7 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                     .selectFrom(comment)
                     .where(comment.boardId.boardId.eq(board.getBoardId()))
                     .fetchCount();
-            content.add(BoardSummaryResponse.toBoardSummaryResponse(board, countComment));
+            content.add(BoardSummaryResponse.toBoardSummaryResponse(board));
         }
         boolean hasNext = false;
         //마지막 페이지는 사이즈가 항상 작다.
