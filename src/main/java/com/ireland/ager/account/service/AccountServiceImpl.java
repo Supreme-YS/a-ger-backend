@@ -34,16 +34,15 @@ public class AccountServiceImpl {
         return accountRepository.findAccountByAccountEmail(accountEmail).orElse(null);
     }
 
-    @Cacheable("account")
     public Account findAccountByAccessToken(String accessToken) {
-        Account account=accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
         String key = "account::" + accessToken;
         ValueOperations valueOperations = redisTemplate.opsForValue();
         if (valueOperations.get(key) == null)
             valueOperations.set(
                     key,
-                    String.valueOf(accessToken),Duration.ofMinutes(1));
-        return account;
+                    String.valueOf(accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new))
+                    , Duration.ofMinutes(2));
+        return (Account)valueOperations.get(key);
     }
 
     public MyAccountResponse insertAccount(Account newAccount) {
