@@ -35,14 +35,7 @@ public class AccountServiceImpl {
     }
 
     public Account findAccountByAccessToken(String accessToken) {
-        String key = "account::" + accessToken;
-        ValueOperations valueOperations = redisTemplate.opsForValue();
-        if (valueOperations.get(key) == null)
-            valueOperations.set(
-                    key,
-                    String.valueOf(accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new))
-                    , Duration.ofMinutes(2));
-        return (Account)valueOperations.get(key);
+        return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }
 
     public MyAccountResponse insertAccount(Account newAccount) {
