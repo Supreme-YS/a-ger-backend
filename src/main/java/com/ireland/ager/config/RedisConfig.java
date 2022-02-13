@@ -51,7 +51,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .RedisCacheManagerBuilder
                 .fromConnectionFactory(lettuceConnectionFactory());
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(timeout)); //10분마다 캐싱 삭제
+                .entryTtl(Duration.ofMinutes(timeout));
         builder.cacheDefaults(configuration);
         return builder.build();
     }
