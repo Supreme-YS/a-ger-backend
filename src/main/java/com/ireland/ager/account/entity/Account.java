@@ -1,15 +1,17 @@
 package com.ireland.ager.account.entity;
 
+import com.ireland.ager.board.entity.Board;
+import com.ireland.ager.board.entity.Comment;
 import com.ireland.ager.config.BaseEntity;
+import com.ireland.ager.product.entity.Product;
+import com.ireland.ager.review.entity.Review;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.Formula;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.*;
 
 @Entity
 @Getter
@@ -31,4 +33,15 @@ public class Account extends BaseEntity implements Serializable {
     String refreshToken;
     @Formula("(select avg(r.stars) from review r where r.seller_id=account_id)")
     Double avgStar;
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "account")
+    Set<Product> products=new HashSet<>();
+
+    @OneToMany(mappedBy = "sellerId", cascade = CascadeType.ALL)
+    private Set<Review> reviews = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "accountId", cascade = CascadeType.ALL)
+    private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "accountId", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
 }
