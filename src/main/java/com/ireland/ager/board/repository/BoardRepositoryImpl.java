@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.ireland.ager.board.entity.QBoard.board;
+import static com.ireland.ager.board.entity.QBoardUrl.boardUrl;
 import static com.ireland.ager.board.entity.QComment.comment;
 
 @Repository
@@ -97,7 +98,12 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                 .set(board.boardViewCnt, board.boardViewCnt.add(1))
                 .where(board.boardId.eq(boardId))
                 .execute();
-        return queryFactory.selectFrom(board).where(board.boardId.eq(boardId)).fetchOne();
+        return queryFactory
+                .selectFrom(board)
+                .leftJoin(board.urlList, boardUrl)
+                .fetchJoin()
+                .where(board.boardId.eq(boardId),board.eq(boardUrl.board))
+                .fetchOne();
     }
 
     private BooleanExpression keywordContains(String keyword) {
