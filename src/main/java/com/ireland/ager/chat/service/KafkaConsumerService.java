@@ -26,7 +26,7 @@ public class KafkaConsumerService {
         //여기서 MessageRequest를 Message로 변환하고 정보 전달을 한다,,?
         MessageRoom messageRoom = messageService.findByRoomId(message.getRoomId());
         messageRepository.save(message.toMessage(message, messageRoom));
-        template.convertAndSend("/topic/group", message);
+        template.convertAndSend("/topic/group/"+messageRoom.getRoomId(), message);
     }
 
 }

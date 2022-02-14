@@ -1,7 +1,7 @@
 spring:
   redis:
-    host: localhost
-    port: '6379'
+    host: ec2-3-38-98-214.ap-northeast-2.compute.amazonaws.com
+    port: 6379
     timeout: '1'
   security:
     oauth2:
@@ -9,7 +9,7 @@ spring:
         registration:
           kakao:
             client-id: 1cb33b602a71c7122806d81f3dd44f6e
-            redirect-uri: http://ec2-15-164-103-95.ap-northeast-2.compute.amazonaws.com:8080/api/account/login
+            redirect-uri: http://localhost:8080/api/account/login
             client-secret: 1r3mG2aVyiTinsQUGC5HJ0EWr5jYLGZk
             client-authentication-method: post
             authorization-grant-type: authorization_code
@@ -35,7 +35,7 @@ spring:
   datasource:
     password: '0905'
     username: postgres
-    url: jdbc:postgresql://ec2-15-164-103-95.ap-northeast-2.compute.amazonaws.com/testdb
+    url: jdbc:postgresql://ec2-13-125-121-50.ap-northeast-2.compute.amazonaws.com/testdb
 cloud:
   aws:
     s3:
@@ -58,4 +58,4 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
-        SQL: DEBUG
+        SQL:

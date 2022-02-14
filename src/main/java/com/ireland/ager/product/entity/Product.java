@@ -40,7 +40,7 @@ public class Product extends BaseEntity implements Serializable {
 
     private String thumbNailUrl;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "productId", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "productId", orphanRemoval = true)
     private List<Url> urlList = new ArrayList<>();
 
     @JsonIgnore
