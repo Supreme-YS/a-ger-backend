@@ -54,7 +54,7 @@ public class BoardServiceImpl {
                                     Long boardId,
                                     BoardRequest boardRequest,
                                     List<MultipartFile> multipartFile) {
-        Board board = boardRepository.findById(boardId).orElseThrow(NotFoundException::new);
+        Board board = findPostById(boardId);
         Account account = accountService.findAccountByAccessToken(accessToken);
         if (!(account.equals(board.getAccountId()))) {
             throw new UnAuthorizedAccessException();

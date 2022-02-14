@@ -19,7 +19,7 @@ import java.time.Duration;
 public class RedisConfig extends CachingConfigurerSupport {
 
     @Value("${spring.redis.port}")
-    private int port;
+    private String port;
     @Value("${spring.redis.host}")
     private String host;
     @Value("${spring.redis.timeout}")
@@ -31,7 +31,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .commandTimeout(Duration.ZERO)
                 .shutdownTimeout(Duration.ZERO)
                 .build();
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, Integer.parseInt(port));
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
@@ -51,7 +51,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .RedisCacheManagerBuilder
                 .fromConnectionFactory(lettuceConnectionFactory());
         RedisCacheConfiguration configuration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofMinutes(timeout)); //10분마다 캐싱 삭제
+                .entryTtl(Duration.ofMinutes(timeout));
         builder.cacheDefaults(configuration);
         return builder.build();
     }

@@ -20,7 +20,7 @@ public class KafkaProductService {
     public void sendMessage(MessageRequest message) {
         System.out.println("send message : " + message);
         try {
-            kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC+"::"+message.getRoomId(), message).get();
+            kafkaTemplate.send(KafkaConstants.KAFKA_TOPIC, message).get();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
