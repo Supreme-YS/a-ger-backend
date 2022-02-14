@@ -32,6 +32,7 @@ public class AccountController {
 
     @GetMapping("/login-url")
     public ResponseEntity<SingleResult<String>> loginUrl() {
+        log.info("test");
         return new ResponseEntity<>(responseService.getSingleResult(authService.getKakaoLoginUrl()), HttpStatus.OK);
     }
 
