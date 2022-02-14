@@ -5,33 +5,33 @@
     <encoder> <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{10} - %msg%n</pattern> </encoder>
 </appender>
 
-    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <!--  logStash     -->
-        <destination>3.38.221.216:5000</destination>
-        <!--        -->
-        <encoder charset="UTF-8"
-                 class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-            <providers>
-                <timestamp>
-                    <timeZone>UTC</timeZone>
-                </timestamp>
-                <pattern>
-                    <pattern>
-                        {
-                        "logLevel": "%level",
-                        "serviceName": "${springAppName:-}",
-                        "pid": "${PID:-}",
-                        "thread": "%thread",
-                        "class": "%logger{40}",
-                        "msg": "%message"
-                        }
-                    </pattern>
-                </pattern>
-            </providers>
-        </encoder>
-    </appender>
+<!--    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
+<!--        &lt;!&ndash;  logStash     &ndash;&gt;-->
+<!--        <destination>3.38.221.216:5000</destination>-->
+<!--        &lt;!&ndash;        &ndash;&gt;-->
+<!--        <encoder charset="UTF-8"-->
+<!--                 class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">-->
+<!--            <providers>-->
+<!--                <timestamp>-->
+<!--                    <timeZone>UTC</timeZone>-->
+<!--                </timestamp>-->
+<!--                <pattern>-->
+<!--                    <pattern>-->
+<!--                        {-->
+<!--                        "logLevel": "%level",-->
+<!--                        "serviceName": "${springAppName:-}",-->
+<!--                        "pid": "${PID:-}",-->
+<!--                        "thread": "%thread",-->
+<!--                        "class": "%logger{40}",-->
+<!--                        "msg": "%message"-->
+<!--                        }-->
+<!--                    </pattern>-->
+<!--                </pattern>-->
+<!--            </providers>-->
+<!--        </encoder>-->
+<!--    </appender>-->
     <root level="info">
         <appender-ref ref="CONSOLE" />
-        <appender-ref ref="LOGSTASH" />
+<!--        <appender-ref ref="LOGSTASH" />-->
     </root>
 </configuration>
