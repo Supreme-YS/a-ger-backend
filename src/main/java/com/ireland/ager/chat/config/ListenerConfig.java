@@ -17,9 +17,6 @@ import java.util.Map;
 @EnableKafka
 @Configuration
 public class ListenerConfig {
-    private static final String KAFKA_TOPIC = "ager";
-    private static final String GROUP_ID = "project";
-    private static final String KAFKA_BROKER = "localhost:9092";
 
     @Bean
     ConcurrentKafkaListenerContainerFactory<String, MessageRequest> kafkaListenerContainerFactory() {
