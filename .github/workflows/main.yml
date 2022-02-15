@@ -34,6 +34,10 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
               ${{ runner.os }}-gradle-
+    - name: Generate Environment Variables File for Production
+        env:
+          AWS_ACCESSKEY: ${{secrets.AWS_ACCESSKEY}}
+
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
