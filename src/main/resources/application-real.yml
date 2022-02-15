@@ -1,7 +1,7 @@
 spring:
   redis:
     host: ${{secrets.SPRING_REDIS_HOST}}
-    port: '6379'
+    port: 6379
     timeout: '1'
   security:
     oauth2:
@@ -24,8 +24,9 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        format_sql: 'true'
-    show-sql: 'true'
+        format_sql: true
+        show-sql: true
+
   cache:
     type: redis
   servlet:
@@ -36,6 +37,7 @@ spring:
     password: ${{secrets.POSTGRES_PASSWORD}}
     username: ${{secrets.POSTGRES_USERNAME}}
     url: ${{secrets.POSTGRES_URL}}
+
 cloud:
   aws:
     s3:
@@ -43,13 +45,14 @@ cloud:
         url: ${{secrets.AWS_S3_BUCKET_URL}}
         name: ${{secrets.AWS_S3_BUCKET_NAME}}
     credentials:
-      instance-profile: 'true'
+      instance-profile: true
       accessKey: ${{secrets.AWS_ACCESSKEY}}
       secretKey: ${{secrets.AWS_SECRETKEY}}
     region:
       static: ap-northeast-2
     stack:
-      auto: 'false'
+      auto: false
+
 logging:
   level:
     org:
