@@ -36,8 +36,5 @@ out/
 ### VS Code ###
 .vscode/
 
-<<<<<<< HEAD
 application-local.yml
-=======
 application-real.yml
->>>>>>> 4878108c7a752cf372935eb843072c5a9dca2d83
