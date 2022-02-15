@@ -43,7 +43,7 @@ cloud:
         name: test-spring
     credentials:
       instance-profile: true
-      accessKey: AKIA33DBN5SFK2YBAG56
+      accessKey: ${{AWS_ACCESSKEY}}
       secretKey: ${{secrets.AWS_SECRETKEY}}
     region:
       static: ap-northeast-2
