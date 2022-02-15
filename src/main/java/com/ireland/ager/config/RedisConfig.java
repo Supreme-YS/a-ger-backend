@@ -31,7 +31,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .commandTimeout(Duration.ZERO)
                 .shutdownTimeout(Duration.ZERO)
                 .build();
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, 6379);
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
