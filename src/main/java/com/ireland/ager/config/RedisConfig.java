@@ -19,7 +19,7 @@ import java.time.Duration;
 public class RedisConfig extends CachingConfigurerSupport {
 
     @Value("${spring.redis.port}")
-    private String port;
+    private int port;
     @Value("${spring.redis.host}")
     private String host;
     @Value("${spring.redis.timeout}")
@@ -31,7 +31,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .commandTimeout(Duration.ZERO)
                 .shutdownTimeout(Duration.ZERO)
                 .build();
-        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, Integer.parseInt(port));
+        RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration(host, port);
         return new LettuceConnectionFactory(redisStandaloneConfiguration, lettuceClientConfiguration);
     }
 
