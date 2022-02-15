@@ -2,15 +2,15 @@ spring:
   redis:
     host: ${{secrets.SPRING_REDIS_HOST}}
     port: '6379'
-      timeout: '1'
+    timeout: '1'
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: ${secrets.KAKAO_CLIENT_ID}}
-            redirect-uri: ${secrets.KAKAO_REDIRECT_URI}}
-            client-secret: ${secrets.KAKAO_CLIENT_SECRET}}
+            client-id: ${{secrets.KAKAO_CLIENT_ID}}
+            redirect-uri: ${{secrets.KAKAO_REDIRECT_URI}}
+            client-secret: ${{secrets.KAKAO_CLIENT_SECRET}}
             client-authentication-method: post
             authorization-grant-type: authorization_code
         provider:
@@ -24,8 +24,8 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        format_sql: 'true'
-    show-sql: 'true'
+        format_sql: true
+        show-sql: true
   cache:
     type: redis
   servlet:
@@ -43,13 +43,13 @@ cloud:
         url: ${{secrets.AWS_S3_BUCKET_URL}}
         name: ${{secrets.AWS_S3_BUCKET_NAME}}
     credentials:
-      instance-profile: 'true'
+      instance-profile: true
       accessKey: ${{secrets.AWS_ACCESSKEY}}
       secretKey: ${{secrets.AWS_SECRETKEY}}
     region:
       static: ap-northeast-2
     stack:
-      auto: 'false'
+      auto: false
 logging:
   level:
     org:
