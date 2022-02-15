@@ -1,8 +1,7 @@
 spring:
   redis:
     host: ec2-3-38-98-214.ap-northeast-2.compute.amazonaws.com
-    port: '6379'
-      timeout: '1'
+    timeout: '1'
   security:
     oauth2:
       client:
@@ -24,8 +23,8 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        format_sql: 'true'
-    show-sql: 'true'
+        format_sql: true
+        show-sql: true
   cache:
     type: redis
   servlet:
@@ -43,13 +42,13 @@ cloud:
         url: https://test-spring.s3.ap-northeast-2.amazonaws.com
         name: test-spring
     credentials:
-      instance-profile: 'true'
+      instance-profile: true
       accessKey: AKIA33DBN5SFK2YBAG56
       secretKey: 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
     region:
       static: ap-northeast-2
     stack:
-      auto: 'false'
+      auto: false
 logging:
   level:
     org:
