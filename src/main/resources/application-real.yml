@@ -8,9 +8,9 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ${secrets.KAKAO_CLIENT_ID}}
-            redirect-uri: ${secrets.KAKAO_REDIRECT_URI}}
-            client-secret: ${secrets.KAKAO_CLIENT_SECRET}}
+            client-id: ${{secrets.KAKAO_CLIENT_ID}}
+            redirect-uri: ${{secrets.KAKAO_REDIRECT_URI}}
+            client-secret: ${{secrets.KAKAO_CLIENT_SECRET}}
             client-authentication-method: post
             authorization-grant-type: authorization_code
         provider:
