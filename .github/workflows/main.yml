@@ -1,0 +1,74 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+# This workflow will build a Java project with Gradle and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+
+name: Java CI with Gradle
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v2
+      with:
+        java-version: '8.0.322+6'
+        distribution: 'zulu'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v2
+      with:
+        path: |
+             ~/.gradle/caches
+             ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+              ${{ runner.os }}-gradle-
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Build with Gradle
+      run: ./gradlew build
+      
+  # 캐싱 관련 추가
+    - name: Cleanup Gradle Cache
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+      if: ${{ always() }}
+      run: |
+          rm -f ~/.gradle/caches/modules-2/modules-2.lock
+          rm -f ~/.gradle/caches/modules-2/gc.properties
+    - name: Docker build
+      run: |
+           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
+           docker build -t ager . 
+           docker tag ager supremeys/ager:${GITHUB_SHA::7}
+           docker push supremeys/ager:${GITHUB_SHA::7}
+           
+    - name: Deploy 
+      uses: appleboy/ssh-action@master
+      with: 
+       host: ec2-54-180-136-76.ap-northeast-2.compute.amazonaws.com                                
+       username: ec2-user 
+       key: ${{ secrets.PRIVATE_KEY }} 
+       envs: GITHUB_SHA 
+       script: |  
+            sudo docker pull supremeys/ager:${GITHUB_SHA::7}
+            sudo docker tag supremeys/ager:${GITHUB_SHA::7} ager
+            sudo docker stop ager
+            sudo docker rm ager
+            sudo docker run -d --name ager -p 80:8080 ager
+
+ 
+  
