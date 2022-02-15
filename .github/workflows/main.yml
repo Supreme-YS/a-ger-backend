@@ -17,6 +17,8 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESSKEY: ${{ secrets.AWS_ACCESSKEY }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
