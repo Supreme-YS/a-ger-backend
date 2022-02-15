@@ -1,7 +1,6 @@
 spring:
   redis:
     host: ec2-3-38-98-214.ap-northeast-2.compute.amazonaws.com
-    port: 6379
     timeout: '1'
   security:
     oauth2:
