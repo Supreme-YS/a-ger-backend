@@ -37,3 +37,6 @@ out/
 .vscode/
 
 application-local.yml
+application-test.yml
+.gitsecret/keys/random_seed
+!*.secret
