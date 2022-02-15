@@ -17,8 +17,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env:
-      AWS_ACCESSKEY: ${{ secrets.AWS_ACCESSKEY }}
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -58,6 +56,8 @@ jobs:
            
     - name: Deploy 
       uses: appleboy/ssh-action@master
+      env:
+        AWS_ACCESSKEY: ${{ secrets.AWS_ACCESSKEY }}
       with: 
        host: ec2-13-125-187-246.ap-northeast-2.compute.amazonaws.com
        username: ec2-user 
