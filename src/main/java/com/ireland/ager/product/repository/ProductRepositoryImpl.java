@@ -15,13 +15,14 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.ireland.ager.product.entity.QProduct.product;
-
+import static com.ireland.ager.product.entity.QUrl.url1;
 @Repository
 @RequiredArgsConstructor
 public class ProductRepositoryImpl implements ProductRepositoryCustom {
@@ -43,9 +44,14 @@ public class ProductRepositoryImpl implements ProductRepositoryCustom {
                 .set(product.productViewCnt, product.productViewCnt.add(1))
                 .where(product.productId.eq(productId))
                 .execute();
-        return queryFactory.selectFrom(product).where(product.productId.eq(productId)).fetchOne();
+        return queryFactory
+                .selectFrom(product)
+                .leftJoin(product.urlList, url1)
+                .fetchJoin()
+                .where(product.productId.eq(productId),product.eq(url1.productId))
+                .distinct()
+                .fetchOne();
     }
-
     @Override
     public Slice<ProductThumbResponse> findAllProductPageableOrderByCreatedAtDesc(Category category, String keyword, Pageable pageable) {
         JPAQuery<Product> productQuery = queryFactory

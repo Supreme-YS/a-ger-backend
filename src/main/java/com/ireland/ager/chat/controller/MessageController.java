@@ -5,6 +5,7 @@ import com.ireland.ager.chat.entity.Message;
 import com.ireland.ager.chat.service.KafkaProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
@@ -27,8 +28,8 @@ public class MessageController {
 
     //여기서 프론트엔드로 메시지를 전송합니다.
     @MessageMapping("/sendMessage")
-    @SendTo("/topic/group")
-    public Message broadcastGroupMessage(@Payload Message message) {
+    @SendTo("/topic/group/{roomId}")
+    public Message broadcastGroupMessage(@DestinationVariable Long roomId, @Payload Message message) {
         return message;
     }
 }

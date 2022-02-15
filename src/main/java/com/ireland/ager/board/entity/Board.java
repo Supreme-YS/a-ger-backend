@@ -40,7 +40,7 @@ public class Board extends BaseEntity implements Serializable {
     @Formula("(select count(1) from comment c where c.board_id=board_id)")
     private Long totalCommentCount;
 
-    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, mappedBy = "board", orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "board", orphanRemoval = true)
     private List<BoardUrl> urlList = new ArrayList<>();
 
     @JsonIgnore

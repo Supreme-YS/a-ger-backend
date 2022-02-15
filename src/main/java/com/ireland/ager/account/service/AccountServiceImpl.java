@@ -34,6 +34,7 @@ public class AccountServiceImpl {
         return accountRepository.findAccountByAccountEmail(accountEmail).orElse(null);
     }
 
+    @Cacheable("account")
     public Account findAccountByAccessToken(String accessToken) {
         return accountRepository.findAccountByAccessToken(accessToken).orElseThrow(NotFoundException::new);
     }

@@ -102,7 +102,7 @@ public class ProductServiceImpl {
                                              String accessToken,
                                              List<MultipartFile> multipartFile,
                                              ProductUpdateRequest productUpdateRequest) throws IOException {
-        Product productById = productRepository.findById(productId).orElseThrow(NotFoundException::new);
+        Product productById = findProductById(productId);
         Account accountByAccessToken = accountService.findAccountByAccessToken(accessToken);
         if (!(productById.getAccount().equals(accountByAccessToken))) {
             throw new UnAuthorizedTokenException();
