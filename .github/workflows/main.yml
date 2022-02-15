@@ -62,9 +62,10 @@ jobs:
        key: ${{ secrets.PRIVATE_KEY }} 
        envs: GITHUB_SHA 
        script: |  
-            sudo docker pull supremeys/ager:${GITHUB_SHA::7}
-            sudo docker tag supremeys/ager:${GITHUB_SHA::7} ager
-            sudo docker stop ager
-            sudo docker rm ager
-            sudo docker run -d --name ager -p 80:8080 ager
+            docker rmi $(docker images -q)
+            docker pull supremeys/ager:${GITHUB_SHA::7}
+            docker tag supremeys/ager:${GITHUB_SHA::7} ager
+            docker stop ager
+            docker rm ager
+            docker run -d --name ager -p 80:8080 ager
   
