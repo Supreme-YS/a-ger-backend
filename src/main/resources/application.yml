@@ -1,7 +1,6 @@
 spring:
   redis:
     host: ${{secrets.SPRING_REDIS_HOST}}
-    port: '6379'
     timeout: '1'
   security:
     oauth2:
@@ -40,8 +39,8 @@ cloud:
   aws:
     s3:
       bucket:
-        url: ${{secrets.AWS_S3_BUCKET_URL}}
-        name: ${{secrets.AWS_S3_BUCKET_NAME}}
+        url: https://test-spring.s3.ap-northeast-2.amazonaws.com
+        name: test-spring
     credentials:
       instance-profile: true
       accessKey: ${{secrets.AWS_ACCESSKEY}}

@@ -67,6 +67,4 @@ jobs:
             sudo docker stop ager
             sudo docker rm ager
             sudo docker run -d --name ager -p 80:8080 ager
-
- 
   

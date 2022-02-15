@@ -17,9 +17,6 @@ import java.time.Duration;
 
 @Configuration
 public class RedisConfig extends CachingConfigurerSupport {
-
-    @Value("${spring.redis.port}")
-    private int port;
     @Value("${spring.redis.host}")
     private String host;
     @Value("${spring.redis.timeout}")
