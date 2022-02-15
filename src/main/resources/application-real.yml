@@ -1,15 +1,16 @@
 spring:
   redis:
-    host: ${{secrets.SPRING_REDIS_HOST}}
-    timeout: '1'
+    host: ec2-3-38-98-214.ap-northeast-2.compute.amazonaws.com
+    port: '6379'
+      timeout: '1'
   security:
     oauth2:
       client:
         registration:
           kakao:
-            client-id: ${{secrets.KAKAO_CLIENT_ID}}
-            redirect-uri: ${{secrets.KAKAO_REDIRECT_URI}}
-            client-secret: ${{secrets.KAKAO_CLIENT_SECRET}}
+            client-id: 1cb33b602a71c7122806d81f3dd44f6e
+            redirect-uri: http://ec2-13-125-187-246.ap-northeast-2.compute.amazonaws.com/api/account/login
+            client-secret: 1r3mG2aVyiTinsQUGC5HJ0EWr5jYLGZk
             client-authentication-method: post
             authorization-grant-type: authorization_code
         provider:
@@ -23,8 +24,8 @@ spring:
       ddl-auto: create-drop
     properties:
       hibernate:
-        format_sql: true
-        show-sql: true
+        format_sql: 'true'
+    show-sql: 'true'
   cache:
     type: redis
   servlet:
@@ -32,9 +33,9 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   datasource:
-    password: ${{secrets.POSTGRES_PASSWORD}}
-    username: ${{secrets.POSTGRES_USERNAME}}
-    url: ${{secrets.POSTGRES_URL}}
+    password: '0905'
+    username: postgres
+    url: jdbc:postgresql://ec2-13-125-121-50.ap-northeast-2.compute.amazonaws.com/testdb
 cloud:
   aws:
     s3:
@@ -42,13 +43,13 @@ cloud:
         url: https://test-spring.s3.ap-northeast-2.amazonaws.com
         name: test-spring
     credentials:
-      instance-profile: true
-      accessKey: ${{secrets.AWS_ACCESSKEY}}
-      secretKey: ${{secrets.AWS_SECRETKEY}}
+      instance-profile: 'true'
+      accessKey: AKIA33DBN5SFK2YBAG56
+      secretKey: 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
     region:
       static: ap-northeast-2
     stack:
-      auto: false
+      auto: 'false'
 logging:
   level:
     org:
