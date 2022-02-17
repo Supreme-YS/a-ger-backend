@@ -19,6 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env : 
       working-directory: ./
+      yml-directory: src/main/resources/application-real.yml
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
@@ -53,7 +54,7 @@ jobs:
         POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
         SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
       run: ./gradlew build
-      working-directory: ${{ env.working-directory }}
+      working-directory: ${{ env.yml-directory }}
       
   # 캐싱 관련 추가
     - name: Cleanup Gradle Cache
