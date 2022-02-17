@@ -29,17 +29,17 @@ The used trading platform for student who living in Ireland🍀
 ### 🛠 사용기술
 
 ------
-|            | <center>  Backend                     | <center>DevOps                      | <center>Collaboration & Tools | 
-| ---------- | --------------------------- | --------------------------- |-------------------------------| 
-| ▷ | Java 1.8 | Postgresql | Notion                        |
-| ▷ | SpringBoot 2.5.9| Kafka | GitHub                        |
-| ▷ | Spring Data JPA| Redis | GitHub Flow                   |
-| ▷ | Spring Security| EC2 | Slack                         |
-| ▷ | Oauth2| S3 | KakaoTalk                     |
-| ▷ | QueryDSL | GitHub Action| <center> 🇨🇮                 |
-| ▷ | Web Socket | ELK | <center>🇨🇮                          |
-| ▷ | STOMP | Docker| <center>🇨🇮                          |
-| ▷ | Gradle | <center>🇨🇮 | <center>🇨🇮                          |
+|            | <center>Backend                     | <center>DevOps                      | <center>Collaboration & Tools | 
+|----------|:---------------------------:|:---------------------------:|:-------------------------------:| 
+| ▷ | Java 1.8 | Postgresql | Notion         |
+| ▷ | SpringBoot 2.5.9| Kafka | GitHub       |
+| ▷ | Spring Data JPA| Redis | GitHub Flow   |
+| ▷ | Spring Security| EC2 | Slack           |
+| ▷ | Oauth2| S3 | KakaoTalk                 |
+| ▷ | QueryDSL | GitHub Action|  🇨🇮          |
+| ▷ | Web Socket | ELK | 🇨🇮                  |
+| ▷ | STOMP | Docker| 🇨🇮                     |
+| ▷ | Gradle | 🇨🇮 | 🇨🇮                        |
 
 ------
 
