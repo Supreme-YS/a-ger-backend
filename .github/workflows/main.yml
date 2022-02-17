@@ -40,8 +40,8 @@ jobs:
       run: chmod +x gradlew
       working-directory: ${{ env.working-directory }}
       
-    - name: Build with Gradle
-      env:
+    - name: Insert Secret Keys
+      env: 
         AWS_ACCESSKEY: ${{ secrets.AWS_ACCESSKEY }}
         AWS_SECRETKEY: ${{ secrets.AWS_SECRETKEY }}
         AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
@@ -53,6 +53,9 @@ jobs:
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
         SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
+      run: echo src/main/resources/application.yml
+      
+    - name: Build with Gradle
       run: ./gradlew build
       working-directory: ${{ env.working-directory }}
       
