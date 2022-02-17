@@ -17,7 +17,7 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    env : 
+    env :
       working-directory: ./
       yml-directory: src/main/resources/
     steps:
@@ -36,7 +36,15 @@ jobs:
         key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
         restore-keys: |
               ${{ runner.os }}-gradle-
+              
     - name: insert secret
+      working-directory: ${{ env.yml-directory }}
+      
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      working-directory: ${{ env.working-directory }}
+      
+    - name: Build with Gradle
       env:
         AWS_ACCESSKEY: ${{ secrets.AWS_ACCESSKEY }}
         AWS_SECRETKEY: ${{ secrets.AWS_SECRETKEY }}
@@ -49,38 +57,30 @@ jobs:
         POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
         POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
         SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
-      working-directory: ${{ env.yml-directory }}
-      
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-      working-directory: ${{ env.working-directory }}
-    - name: Build with Gradle
       run: ./gradlew build
       working-directory: ${{ env.working-directory }}
       
-  # 캐싱 관련 추가
     - name: Cleanup Gradle Cache
-        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
-        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
       if: ${{ always() }}
       run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+          
     - name: Docker build
       run: |
-           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
-           docker build -t ager . 
+           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+           docker build -t ager .
            docker tag ager supremeys/ager:${GITHUB_SHA::7}
            docker push supremeys/ager:${GITHUB_SHA::7}
            
-    - name: Deploy 
+    - name: Deploy
       uses: appleboy/ssh-action@master
       with:
        host: ec2-13-125-187-246.ap-northeast-2.compute.amazonaws.com
-       username: ec2-user 
-       key: ${{ secrets.PRIVATE_KEY }} 
-       envs: GITHUB_SHA 
-       script: |  
+       username: ec2-user
+       key: ${{ secrets.PRIVATE_KEY }}
+       envs: GITHUB_SHA
+       script: |
             docker rmi $(docker images -q)
             docker pull supremeys/ager:${GITHUB_SHA::7}
             docker tag supremeys/ager:${GITHUB_SHA::7} ager
@@ -92,9 +92,9 @@ jobs:
       uses: 8398a7/action-slack@v3
       with:
         status: ${{ job.status }}
-        author_name: Github Action Test # default: 8398a7@action-slack
+        author_name: Github Action Test
         fields: repo,message,commit,author,action,eventName,ref,workflow,job,took
       env:
-        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-      if: always() # Pick up events even if the job fails or is canceled.
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: always()
   
