@@ -57,8 +57,8 @@ jobs:
       run: |
            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
            docker build -t ager .
-           docker tag ager supremeys/ager:${GITHUB_SHA::7}
-           docker push supremeys/ager:${GITHUB_SHA::7}
+           docker tag ${{ PROJECT_NAME }} ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7}
+           docker push ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7}
            
     - name: Deploy
       uses: appleboy/ssh-action@master
@@ -69,11 +69,11 @@ jobs:
        envs: GITHUB_SHA
        script: |
             docker rmi $(docker images -q)
-            docker pull supremeys/ager:${GITHUB_SHA::7}
-            docker tag supremeys/ager:${GITHUB_SHA::7} ager
-            docker stop ager
-            docker rm ager
-            docker run -d --name ager -p 80:8080 ager
+            docker pull ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7}
+            docker tag ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7} ${{ PROJECT_NAME }}
+            docker stop ${{ PROJECT_NAME }}
+            docker rm ${{ PROJECT_NAME }}
+            docker run -d --name ${{ PROJECT_NAME }} -p 80:8080 ${{ PROJECT_NAME }}
                
     - name: action-slack
       uses: 8398a7/action-slack@v3
