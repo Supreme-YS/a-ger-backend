@@ -21,7 +21,9 @@ jobs:
       
     steps:
     - uses: actions/checkout@v2
-    - run: echo ${{ secrets.APPLICATION }} > ./src/resource/application.yml
+    - run: echo "$APPLICATION" > ./src/resource/application.yml
+      env:
+        APPLICATION: ${{ secrets.APPLICATION }}
     - uses: actions/upload-artifact@v2
       with:
         name: application.yml
