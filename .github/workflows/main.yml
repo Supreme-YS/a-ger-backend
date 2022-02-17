@@ -56,24 +56,24 @@ jobs:
     - name: Docker build
       run: |
            docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-           docker build -t ager .
-           docker tag ${{ PROJECT_NAME }} ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7}
-           docker push ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7}
+           docker build -t ${{ secrets.PROJECT_NAME }} .
+           docker tag ${{ secrets.PROJECT_NAME }} ${{ secrets.DOCKER_HUB_REPO }}:${GITHUB_SHA::7}
+           docker push ${{ secrets.DOCKER_HUB_REPO }}:${GITHUB_SHA::7}
            
     - name: Deploy
       uses: appleboy/ssh-action@master
       with:
-       host: ec2-13-125-187-246.ap-northeast-2.compute.amazonaws.com
+       host: ${{ secrets.EC2_SERVER_HOST }}
        username: ec2-user
        key: ${{ secrets.PRIVATE_KEY }}
        envs: GITHUB_SHA
        script: |
             docker rmi $(docker images -q)
-            docker pull ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7}
-            docker tag ${{ DOCKER_HUB_NAME }}:${GITHUB_SHA::7} ${{ PROJECT_NAME }}
-            docker stop ${{ PROJECT_NAME }}
-            docker rm ${{ PROJECT_NAME }}
-            docker run -d --name ${{ PROJECT_NAME }} -p 80:8080 ${{ PROJECT_NAME }}
+            docker pull ${{ secrets.DOCKER_HUB_REPO }}:${GITHUB_SHA::7}
+            docker tag ${{ secrets.DOCKER_HUB_REPO }}:${GITHUB_SHA::7} ${{ secrets.PROJECT_NAME }}
+            docker stop ${{ secrets.PROJECT_NAME }}
+            docker rm ${{ secrets.PROJECT_NAME }}
+            docker run -d --name ${{ secrets.PROJECT_NAME }} -p 80:8080 ${{ secrets.PROJECT_NAME }}
                
     - name: action-slack
       uses: 8398a7/action-slack@v3
