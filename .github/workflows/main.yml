@@ -53,18 +53,6 @@ jobs:
       
     - name: Build with Gradle
       run: ./gradlew build
-      env: 
-        AWS_ACCESSKEY: ${{ secrets.AWS_ACCESSKEY }}
-        AWS_SECRETKEY: ${{ secrets.AWS_SECRETKEY }}
-        AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }}
-        AWS_S3_BUCKET_URL: ${{ secrets.AWS_S3_BUCKET_URL }}
-        KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-        KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
-        KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        POSTGRES_URL: ${{ secrets.POSTGRES_URL }}
-        POSTGRES_USERNAME: ${{ secrets.POSTGRES_USERNAME }}
-        SPRING_REDIS_HOST: ${{ secrets.SPRING_REDIS_HOST }}
       working-directory: ${{ env.working-directory }}
       
     - name: Cleanup Gradle Cache
