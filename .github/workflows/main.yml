@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     env : 
       working-directory: ./
-      yml-directory: src/main/resources/application-real.yml
+      yml-directory: src/main/resources/
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
