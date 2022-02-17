@@ -42,6 +42,23 @@ The used trading platform for student who living in Ireland🍀
 | ▷ | Gradle | <center>🇨🇮 | <center>🇨🇮                          |
 
 ------
+
+### 🎊 Architecture & Pipeline
+
+------
+![시각화](https://user-images.githubusercontent.com/72914519/154429333-95de9540-6928-4cb2-b95a-9098ee169267.png)
+### 🔑**CI & CD Pipeline**
+- Develop 브랜치 기능 개발 완료 후, Main 브랜치에 Pull Request 전송
+- Main 브랜치 PR 이후, Merge and Push
+- GitHub Actions 동작
+- Main 브랜치 빌드
+- 빌드 결과물 Jar 파일 -> Docker 빌드 -> 도커 이미지 생성
+- 도커 이미지 -> 도커 허브 이미지 Push
+- 원격 서버 EC2 도커 실행
+- 도커 허브 이미지 Pull
+- 도커 컨테이너 실행
+  --- Nginx 추가해야함!
+------
 ### 🏠 ERD 구조
 ------
 ![ager](https://user-images.githubusercontent.com/58693617/154427811-28ddef62-739f-49be-9c4f-0f2f25728108.png)
@@ -82,22 +99,3 @@ The used trading platform for student who living in Ireland🍀
   - 구매자는 거래 완료 이후 판매자를 평가할 수 있다.
 - 관리자
   - 관리자는 불건전한 판매자를 관리할 수 있다.
-
-
-------
-
-### 🎊 Architecture & Pipeline
-
-------
-![시각화](https://user-images.githubusercontent.com/72914519/154429333-95de9540-6928-4cb2-b95a-9098ee169267.png)
- ### 🔑**CI & CD Pipeline**
- - Develop 브랜치 기능 개발 완료 후, Main 브랜치에 Pull Request 전송
- - Main 브랜치 PR 이후, Merge and Push
- - GitHub Actions 동작
- - Main 브랜치 빌드
- - 빌드 결과물 Jar 파일 -> Docker 빌드 -> 도커 이미지 생성
- - 도커 이미지 -> 도커 허브 이미지 Push
- - 원격 서버 EC2 도커 실행
- - 도커 허브 이미지 Pull
- - 도커 컨테이너 실행
- --- Nginx 추가해야함!
