@@ -28,7 +28,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: application.yml
-        path: ./src/resource/application.yml
+        path: ./src/main/resources/application.yml
         
     - uses: actions/checkout@v2
     - name: Set up JDK 1.8
