@@ -20,7 +20,7 @@ The used trading platform for student who living in Ireland🍀
 |----------------|:--------------:|:--------------:|:--------------:|:--------------:|:--------------:|
 | **Github**     | [<img src="https://avatars.githubusercontent.com/u/46801877?v=4" width="200px;" alt=""/>](https://github.com/Supreme-YS) | [<img src="https://avatars.githubusercontent.com/u/72914519?v=4" width="200px;" alt=""/>](https://github.com/jhdl0157) | [<img src="https://avatars.githubusercontent.com/u/58693617?v=4" width="200px;" alt=""/>](https://github.com/dhkstnaos) | [<img src=https://user-images.githubusercontent.com/72914519/154930806-a8275c1f-1f55-4e36-a4e2-bddd16d7562b.jpeg width="200px;" alt=""/>](https://github.com/dhkstnaos) | [<img src="https://avatars.githubusercontent.com/u/58078994?v=4" width="200px;" alt=""/>](https://github.com/hx2ryu) |
 | **E-mail**     | dudtjr1225@gmail.com | jhdl0157@naver.com | dhkstnaos@gmail.com | ds5anc900@naver.com  | hx2ryu@gmail.com  |
-| **Github**     | https://github.com/Supreme-YS  | https://github.com/jhdl0157 | https://github.com/dhkstnaos    |     | https://github.com/hx2ryu |
+| **Github**     | https://github.com/Supreme-YS  | https://github.com/jhdl0157 | https://github.com/dhkstnaos    |   🐊  | https://github.com/hx2ryu |
 | **Blog**       | https://supreme-ys.tistory.com/ |https://thisisthat-it.tistory.com/ | https://crazy-horse.tistory.com/ |https://limgayeon.imweb.me/ | 🐊 |
 | **Position**   | Backend | Backend | Backend | Designer | Frontend
  
@@ -62,7 +62,14 @@ The used trading platform for student who living in Ireland🍀
 ### 🏠 ERD 구조
 ------
 ![ager](https://user-images.githubusercontent.com/58693617/154427811-28ddef62-739f-49be-9c4f-0f2f25728108.png)
+------
 
+------
+### 📖 API 문서링크
+ 
+- [ager-api-documents](https://documenter.getpostman.com/view/16841838/UVeNkN3d)
+------
+ 
 ------
 ### 🧰 주요기능
 ------
@@ -79,9 +86,7 @@ The used trading platform for student who living in Ireland🍀
 - 상품 및 게시판 조회수
 
 ------
-
 ### 💁🏻 USE-CASE
-
 ------
 - 모든 사용자
   - 모든 사용자는 카카오 로그인 API를 통해 회원가입을 할 수 있다.
